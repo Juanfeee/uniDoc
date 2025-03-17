@@ -4,6 +4,7 @@ import { InformacionPersona } from "./agregar_informacion_persona/InformacionPer
 export default function Home() {
   return (
     <>
+    
       <InformacionPersona />
 
     </>

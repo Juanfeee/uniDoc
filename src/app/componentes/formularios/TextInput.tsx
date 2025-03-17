@@ -1,5 +1,20 @@
 
 // Input de texto
+
+type Props={
+  type: string;
+  className?: string;
+  placeholder?: string;
+  id?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  name?: string;
+  required?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  autoFocus?: boolean;
+}
+
 const TextInput = ({type="text", className="", ...props}) => {
 
 
