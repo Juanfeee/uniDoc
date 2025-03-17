@@ -25,7 +25,7 @@ type Inputs = {
   pais: string;
   departamento?: string;
   ciudad: string;
-  genero: "masculino" | "femenino" | "otro";
+  genero: string;
 };
 export const DatosPersonales = () => {
   const {
