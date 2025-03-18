@@ -1,16 +1,19 @@
 import {z} from 'zod'
 
-const tipo_identificaciones = ["cedula_ciudadania", "cedula_extranjera", "numero_identificacion", "pasaporte"] as const;
+const tipo_experiencia = ["Investigación", "Docencia_universitaria", "Docencia_no_universitaria", "Profesional","Direccion_Academica"] as const;
 
 export const userSchema = z.object({
-  identificacion: z.string().min(6, {message:"La identificación debe tener al menos 6 caracteres"}),
-  
-  primer_nombre: z.string().min(3, { message: "El nombre debe tener al menos 3 caracteres" }),
-  segundo_nombre: z.string().min(3, { message: "El nombre debe tener al menos 3 caracteres" }),
-  primer_apellido: z.string().min(3, { message: "El apellido debe tener al menos 3 caracteres" }),
-  segundo_apellido: z.string().min(3, { message: "El apellido debe tener al menos 3 caracteres" }),
-  tipo_identificacion: z.enum(tipo_identificaciones,{
+  Institución: z.string().min(6, {message:"Campo vacio"}),
+  Cargo: z.string().min(3, { message: "Campo vacio" }),
+  Intensidad: z.string().min(3, { message: "Campo vacio" }),
+  Profesional: z.string().min(3, { message: "Campo vacio" }),
+  Direccion_Academica: z.string().min(3, { message: "Campo vacio" }),
+  tipo_experiencia: z.enum(tipo_experiencia,{
     errorMap: () => ({ message: "El tipo de identificación no es valido" })
-  })
+  }),
+  fecha_inicio: z.string().min(1,{message : "Selecciona la fecha de inicio"}),
+  fecha_finalizacion : z.string().min(1,{message : "Selecciona la fecha de inicio"}),
+  exp_autonoma : z.enum(["Si","No"],{errorMap : () => ({message: "Opcion no valida"})}),
+  actual_t : z.enum(["Si","No"],{errorMap : () => ({message: "Opcion no valida"})})
 
 })
