@@ -1,9 +1,11 @@
 
-import { mappeoCiudadCauca, mappeoDepartamento, mappeoPais, mappeoTipoIdentificacion } from "@/validaciones/userSchema";
+import { mappeoTipoEstudio } from "@/validaciones/studySchema";
+import { mappeoCiudadCauca, mappeoDepartamento, mappeoEstadoCivil, mappeoPais, mappeoTipoIdentificacion } from "@/validaciones/userSchema";
 type Props = {
   className?: string;
   register?: any;
   id: string;
+
 }
 
 export const SelectForm = ({ id,className, register }: Props) => {
@@ -13,11 +15,13 @@ export const SelectForm = ({ id,className, register }: Props) => {
     tipo_identificacion: mappeoTipoIdentificacion,
     pais: mappeoPais,
     departamento: mappeoDepartamento,
-    ciudad: mappeoCiudadCauca
+    ciudad: mappeoCiudadCauca,
+    estado_civil: mappeoEstadoCivil,
+    tipo_estudio: mappeoTipoEstudio,
   };
 
   //mapeamos las opciones dependiendo del id
-  const options = Object.entries(optionsMap[id] || {}).map(([key, value]) => (
+  const options = Object.entries(optionsMap[id as keyof typeof optionsMap] || {}).map(([key, value]) => (
     <option key={key} value={key}>{value}</option>
   ));
 

@@ -1,20 +1,22 @@
 "use client";
 import { InputLabel } from "../componentes/formularios/InputLabel";
 import { LabelRadio } from "../componentes/formularios/LabelRadio";
-import PrimaryButton from "../componentes/formularios/PrimaryButton";
-
 import { SelectForm } from "../componentes/formularios/SelectForm";
-
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
+import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import TextInput from "../componentes/formularios/TextInput";
-import { userSchema } from "@/validaciones/userSchema";
 import InputErros from "../componentes/formularios/InputErros";
+import { useEffect } from "react";
 
-type Props = {};
+type Props = {
+  watch: UseFormWatch<Inputs>;
+  setValue: UseFormSetValue<Inputs>;
+  handleSubmit: UseFormHandleSubmit<Inputs>;
+  onSubmit: SubmitHandler<Inputs>;
+  register: UseFormRegister<Inputs>;
+  errors: FieldErrors<Inputs>;
+};
 
-type Inputs = {
+export type Inputs = {
   tipo_identificacion: string;
   identificacion: string;
   primer_nombre: string;
@@ -24,27 +26,32 @@ type Inputs = {
   fecha_nacimiento: string;
   pais: string;
   departamento?: string;
-  ciudad: string;
+  ciudad?: string;
   genero: string;
+  estado_civil: string;
+  libreta_militar?: string;
+  distrito_militar?: string;
+  categoria_libreta_militar?: string;
 };
-export const DatosPersonales = () => {
-  const {
-    //register es una funcion que se encarga de registrar los inputs se usa
-    //handleSubmit es una funcion que se encarga de manejar el submit del formulario
-    //watch es una funcion que se encarga de observar los cambios de los inputs
-    //formState es un objeto que contiene los errores del formulario de userSchema
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>({ resolver: zodResolver(userSchema) });
+
+export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,errors}:Props) => {
+
+
+  const genero = watch("genero");
+  useEffect(() => {
+    if (genero === "femenino" || genero === "otro") {
+      setValue("categoria_libreta_militar", "");
+      setValue("libreta_militar", "");
+      setValue("distrito_militar", "");
+    }
+  }, [genero, setValue]);
+
 
   return (
     <>
-      <div className="flex flex-col gap-y-4 bg-white p-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px]  m-auto relative">
+      <div className="flex flex-col bg-white gap-y-6 py-12 px-8 rounded-xl">
         <h3 className="font-bold text-3xl">Agregar datos personales</h3>
-        <form
-          onSubmit={handleSubmit(() => { })}
+        <div
           className="flex flex-col gap-y-4 sm:grid grid-cols-2 sm:gap-y-10 sm:gap-x-4"
         >
           <div className="flex flex-col">
@@ -133,10 +140,7 @@ export const DatosPersonales = () => {
             </div>
             <div>
               <InputLabel htmlFor="pais" value="Pais" />
-              <SelectForm
-                id="pais"
-                register={register("pais")}
-              />
+              <SelectForm id="pais" register={register("pais")} />
               <InputErros errors={errors} name="pais" />
             </div>
             <div>
@@ -149,18 +153,15 @@ export const DatosPersonales = () => {
             </div>
             <div>
               <InputLabel htmlFor="ciudad" value="Ciudad" />
-              <SelectForm
-                id="ciudad"
-                register={register("ciudad")}
-              />
+              <SelectForm id="ciudad" register={register("ciudad")} />
               <InputErros errors={errors} name="ciudad" />
             </div>
           </div>
 
           <div className="sm:col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 w-full items-center justify-center gap-y-4">
-            <div className=" lg:col-span-2 ">
-              <InputLabel>Genero</InputLabel>
-              <div className="flex flex-wrap justify-start px-2 sm:justify-center items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] ">
+            <div className="col-span-2">
+              <InputLabel htmlFor="masculino" value="Genero"></InputLabel>
+              <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11">
                 <div className="flex items-center gap-x-1">
                   <LabelRadio htmlFor="masculino">Masculino</LabelRadio>
                   <TextInput
@@ -177,12 +178,12 @@ export const DatosPersonales = () => {
                     id="femenino"
                     value="femenino"
                     {...register("genero")}
-
                   />
                 </div>
                 <div className="flex items-center gap-x-1">
                   <LabelRadio htmlFor="otro">Otro</LabelRadio>
                   <TextInput
+                    className=""
                     type="radio"
                     id="otro"
                     value="otro"
@@ -191,27 +192,86 @@ export const DatosPersonales = () => {
                 </div>
               </div>
               <InputErros errors={errors} name="genero" />
-
             </div>
-            {/* <div className="flex flex-col col-span-1">
-              <InputLabel htmlFor="otro_genero" value="¿Cual?" />
-              <TextInput
-                id="otro_genero"
-                type="text"
-                placeholder="Escriba su genero..."
-                
+            <div className="col-span-2">
+              <InputLabel htmlFor="estado_civil" value="Estado civil" />
+              <SelectForm
+                id="estado_civil"
+                register={register("estado_civil")}
               />
-            </div> */}
-            <div className="flex flex-col">
+              <InputErros errors={errors} name="estado_civil" />
             </div>
           </div>
-          <div className="flex flex-col">
-            {JSON.stringify(watch(), null, 2)}
-          </div>
-          <button className="bg-amber-300" type="submit">
-            Enviar
-          </button>
-        </form>
+          {watch("genero") === "masculino" && (
+            <>
+            
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 col-span-full gap-x-8 gap-y-4">
+                <div className="sm:col-span-3 lg:col-span-1">
+                  <InputLabel
+                    htmlFor=""
+                    value="Categoria librete militar"
+                  ></InputLabel>
+                  <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11">
+                    <div className="flex items-center gap-x-1">
+                      <LabelRadio
+                        htmlFor="primera_clase"
+                        value="Primera clase"
+                      ></LabelRadio>
+                      <TextInput
+                        type="radio"
+                        id="primera_clase"
+                        value="primera_clase"
+                        {...register("categoria_libreta_militar")}
+                      />
+                    </div>
+                    <div className="flex items-center gap-x-1">
+                      <LabelRadio
+                        htmlFor="segunda_clase"
+                        value="Segunda clase"
+                      ></LabelRadio>
+                      <TextInput
+                        type="radio"
+                        id="segunda_clase"
+                        value="segunda_clase"
+                        {...register("categoria_libreta_militar")}
+                      />
+                    </div>
+                  </div>
+                  <InputErros
+                    errors={errors}
+                    name="categoria_libreta_militar"
+                  />
+                </div>
+                <div className="flex flex-col ">
+                  <InputLabel
+                    htmlFor="libreta_militar"
+                    value="Numero libreta militar"
+                  />
+                  <TextInput
+                    id="libreta_militar"
+                    type="number"
+                    {...register("libreta_militar")}
+                  />
+                  <InputErros errors={errors} name="libreta_militar" />
+                </div>
+                <div className="flex flex-col col-span-1">
+                  <InputLabel
+                    htmlFor="distrito_militar"
+                    value="Numero distrito militar"
+                  />
+                  <TextInput
+                    id="distrito_militar"
+                    type="number"
+                    {...register("distrito_militar")}
+                  />
+                  <InputErros errors={errors} name="distrito_militar" />
+                </div>
+              </div>
+            </>
+          )}
+
+
+        </div>
       </div>
     </>
   );

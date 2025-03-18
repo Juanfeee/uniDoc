@@ -1,11 +1,13 @@
-import { InformacionPersona } from "./agregar_informacion_persona/InformacionPersona";
 
+import { AgregarEstudio } from "./trayectoria/AgregarEstudio";
+import { InformacionPersona } from "./datosPersona/InformacionPersona";
 
 export default function Home() {
   return (
     <>
-    
-      <InformacionPersona />
+
+        {/* <InformacionPersona /> */}
+        <AgregarEstudio/>
 
     </>
   );
