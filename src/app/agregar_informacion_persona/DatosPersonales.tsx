@@ -2,216 +2,107 @@
 import { InputLabel } from "../componentes/formularios/InputLabel";
 import { LabelRadio } from "../componentes/formularios/LabelRadio";
 import PrimaryButton from "../componentes/formularios/PrimaryButton";
-
 import { SelectForm } from "../componentes/formularios/SelectForm";
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import TextInput from "../componentes/formularios/TextInput";
 import { userSchema } from "@/validaciones/userSchema";
 import InputErros from "../componentes/formularios/InputErros";
 
-type Props = {};
-
-type Inputs = {
-  tipo_identificacion: string;
-  identificacion: string;
-  primer_nombre: string;
-  segundo_nombre: string;
-  primer_apellido: string;
-  segundo_apellido: string;
-  fecha_nacimiento: string;
-  pais: string;
-  departamento?: string;
-  ciudad: string;
-  genero: string;
-};
 export const DatosPersonales = () => {
   const {
-    //register es una funcion que se encarga de registrar los inputs se usa
-    //handleSubmit es una funcion que se encarga de manejar el submit del formulario
-    //watch es una funcion que se encarga de observar los cambios de los inputs
-    //formState es un objeto que contiene los errores del formulario de userSchema
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<Inputs>({ resolver: zodResolver(userSchema) });
+  } = useForm({ resolver: zodResolver(userSchema) });
 
   return (
     <>
-      <div className="flex flex-col gap-y-4 bg-white p-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px]  m-auto relative">
-        <h3 className="font-bold text-3xl">Agregar datos personales</h3>
-        <form
-          onSubmit={handleSubmit(() => { })}
-          className="flex flex-col gap-y-4 sm:grid grid-cols-2 sm:gap-y-10 sm:gap-x-4"
-        >
-          <div className="flex flex-col">
-            <InputLabel
-              htmlFor="tipo_identificacion"
-              value="Tipo de identificacion"
-            />
+      <nav className="bg-white border-b shadow-sm px-6 py-3 flex justify-between items-center">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <img src='/imagenes/logo.png' alt="Logo" className="h-6" />
+          <span className="text-lg font-semibold">UniDoc</span>
+        </div>
 
-            <SelectForm
-              id="tipo_identificacion"
-              register={register("tipo_identificacion")}
-            />
-            <InputErros errors={errors} name="tipo_identificacion" />
+        {/* Menú */}
+        <div className="hidden md:flex gap-6 text-gray-700">
+          <a href="#" className="hover:text-blue-600">Inicio</a>
+          <a href="#" className="hover:text-blue-600">Datos personales</a>
+          <a href="#" className="hover:text-blue-600">Normativas</a>
+        </div>
+
+        {/* Iconos de notificación y usuario */}
+        <div className="flex items-center gap-4">
+          <button className="bg-gray-100 p-2 rounded-full"></button>
+          <img
+            src="imagenes/usuario.png"
+            alt="Usuario"
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        </div>
+      </nav>
+
+      <div className="flex flex-col bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto relative">
+        <div>
+            <h1 className="text-4xl font-semibold">Hoja de vida</h1>
+        </div>
+        <div>
+            <h1 className="text-xl font-semibold">Datos personales</h1>
+        </div>
+        {/* Información Personal */}
+        <div className="flex items-center gap-4 border-b pb-4">
+
+          <div className="w-24 h-24 bg-gray-300 rounded-full" />
+
+          <div>
+            <h3 className="text-xl font-semibold">Aurora Morales</h3>
+            <p className="text-gray-600">Identificación: 123456789</p>
           </div>
-          <div className="flex flex-col">
-            <InputLabel htmlFor="identificacion" value="Identificacion" />
-            <TextInput
-              id="identificacion"
-              type="number"
-              {...register("identificacion")}
-              placeholder="Identificación..."
-            />
-            <InputErros errors={errors} name="identificacion" />
+        </div>
+
+        {/* Estado de Validación */}
+        <div className="mt-4 bg-gray-100 p-4 rounded-md">
+          <h4 className="text-lg font-semibold text-gray-700">Estado de Validación Académica: <span className="text-green-600">Aprobado</span></h4>
+          <p className="text-gray-600">Puntaje: <span className="font-bold text-blue-600">00</span></p>
+        </div>
+
+        {/* Información Adicional */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 bg-gray-50 p-4 rounded-md">
+          <div>
+            <p className="text-sm font-semibold">Correo Electrónico</p>
+            <p className="text-gray-600">auroramoraes@uniautonoma.edu.co</p>
           </div>
-          <div className="grid col-span-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4 w-full">
-            <div className="">
-              <InputLabel htmlFor="primer_nombre" value="Primer nombre" />
-              <TextInput
-                className="w-full"
-                id="primer_nombre"
-                type="text"
-                placeholder="Primer nombre..."
-                {...register("primer_nombre")}
-              />
-              <InputErros errors={errors} name="primer_nombre" />
-            </div>
-
-            <div className="">
-              <InputLabel htmlFor="segundo_nombre" value="Segundo nombre" />
-              <TextInput
-                className="w-full"
-                id="segundo_nombre"
-                type="text"
-                placeholder="Segundo nombre..."
-                {...register("segundo_nombre")}
-              />
-              <InputErros errors={errors} name="segundo_nombre" />
-            </div>
-
-            <div className="">
-              <InputLabel htmlFor="primer_apellido" value="Primer apellido" />
-              <TextInput
-                className="w-full"
-                id="primer_apellido"
-                type="text"
-                placeholder="Primer apellido..."
-                {...register("primer_apellido")}
-              />
-              <InputErros errors={errors} name="primer_apellido" />
-            </div>
-
-            <div className="">
-              <InputLabel htmlFor="segundo_apellido" value="Segundo apellido" />
-              <TextInput
-                className="w-full"
-                id="segundo_apellido"
-                type="text"
-                placeholder="Segundo apellido..."
-                {...register("segundo_apellido")}
-              />
-              <InputErros errors={errors} name="segundo_apellido" />
-            </div>
+          <div>
+            <p className="text-sm font-semibold">Ubicación</p>
+            <p className="text-gray-600">Popayán, Cauca</p>
           </div>
-          <div className="grid gap-y-4 sm:grid-cols-2 lg:grid-cols-3 col-span-full sm:gap-x-8">
-            <div className="flex flex-col sm:col-span-full lg:col-span-1">
-              <InputLabel
-                htmlFor="fecha_nacimiento"
-                value="Fecha de nacimiento"
-              />
-              <TextInput
-                id="fecha_nacimiento"
-                type="date"
-                {...register("fecha_nacimiento")}
-              />
-              <InputErros errors={errors} name="fecha_nacimiento" />
-            </div>
-            <div>
-              <InputLabel htmlFor="pais" value="Pais" />
-              <SelectForm
-                id="pais"
-                register={register("pais")}
-              />
-              <InputErros errors={errors} name="pais" />
-            </div>
-            <div>
-              <InputLabel htmlFor="departamento" value="Departamento" />
-              <SelectForm
-                id="departamento"
-                register={register("departamento")}
-              />
-              <InputErros errors={errors} name="departamento" />
-            </div>
-            <div>
-              <InputLabel htmlFor="ciudad" value="Ciudad" />
-              <SelectForm
-                id="ciudad"
-                register={register("ciudad")}
-              />
-              <InputErros errors={errors} name="ciudad" />
-            </div>
+          <div>
+            <p className="text-sm font-semibold">Facultades</p>
+            <p className="text-gray-600">Facultad de Ingeniería, Facultad de Ciencias Ambientales y Desarrollo Sostenible</p>
           </div>
+        </div>
 
-          <div className="sm:col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 w-full items-center justify-center gap-y-4">
-            <div className=" lg:col-span-2 ">
-              <InputLabel>Genero</InputLabel>
-              <div className="flex flex-wrap justify-start px-2 sm:justify-center items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] ">
-                <div className="flex items-center gap-x-1">
-                  <LabelRadio htmlFor="masculino">Masculino</LabelRadio>
-                  <TextInput
-                    type="radio"
-                    id="masculino"
-                    value="masculino"
-                    {...register("genero")}
-                  />
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <LabelRadio htmlFor="femenino">Femenino</LabelRadio>
-                  <TextInput
-                    type="radio"
-                    id="femenino"
-                    value="femenino"
-                    {...register("genero")}
-
-                  />
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <LabelRadio htmlFor="otro">Otro</LabelRadio>
-                  <TextInput
-                    type="radio"
-                    id="otro"
-                    value="otro"
-                    {...register("genero")}
-                  />
-                </div>
-              </div>
-              <InputErros errors={errors} name="genero" />
-
-            </div>
-            {/* <div className="flex flex-col col-span-1">
-              <InputLabel htmlFor="otro_genero" value="¿Cual?" />
-              <TextInput
-                id="otro_genero"
-                type="text"
-                placeholder="Escriba su genero..."
-                
-              />
-            </div> */}
-            <div className="flex flex-col">
-            </div>
+        {/* Formación Docente */}
+        <div className="mt-6 bg-gray-50 p-4 rounded-md">
+          <h4 className="text-lg font-semibold text-gray-700">Formación Docente</h4>
+          <div className="mt-2 p-4 border-dashed border-2 rounded-md text-center">
+            <p className="text-gray-600">Experiencia</p>
+            <button className="mt-2 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300">Añadir experiencia</button>
           </div>
-          <div className="flex flex-col">
-            {JSON.stringify(watch(), null, 2)}
+          <div className="mt-4 p-4 border-dashed border-2 rounded-md text-center">
+            <p className="text-gray-600">Formación Educativa</p>
+            <button className="mt-2 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300">Añadir Formación educativa</button>
           </div>
-          <button className="bg-amber-300" type="submit">
-            Enviar
-          </button>
-        </form>
+          <div className="mt-4 p-4 border-dashed border-2 rounded-md text-center">
+            <p className="text-gray-600">Formación Educativa</p>
+            <button className="mt-2 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300">Añadir Formación educativa</button>
+          </div>
+          <div className="mt-4 p-4 border-dashed border-2 rounded-md text-center">
+            <p className="text-gray-600">Formación Educativa</p>
+            <button className="mt-2 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300">Añadir Formación educativa</button>
+          </div>
+        </div>
       </div>
     </>
   );
