@@ -4,12 +4,12 @@ type Props = {
   children?: React.ReactNode;
   htmlFor: string;
 }
-export const InputLabel = ({value, className="" ,children,...props}:Props) => {
+export const InputLabel = ({className=" ",value,children,...props}:Props) => {
 
   return (
     <label
       {...props}
-      className={'text-lg font-semibold' + className}
+      className={`text-lg font-medium ${className}`}
     >
       {value ? value : children}
     </label>

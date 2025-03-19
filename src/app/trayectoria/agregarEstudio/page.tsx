@@ -1,14 +1,14 @@
 "use client";
 import React, { use, useEffect } from 'react'
-import { InputLabel } from '../componentes/formularios/InputLabel'
-import { SelectForm } from '../componentes/formularios/SelectForm'
-import { LabelRadio } from '../componentes/formularios/LabelRadio'
-import TextInput from '../componentes/formularios/TextInput'
+import { InputLabel } from '../../componentes/formularios/InputLabel'
+import { SelectForm } from '../../componentes/formularios/SelectForm'
+import { LabelRadio } from '../../componentes/formularios/LabelRadio'
+import TextInput from '../../componentes/formularios/TextInput'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { studySchema } from '@/validaciones/studySchema'
-import InputErros from '../componentes/formularios/InputErros';
+import InputErros from '../../componentes/formularios/InputErros';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ButtonPrimary } from '../componentes/formularios/ButtonPrimary';
+import { ButtonPrimary } from '../../componentes/formularios/ButtonPrimary';
 
 type Props = {}
 type Inputs = {
@@ -29,7 +29,7 @@ type Inputs = {
 
 
 
-export const AgregarEstudio = () => {
+const AgregarEstudio = () => {
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<Inputs>({ resolver: zodResolver(studySchema) });
   console.log("Formulario", watch());
 
@@ -40,6 +40,7 @@ export const AgregarEstudio = () => {
       setValue('resolucion_convalidacion', '');
     }
   }, [convalido, setValue]);
+  
   const onSubmit: SubmitHandler<Inputs> = () => {
     console.log("Formulario enviado");
     //mensaje de exito
@@ -209,3 +210,4 @@ export const AgregarEstudio = () => {
     </>
   )
 }
+export default AgregarEstudio

@@ -1,4 +1,5 @@
 
+import { mappeoTipoExperiencia } from "@/validaciones/experienceSchema";
 import { mappeoTipoEstudio } from "@/validaciones/studySchema";
 import { mappeoCiudadCauca, mappeoDepartamento, mappeoEstadoCivil, mappeoPais, mappeoTipoIdentificacion } from "@/validaciones/userSchema";
 type Props = {
@@ -18,6 +19,7 @@ export const SelectForm = ({ id,className, register }: Props) => {
     ciudad: mappeoCiudadCauca,
     estado_civil: mappeoEstadoCivil,
     tipo_estudio: mappeoTipoEstudio,
+    tipo_experiencia: mappeoTipoExperiencia
   };
 
   //mapeamos las opciones dependiendo del id
