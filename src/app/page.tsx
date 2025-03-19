@@ -1,10 +1,10 @@
-import { InformacionPersona } from "./agregar_informacion_persona/InformacionPersona";
+import { IdiomaPersona } from "./agregar_informacion_persona/IdiomaPersona";
 
 
 export default function Home() {
   return (
     <>
-      <InformacionPersona />
+      <IdiomaPersona />
 
     </>
   );
