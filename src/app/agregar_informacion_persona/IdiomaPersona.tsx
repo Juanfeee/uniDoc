@@ -1,4 +1,4 @@
-import { Idioma } from "./Idioma"
+import { Carga } from "./Carga"
 
 
 
@@ -7,7 +7,7 @@ type Props = {}
 
 export const IdiomaPersona = (props: Props) => {
   return (
-    <Idioma />
+    <Carga />
   )
 }
 
