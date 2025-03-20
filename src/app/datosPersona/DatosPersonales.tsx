@@ -5,6 +5,7 @@ import { SelectForm } from "../componentes/formularios/SelectForm";
 import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import TextInput from "../componentes/formularios/TextInput";
 import InputErros from "../componentes/formularios/InputErros";
+import { Inputs } from "@/types/inputs";
 import { useEffect } from "react";
 
 type Props = {
@@ -205,8 +206,8 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
           {watch("genero") === "masculino" && (
             <>
             
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 col-span-full gap-x-8 gap-y-4">
-                <div className="sm:col-span-3 lg:col-span-1">
+              <div className="grid sm:grid-cols-2 md:grid-cols-4 col-span-full gap-x-8 gap-y-4">
+                <div className="sm:col-span-3 lg:col-span-2">
                   <InputLabel
                     htmlFor=""
                     value="Categoria librete militar"

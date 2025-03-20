@@ -1,5 +1,6 @@
 
 import { mappeoTipoExperiencia } from "@/validaciones/experienceSchema";
+import { mappeoTipoProduccion } from "@/validaciones/productionSchema";
 import { mappeoTipoEstudio } from "@/validaciones/studySchema";
 import { mappeoCiudadCauca, mappeoDepartamento, mappeoEstadoCivil, mappeoPais, mappeoTipoIdentificacion } from "@/validaciones/userSchema";
 type Props = {
@@ -10,7 +11,6 @@ type Props = {
 }
 
 export const SelectForm = ({ id,className, register }: Props) => {
-
   //mappeo de opciones
   const optionsMap = {
     tipo_identificacion: mappeoTipoIdentificacion,
@@ -19,8 +19,10 @@ export const SelectForm = ({ id,className, register }: Props) => {
     ciudad: mappeoCiudadCauca,
     estado_civil: mappeoEstadoCivil,
     tipo_estudio: mappeoTipoEstudio,
-    tipo_experiencia: mappeoTipoExperiencia
-  };
+    tipo_experiencia: mappeoTipoExperiencia,
+    tipo_produccion: mappeoTipoProduccion,
+    };
+
 
   //mapeamos las opciones dependiendo del id
   const options = Object.entries(optionsMap[id as keyof typeof optionsMap] || {}).map(([key, value]) => (

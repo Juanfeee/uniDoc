@@ -9,7 +9,7 @@ export const InputLabel = ({className=" ",value,children,...props}:Props) => {
   return (
     <label
       {...props}
-      className={`text-lg font-medium ${className}`}
+      className={`${className} text-lg font-medium `}
     >
       {value ? value : children}
     </label>

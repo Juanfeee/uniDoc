@@ -9,6 +9,7 @@ import { studySchema } from '@/validaciones/studySchema'
 import InputErros from '../../componentes/formularios/InputErros';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ButtonPrimary } from '../../componentes/formularios/ButtonPrimary';
+import { AdjuntarArchivo } from '@/app/componentes/formularios/AdjuntarArchivo';
 
 type Props = {}
 type Inputs = {
@@ -25,6 +26,7 @@ type Inputs = {
   ciudad?: string;
   fecha_inicio: string;
   fecha_fin: string;
+  adjuntar_archivo: File;
 }
 
 
@@ -48,7 +50,7 @@ const AgregarEstudio = () => {
   };
   return (
     <>
-      <form className='flex flex-col gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px m-auto relative'
+      <form className='flex flex-col gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative'
         onSubmit={handleSubmit(onSubmit)}>
         <div className='flex flex-col sm:grid grid-cols-3 gap-x-8 bg-white gap-y-6 py-12 px-8 rounded-xl'>
           <h3 className="font-bold text-3xl col-span-full">Agregar estudio</h3>
@@ -202,6 +204,10 @@ const AgregarEstudio = () => {
               <InputErros errors={errors} name="fecha_fin" />
             </div>
           </div>
+          <AdjuntarArchivo
+            id='adjuntar_archivo'
+            value='Adjuntar archivo academico'
+          />
           <div className='flex justify-center col-span-full'>
             <ButtonPrimary value='Agregar estudio' />
           </div>
