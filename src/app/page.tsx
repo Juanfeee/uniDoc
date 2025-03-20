@@ -1,13 +1,11 @@
+import Index from "./Index";
 
 
 export default function Home() {
   return (
     <>
-
-        {/* <InformacionPersona /> */}
-        {/* <AgregarEstudio/> */}
-        {/* <AgregarExperiencia/> */}
-        <h1>Inicio</h1>
+      <Index/>
+      
     </>
   );
 }

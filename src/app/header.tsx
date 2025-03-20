@@ -12,7 +12,7 @@ const Header = () => {
   const pathname = usePathname()
 
   return (
-    <header className='flex bg-white text-lg font-medium h-16'>
+    <header className='flex bg-white text-xl font-medium h-16'>
       <div className='flex w-[500px] md:w-[800px]  xl:w-[1000px] 2xl:w-[1200px] m-auto relative items-center justify-between size-full'>
         <div className='flex items-center gap-4'>
           <img src="https://brilla.com.co/documents/83088/0/CORPORACION+UNIVERSITARIA+AUTONOMA+DEL+CAUCA.png/1f5d0453-bee9-f6ae-4d78-3f5c8759c0db?t=1669067233102" alt=""
@@ -20,7 +20,7 @@ const Header = () => {
           <h1 className='font-bold'>UniDoc</h1>
         </div>
         <nav className="flex h-full" >
-          <ul className='flex items-center justify-center gap-8 text-sm'>
+          <ul className='flex items-center justify-center gap-8 text-base'>
             <li className='h-full flex items-center justify-center' >
               <Link
                 className={`flex items-center justify-center hover:border-b-2 ${pathname === "/" ? "border-b-2" : ""
