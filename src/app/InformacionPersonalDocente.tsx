@@ -14,7 +14,7 @@ const InformacionPersonalDocente = (props: Props) => {
             <h2 className="font-bold text-3xl">Hoja de vida</h2>
             <p className="font-medium text-lg">Estado de validacion academmica: <span>{carga}</span> </p>
           </div>
-          <div className="grid items-center sm:grid-cols-2 col-span-full gap-y-4  md:gap-y-2">
+          <div className="grid items-center sm:grid-cols-2 col-span-full gap-y-4">
             <h3 className="col-span-full font-semibold text-lg">Datos personales</h3>
             <div className="flex gap-x-4 items-center">
               <img src="https://img.freepik.com/fotos-premium/retrato-hombre-negocios-expresion-cara-seria-fondo-estudio-espacio-copia-bengala-persona-corporativa-enfoque-pensamiento-duda-mirada-facial-dilema-o-concentracion_590464-84924.jpg" alt="" className="size-14 object-cover rounded-full" />

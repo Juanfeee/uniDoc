@@ -95,7 +95,7 @@ const Header = () => {
               <Link
                 className={`flex items-center justify-center hover:border-b-2 ${pathname === "/documentosSoporte" ? "border-b-2" : ""
                   }`}
-                href="/perfil"
+                href="/"
               >
                 <img src="https://img.freepik.com/fotos-premium/retrato-hombre-negocios-expresion-cara-seria-fondo-estudio-espacio-copia-bengala-persona-corporativa-enfoque-pensamiento-duda-mirada-facial-dilema-o-concentracion_590464-84924.jpg" alt=""
                   className='size-12 rounded-full object-cover' />

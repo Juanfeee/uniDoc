@@ -11,17 +11,21 @@ const InformacionTrayectoriaDocente = (props: Props) => {
         <div className="w-full flex flex-col bg-white py-12 px-8 rounded-xl gap-7">
 
           <h2 className="font-bold text-xl text-center">Formacion docente</h2>
-          <div className="p-4 border-dashed border-2 rounded-md text-center">
+          <div className="p-4 border-dashed border-2 rounded-md text-center flex flex-col gap-4 items-center">
             <p className="text-gray-600">Formación Educativa</p>
-            <button className="py-2 bg-gray-200 rounded-md hover:bg-gray-300">Añadir Formación educativa</button>
+            <button className="py-2 bg-gray-200 rounded-md hover:bg-gray-300 w-fit">Añadir Formación educativa</button>
           </div>
-          <div className="p-4 border-dashed border-2 rounded-md text-center">
+          <div className="p-4 border-dashed border-2 rounded-md text-center flex flex-col gap-4 items-center">
             <p className="text-gray-600">Formación Educativa</p>
-            <button className="py-2 bg-gray-200 rounded-md hover:bg-gray-300">Añadir Formación educativa</button>
+            <button className="py-2 bg-gray-200 rounded-md hover:bg-gray-300 w-fit">Añadir Formación educativa</button>
           </div>
-          <div className="p-4 border-dashed border-2 rounded-md text-center">
+          <div className="p-4 border-dashed border-2 rounded-md text-center flex flex-col gap-4 items-center">
             <p className="text-gray-600">Formación Educativa</p>
-            <button className="py-2 bg-gray-200 rounded-md hover:bg-gray-300">Añadir Formación educativa</button>
+            <button className="py-2 bg-gray-200 rounded-md hover:bg-gray-300 w-fit">Añadir Formación educativa</button>
+          </div>
+          <div className="p-4 border-dashed border-2 rounded-md text-center flex flex-col gap-4 items-center">
+            <p className="text-gray-600">Formación Educativa</p>
+            <button className="py-2 bg-gray-200 rounded-md hover:bg-gray-300 w-fit">Añadir Formación educativa</button>
           </div>
         </div>
       </div>
