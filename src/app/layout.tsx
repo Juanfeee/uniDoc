@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import { public_Sans } from "./ui/fonts";
-import Header from "./header";
+import Header from "./componentes/header";
 
 
 const geistSans = Geist({
@@ -28,9 +28,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${public_Sans.className} antialiased`}>
-        <Header/>
-        <div className="p-5 sm:p-10">{children}</div>
+      <body className={`${public_Sans.className} antialiased flex flex-col gap-y-8 h-screen`}>
+        {children}
       </body>
     </html>
   );

@@ -1,12 +1,12 @@
 "use client";
 import React, { use, useEffect, useState } from "react";
-import { InputLabel } from "../../componentes/formularios/InputLabel";
-import TextInput from "../../componentes/formularios/TextInput";
-import { SelectForm } from "../../componentes/formularios/SelectForm";
-import InputErros from "../../componentes/formularios/InputErros";
+import { InputLabel } from "../../../componentes/formularios/InputLabel";
+import TextInput from "../../../componentes/formularios/TextInput";
+import { SelectForm } from "../../../componentes/formularios/SelectForm";
+import InputErros from "../../../componentes/formularios/InputErrors";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { LabelRadio } from "../../componentes/formularios/LabelRadio";
-import { ButtonPrimary } from "../../componentes/formularios/ButtonPrimary";
+import { LabelRadio } from "../../../componentes/formularios/LabelRadio";
+import { ButtonPrimary } from "../../../componentes/formularios/ButtonPrimary";
 import { experienciaSchema } from "@/validaciones/experienceSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AdjuntarArchivo } from "@/app/componentes/formularios/AdjuntarArchivo";

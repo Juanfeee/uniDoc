@@ -4,7 +4,7 @@ import { AdjuntarArchivo } from "../componentes/formularios/AdjuntarArchivo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "@/validaciones/userSchema";
 import { Archivo } from "next/font/google";
-import InputErros from "../componentes/formularios/InputErros";
+import InputErros from "../componentes/formularios/InputErrors";
 
 type Props = {};
 type Inputs = {

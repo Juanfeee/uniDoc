@@ -4,7 +4,7 @@ import { LabelRadio } from "../componentes/formularios/LabelRadio";
 import { SelectForm } from "../componentes/formularios/SelectForm";
 import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import TextInput from "../componentes/formularios/TextInput";
-import InputErros from "../componentes/formularios/InputErros";
+import InputErros from "../componentes/formularios/InputErrors";
 import { Inputs } from "@/types/inputs";
 import { useEffect } from "react";
 

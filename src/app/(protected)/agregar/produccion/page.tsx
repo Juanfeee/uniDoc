@@ -1,7 +1,7 @@
 "use client";
 import { AdjuntarArchivo } from "@/app/componentes/formularios/AdjuntarArchivo";
 import { ButtonPrimary } from "@/app/componentes/formularios/ButtonPrimary";
-import InputErros from "@/app/componentes/formularios/InputErros";
+import InputErros from "@/app/componentes/formularios/InputErrors";
 import { InputLabel } from "@/app/componentes/formularios/InputLabel";
 import { SelectForm } from "@/app/componentes/formularios/SelectForm";
 import TextInput from "@/app/componentes/formularios/TextInput";

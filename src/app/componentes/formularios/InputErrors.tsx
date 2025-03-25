@@ -3,7 +3,7 @@ type Props = {
   name: string;
 };
 
-const InputErros = ({ errors, name }: Props) => {
+const InputErrors = ({ errors, name }: Props) => {
   return (
     <>
       {errors[name]?.message && (
@@ -13,4 +13,4 @@ const InputErros = ({ errors, name }: Props) => {
   );
 };
 
-export default InputErros;
+export default InputErrors;

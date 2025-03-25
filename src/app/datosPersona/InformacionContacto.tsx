@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react'
 import { InputLabel } from '../componentes/formularios/InputLabel'
 import { SelectForm } from '../componentes/formularios/SelectForm'
-import InputErros from '../componentes/formularios/InputErros'
+import InputErros from '../componentes/formularios/InputErrors'
 import TextInput from '../componentes/formularios/TextInput'
 
 import { FieldErrors, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form'

@@ -8,7 +8,7 @@ import { InputLabel } from "@/app/componentes/formularios/InputLabel";
 import TextInput from "@/app/componentes/formularios/TextInput";
 import { LabelRadio } from "@/app/componentes/formularios/LabelRadio";
 import { ButtonPrimary } from "@/app/componentes/formularios/ButtonPrimary";
-import InputErros from "@/app/componentes/formularios/InputErros";
+import InputErros from "@/app/componentes/formularios/InputErrors";
 import { languageSchema } from "@/validaciones/languageSchema";
 import { useState } from "react";
 

@@ -1,6 +1,6 @@
-import { LabelText } from "./componentes/formularios/LabelText";
-import { Puntaje } from "./componentes/formularios/puntaje";
-import { Texto } from "./componentes/formularios/Texto";
+import { LabelText } from "../../componentes/formularios/LabelText";
+import { Puntaje } from "../../componentes/formularios/puntaje";
+import { Texto } from "../../componentes/formularios/Texto";
 
 type Props = {}
 
