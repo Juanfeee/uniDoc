@@ -1,11 +1,11 @@
-import { InformacionPersona } from "./agregar_informacion_persona/InformacionPersona";
+import Index from "./Index";
 
 
 export default function Home() {
   return (
     <>
-      <InformacionPersona />
-
+      <Index/>
+      
     </>
   );
 }

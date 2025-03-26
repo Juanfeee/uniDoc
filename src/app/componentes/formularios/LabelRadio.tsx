@@ -1,14 +1,17 @@
 type Props = {
   value?: string;
-  htmlFor?: string;
   className?: string;
   children?: React.ReactNode;
-};
+  htmlFor: string;
+}
+export const LabelRadio = ({value, className="" ,children,...props}:Props) => {
 
-export const LabelRadio = ({ value = '', htmlFor = '', className = '', children, ...props }: Props) => {
   return (
-    <label htmlFor={htmlFor} className={`text-base rounded-md   ${className}`} {...props}>
-      {value || children}
+    <label
+      {...props}
+      className={'' + className}
+    >
+      {value ? value : children}
     </label>
-  );
-};
+  )
+}
