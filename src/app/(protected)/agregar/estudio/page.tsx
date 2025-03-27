@@ -206,7 +206,7 @@ const AgregarEstudio = () => {
           </div>
           <AdjuntarArchivo
             id='adjuntar_archivo'
-            value='Adjuntar archivo academico'
+            value='Adjuntar archivo académico'
           />
           <div className='flex justify-center col-span-full'>
             <ButtonPrimary value='Agregar estudio' />

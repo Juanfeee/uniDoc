@@ -66,10 +66,10 @@ const AgregarIdioma = () => {
               <InputErros errors={errors} name="idioma" />
             </div>
             <div className="flex flex-col w-full">
-              <InputLabel htmlFor="institucion" value="Institucion" />
+              <InputLabel htmlFor="institucion" value="Institución" />
               <TextInput
                 id="institucion"
-                placeholder="institucion"
+                placeholder="institución"
                 {...register("institucion")}
               />
               <InputErros errors={errors} name="institucion" />

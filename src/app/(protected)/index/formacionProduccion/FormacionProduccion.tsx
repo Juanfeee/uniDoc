@@ -12,7 +12,7 @@ const FormacionProduccion: React.FC<Props> = ({ className = '' }) => {
     <>
       <div className={"flex flex-col gap-4 h-full max-w-[400px] "+ className}>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h4 className="font-bold text-xl">Formacion Produccion</h4>
+          <h4 className="font-bold text-xl">Formación Producción</h4>
           <div className="flex gap-1">
             <Link href={'/agregar/produccion'}>
               <PlusIcon className="size-10 p-2 stroke-2" />

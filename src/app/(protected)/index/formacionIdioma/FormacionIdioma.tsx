@@ -10,7 +10,7 @@ const FormacionIdioma = () => {
     <>
       <div className="flex flex-col gap-4 h-full max-w-[400px]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h4 className="font-bold text-xl">Formacion idioma</h4>
+          <h4 className="font-bold text-xl">Formación idioma</h4>
           <div className="flex gap-1">
             <Link href={'/agregar/idioma'}>
               <PlusIcon className="size-10 p-2 stroke-2" />
@@ -26,7 +26,7 @@ const FormacionIdioma = () => {
               <GlobeAmericasIcon className="size-12 p-2 rounded-lg bg-[#F0F2F5] text-[#121417]" />
               <div className="text-[#637887]">
                 <p className="font-semibold text-[#121417]">Idioma</p>
-                <p>Institucion</p>
+                <p>Institución</p>
                 <p>Nivel</p>
                 <p>fecha</p>
               </div>

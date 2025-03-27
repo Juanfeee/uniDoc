@@ -58,7 +58,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
           <div className="flex flex-col">
             <InputLabel
               htmlFor="tipo_identificacion"
-              value="Tipo de identificacion"
+              value="Tipo de identificación"
             />
 
             <SelectForm
@@ -68,7 +68,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
             <InputErros errors={errors} name="tipo_identificacion" />
           </div>
           <div className="flex flex-col">
-            <InputLabel htmlFor="identificacion" value="Identificacion" />
+            <InputLabel htmlFor="identificacion" value="Identificación" />
             <TextInput
               id="identificacion"
               type="number"
@@ -140,7 +140,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
               <InputErros errors={errors} name="fecha_nacimiento" />
             </div>
             <div>
-              <InputLabel htmlFor="pais" value="Pais" />
+              <InputLabel htmlFor="pais" value="País" />
               <SelectForm id="pais" register={register("pais")} />
               <InputErros errors={errors} name="pais" />
             </div>
@@ -161,7 +161,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
 
           <div className="sm:col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 w-full items-center justify-center gap-y-4">
             <div className="col-span-2">
-              <InputLabel htmlFor="masculino" value="Genero"></InputLabel>
+              <InputLabel htmlFor="masculino" value="Género"></InputLabel>
               <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11">
                 <div className="flex items-center gap-x-1">
                   <LabelRadio htmlFor="masculino">Masculino</LabelRadio>
@@ -210,7 +210,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
                 <div className="sm:col-span-3 lg:col-span-2">
                   <InputLabel
                     htmlFor=""
-                    value="Categoria librete militar"
+                    value="Categoria libreta militar"
                   ></InputLabel>
                   <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11">
                     <div className="flex items-center gap-x-1">

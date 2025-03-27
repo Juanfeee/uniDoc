@@ -171,7 +171,7 @@ const AgregarExperiencia = () => {
           <div className="flex flex-col w-full">
             <InputLabel
               htmlFor="intensidad_semanal"
-              value="Intensidad semanal(horas)"
+              value="Intensidad semanal (Horas)"
             />
             <TextInput
               type="number"

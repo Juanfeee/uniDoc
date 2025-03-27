@@ -106,7 +106,7 @@ const Registro = () => {
               <div className="flex flex-col">
                 <InputLabel
                   htmlFor="tipo_identificacion"
-                  value="Tipo de identificacion"
+                  value="Tipo de identificación"
                 />
 
                 <SelectForm
@@ -116,7 +116,7 @@ const Registro = () => {
                 <InputErrors errors={errors} name="tipo_identificacion" />
               </div>
               <div className="flex flex-col">
-                <InputLabel htmlFor="numero_identificacion" value="Identificacion" />
+                <InputLabel htmlFor="numero_identificacion" value="Identificación" />
                 <TextInput
                   id="numero_identificacion"
                   type="number"
@@ -198,7 +198,7 @@ const Registro = () => {
               </div>
               <div className="flex flex-col gap-x-8 ">
                 <div>
-                  <InputLabel htmlFor="MASCULINO" value="Genero"></InputLabel>
+                  <InputLabel htmlFor="MASCULINO" value="Género"></InputLabel>
                   <div className="flex flex-wrap w-full rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] md:h-11 gap-x-8 px-2 sm:justify-evenly">
                     <div className="flex items-center gap-x-1">
                       <LabelRadio htmlFor="MASCULINO">Masculino</LabelRadio>

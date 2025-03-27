@@ -10,7 +10,7 @@ const FormacionExperiencia = () => {
     <>
       <div className="flex flex-col gap-4 h-full max-w-[400px]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center" >
-          <h4 className="font-bold text-xl">Formacion experiencia</h4>
+          <h4 className="font-bold text-xl">Formación experiencia</h4>
           <div className="flex gap-1">
             <Link href={'/agregar/experiencia'}>
               <PlusIcon className="size-10 p-2 stroke-2" />

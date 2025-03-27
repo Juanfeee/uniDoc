@@ -37,14 +37,14 @@ export const InformacionContacto = ({watch, setValue,handleSubmit,onSubmit,regis
   return (
     <>
       <div className="flex flex-col bg-white gap-y-6 py-12 px-8 rounded-xl">
-        <h3 className="font-bold text-3xl">Informacion de contacto</h3>
+        <h3 className="font-bold text-3xl">Información de contacto</h3>
         <div
           className="flex flex-col gap-y-4 sm:grid grid-cols-2 sm:gap-y-10 sm:gap-x-4"
         >
 
           <div className="grid col-span-2 sm:grid-cols-2  gap-x-8 gap-y-4 w-full">
             <div className="">
-              <InputLabel htmlFor="direccion" value="Direccion de residencia" />
+              <InputLabel htmlFor="direccion" value="Dirección de residencia" />
               <TextInput
                 className="w-full"
                 id="direccion"
@@ -69,7 +69,7 @@ export const InformacionContacto = ({watch, setValue,handleSubmit,onSubmit,regis
           </div>
           <div className="grid gap-y-4 sm:grid-cols-2 lg:grid-cols-3 col-span-full sm:gap-x-8">
             <div>
-              <InputLabel htmlFor="pais_residencia" value="Pais" />
+              <InputLabel htmlFor="pais_residencia" value="País" />
               <SelectForm id="pais_residencia" register={register("pais_residencia")} />
               <InputErros errors={errors} name="pais_residencia" />
             </div>
@@ -86,7 +86,7 @@ export const InformacionContacto = ({watch, setValue,handleSubmit,onSubmit,regis
           </div>
           <div className='grid gap-y-4 sm:grid-cols-2 lg:grid-cols-3 col-span-full sm:gap-x-8'>
             <div>
-              <InputLabel htmlFor="telefono" value="Telefono" />
+              <InputLabel htmlFor="telefono" value="Teléfono" />
               <TextInput
                 className="w-full"
                 id="telefono"

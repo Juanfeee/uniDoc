@@ -65,11 +65,11 @@ const Login = () => {
               <InputErrors errors={errors} name="email" />
             </div>
             <div className="flex flex-col w-full">
-              <InputLabel htmlFor="password" value="Contrasena" />
+              <InputLabel htmlFor="password" value="Contraseña" />
               <TextInput
                 id="password"
                 type="password"
-                placeholder="Contrasena..." 
+                placeholder="Contraseña..." 
                 {...register('password')} />
               <InputErrors errors={errors} name="password" />
                 
@@ -77,11 +77,11 @@ const Login = () => {
             <div className="flex flex-col gap-y-5 w-full items-center">
               <ButtonPrimary
                 className="w-full"
-                value="Iniciar Sesion"
+                value="Iniciar Sesión"
                 type="submit" />
               <div className="w-full h-[2px] rounded-full bg bg-blue-500"></div>
               <div className="flex flex-col items-center gap-y-2">
-                <p>¿Eres nuevo? Registrate aqui</p>
+                <p>¿Eres nuevo? Regístrate aquí</p>
                 <Link href="/register">
                   <ButtonSecondary
                     className="w-fit"
