@@ -1,8 +1,9 @@
 
 import { mappeoTipoExperiencia } from "@/validaciones/experienceSchema";
 import { mappeoTipoProduccion } from "@/validaciones/productionSchema";
+import { mappeoEstadoCivil, mappeoTipoIdentificacion } from "@/validaciones/registerSchema";
 import { mappeoTipoEstudio } from "@/validaciones/studySchema";
-import { mappeoCiudadCauca, mappeoDepartamento, mappeoEstadoCivil, mappeoPais, mappeoTipoIdentificacion } from "@/validaciones/userSchema";
+import { mappeoCiudadCauca, mappeoDepartamento, mappeoPais } from "@/validaciones/userSchema";
 type Props = {
   className?: string;
   register?: any;

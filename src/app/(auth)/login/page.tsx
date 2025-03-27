@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/validaciones/loginSchema"
 import InputErrors from "../../componentes/formularios/InputErrors";
+import axios from "axios";
 
 type Props = {}
 type Inputs = {
@@ -20,6 +21,10 @@ type Inputs = {
 
 
 const Login = () => {
+
+
+  const url=process.env.NEXT_PUBLIC_API_URL+"/auth/iniciar-sesion"
+  console.log("url ",url)
 
   const {
     register,
@@ -34,6 +39,12 @@ const Login = () => {
     console.log("Formulario enviado");
     //mensaje de exito
     alert("Formulario enviado");
+    //Enviar datos al servidor
+    axios.post(url,watch())
+    .then(response => {
+      console.log(response);
+    }
+    )
   }
 
   return (

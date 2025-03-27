@@ -9,6 +9,8 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { registerSchema } from '@/validaciones/registerSchema'
 import { ButtonPrimary } from '../../componentes/formularios/ButtonPrimary';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import Link from 'next/link';
 
 type Props = {}
 type Inputs = {
@@ -21,25 +23,38 @@ type Inputs = {
   fecha_nacimiento: string
   genero: string
   tipo_identificacion: string
-  identificacion: string
   numero_identificacion: string
   estado_civil: string
-  confirm_password: string
+  user_municipio_id: number
 }
 const Registro = () => {
+
+  const url=process.env.NEXT_PUBLIC_API_URL+"/auth/registrar-usuario"
+  console.log("url ",url)
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>({ resolver: zodResolver(registerSchema)} );
-
+  } = useForm<Inputs>({ 
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      user_municipio_id: 1
+    }
+  });
   console.log(errors)
+  console.log(watch())
   const onSubmit: SubmitHandler<Inputs> = () => {
     console.log("Formulario enviado", watch());
     //mensaje de exito
     alert("Formulario enviado");
+    //Enviar datos al servidor
+    axios.post(url,watch())
+    .then(response => {
+      console.log(response);
+    }
+    )
   };
   return (
     <>
@@ -104,7 +119,7 @@ const Registro = () => {
                 <InputLabel htmlFor="numero_identificacion" value="Identificacion" />
                 <TextInput
                   id="numero_identificacion"
-                  type="text"
+                  type="number"
                   placeholder="Identificación..."
                   {...register("numero_identificacion")}
                 />
@@ -183,38 +198,37 @@ const Registro = () => {
               </div>
               <div className="flex flex-col gap-x-8 ">
                 <div>
-                  <InputLabel htmlFor="masculino" value="Genero"></InputLabel>
+                  <InputLabel htmlFor="MASCULINO" value="Genero"></InputLabel>
                   <div className="flex flex-wrap w-full rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] md:h-11 gap-x-8 px-2 sm:justify-evenly">
                     <div className="flex items-center gap-x-1">
-                      <LabelRadio htmlFor="masculino">Masculino</LabelRadio>
+                      <LabelRadio htmlFor="MASCULINO">Masculino</LabelRadio>
                       <TextInput
                         type="radio"
-                        id="masculino"
-                        value="masculino"
+                        id="MASCULINO"
+                        value="Masculino"
                         {...register("genero")}
                       />
                     </div>
                     <div className="flex items-center gap-x-1">
-                      <LabelRadio htmlFor="femenino">Femenino</LabelRadio>
+                      <LabelRadio htmlFor="FEMENINO">Femenino</LabelRadio>
                       <TextInput
                         type="radio"
-                        id="femenino"
-                        value="femenino"
+                        id="FEMENINO"
+                        value="Femenino"
                         {...register("genero")}
                       />
                     </div>
                     <div className="flex items-center gap-x-1">
-                      <LabelRadio htmlFor="otro">Otro</LabelRadio>
+                      <LabelRadio htmlFor="OTRO">Otro</LabelRadio>
                       <TextInput
                         className=""
                         type="radio"
-                        id="otro"
-                        value="otro"
+                        id="OTRO"
+                        value="Otro"
                         {...register("genero")}
                       />
                     </div>
                   </div>
-                  <InputErrors errors={errors} name="genero" />
                 </div>
               </div>
             </div>
