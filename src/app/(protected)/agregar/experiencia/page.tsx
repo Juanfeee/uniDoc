@@ -1,12 +1,12 @@
 "use client";
 import React, { use, useEffect, useState } from "react";
-import { InputLabel } from "../../componentes/formularios/InputLabel";
-import TextInput from "../../componentes/formularios/TextInput";
-import { SelectForm } from "../../componentes/formularios/SelectForm";
-import InputErros from "../../componentes/formularios/InputErros";
+import { InputLabel } from "../../../componentes/formularios/InputLabel";
+import TextInput from "../../../componentes/formularios/TextInput";
+import { SelectForm } from "../../../componentes/formularios/SelectForm";
+import InputErros from "../../../componentes/formularios/InputErrors";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { LabelRadio } from "../../componentes/formularios/LabelRadio";
-import { ButtonPrimary } from "../../componentes/formularios/ButtonPrimary";
+import { LabelRadio } from "../../../componentes/formularios/LabelRadio";
+import { ButtonPrimary } from "../../../componentes/formularios/ButtonPrimary";
 import { experienciaSchema } from "@/validaciones/experienceSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AdjuntarArchivo } from "@/app/componentes/formularios/AdjuntarArchivo";
@@ -129,13 +129,13 @@ const AgregarExperiencia = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 col-span-full gap-4">
           <div className="flex flex-col w-full">
-            <InputLabel htmlFor="institucion" value="Institución" />
+            <InputLabel htmlFor="institución" value="Institución" />
             <TextInput
-              id="institucion"
+              id="institución"
               placeholder="Institución"
               {...register("institucion")}
             />
-            <InputErros errors={errors} name="institucion" />
+            <InputErros errors={errors} name="institución" />
           </div>
           <div className="flex flex-col w-full">
             <InputLabel htmlFor="cargo" value="Cargo" />

@@ -4,10 +4,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userSchema } from "@/validaciones/userSchema";
 import { Inputs } from "@/types/inputs";
-import { DatosPersonales } from "./DatosPersonales";
-import { InformacionContacto } from "./InformacionContacto";
-import { ButtonPrimary } from "../componentes/formularios/ButtonPrimary";
-import { AdjuntarArchivo } from "../componentes/formularios/AdjuntarArchivo";
+import { DatosPersonales } from "@/app/datosPersona/DatosPersonales";
+import { InformacionContacto } from "@/app/datosPersona/InformacionContacto";
+import { AdjuntarArchivo } from "@/app/componentes/formularios/AdjuntarArchivo";
+import { ButtonPrimary } from "@/app/componentes/formularios/ButtonPrimary";
+
 
 type Props = {};
 

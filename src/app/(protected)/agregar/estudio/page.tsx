@@ -1,14 +1,14 @@
 "use client";
 import React, { use, useEffect } from 'react'
-import { InputLabel } from '../../componentes/formularios/InputLabel'
-import { SelectForm } from '../../componentes/formularios/SelectForm'
-import { LabelRadio } from '../../componentes/formularios/LabelRadio'
-import TextInput from '../../componentes/formularios/TextInput'
+import { InputLabel } from '../../../componentes/formularios/InputLabel'
+import { SelectForm } from '../../../componentes/formularios/SelectForm'
+import { LabelRadio } from '../../../componentes/formularios/LabelRadio'
+import TextInput from '../../../componentes/formularios/TextInput'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { studySchema } from '@/validaciones/studySchema'
-import InputErros from '../../componentes/formularios/InputErros';
+import InputErros from '../../../componentes/formularios/InputErrors';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ButtonPrimary } from '../../componentes/formularios/ButtonPrimary';
+import { ButtonPrimary } from '../../../componentes/formularios/ButtonPrimary';
 import { AdjuntarArchivo } from '@/app/componentes/formularios/AdjuntarArchivo';
 
 type Props = {}

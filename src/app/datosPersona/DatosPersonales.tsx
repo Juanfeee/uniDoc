@@ -4,7 +4,7 @@ import { LabelRadio } from "../componentes/formularios/LabelRadio";
 import { SelectForm } from "../componentes/formularios/SelectForm";
 import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
 import TextInput from "../componentes/formularios/TextInput";
-import InputErros from "../componentes/formularios/InputErros";
+import InputErros from "../componentes/formularios/InputErrors";
 import { Inputs } from "@/types/inputs";
 import { useEffect } from "react";
 
@@ -58,7 +58,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
           <div className="flex flex-col">
             <InputLabel
               htmlFor="tipo_identificacion"
-              value="Tipo de identificacion"
+              value="Tipo de identificación"
             />
 
             <SelectForm
@@ -68,7 +68,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
             <InputErros errors={errors} name="tipo_identificacion" />
           </div>
           <div className="flex flex-col">
-            <InputLabel htmlFor="identificacion" value="Identificacion" />
+            <InputLabel htmlFor="identificacion" value="identificación" />
             <TextInput
               id="identificacion"
               type="number"

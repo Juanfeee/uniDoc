@@ -12,12 +12,10 @@ const Header = () => {
   const pathname = usePathname()
 
   return (
-    <header className='flex bg-white text-xl font-medium h-16'>
-      <div className='flex w-[500px] md:w-[800px]  xl:w-[1000px] 2xl:w-[1200px] m-auto relative items-center justify-between size-full'>
+    <header className='flex bg-white text-xl font-medium sticky top-0 z-50 shadow-md h-16'>
+      <div className='flex w-[500px] md:w-[800px]  xl:w-[1000px] 2xl:w-[1200px] m-auto relative items-center justify-between size-full px-8'>
         <div className='flex items-center gap-4'>
-          <img src="https://brilla.com.co/documents/83088/0/CORPORACION+UNIVERSITARIA+AUTONOMA+DEL+CAUCA.png/1f5d0453-bee9-f6ae-4d78-3f5c8759c0db?t=1669067233102" alt=""
-            className='w-12' />
-          <h1 className='font-bold'>UniDoc</h1>
+          <h1 className='font-bold text-2xl'>UniDoc</h1>
         </div>
         <nav className="flex h-full" >
           <ul className='flex items-center justify-center gap-8 text-base'>
@@ -25,7 +23,7 @@ const Header = () => {
               <Link
                 className={`flex items-center justify-center hover:border-b-2 ${pathname === "/" ? "border-b-2" : ""
                   }`}
-                href="/"
+                href="/index"
               >
                 Inicio
               </Link>
@@ -34,12 +32,12 @@ const Header = () => {
               <Link
                 className={`flex items-center justify-center hover:border-b-2 ${pathname === "/datosPersona" ? "border-b-2" : ""
                   }`}
-                href="/datosPersona"
+                href="/datos-personales"
               >
                 Datos personales
               </Link>
             </li>
-            <li className='h-full flex items-center justify-center'>
+            {/* <li className='h-full flex items-center justify-center'>
               <Menu as="div" className="relative inline-block text-left">
                 <div>
                   <MenuButton className="flex items-center hover:border-b-2">
@@ -55,7 +53,7 @@ const Header = () => {
                   <div className="py-1">
                     <MenuItem>
                       <Link
-                        href="/trayectoria/agregarEstudio"
+                        href="/agregar/estudio"
                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                       >
                         Agregar estudio academico
@@ -63,7 +61,7 @@ const Header = () => {
                     </MenuItem>
                     <MenuItem>
                       <Link
-                        href="/trayectoria/agregarExperiencia"
+                        href="/agregar/experiencia"
                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                       >
                         Agregar experiencia laboral
@@ -72,7 +70,7 @@ const Header = () => {
                     </MenuItem>
                     <MenuItem>
                       <Link
-                        href="/trayectoria/agregarProduccion"
+                        href="/agregar/produccion"
                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                       >
                         Agregar produccion academica
@@ -80,7 +78,7 @@ const Header = () => {
                     </MenuItem>
                     <MenuItem>
                       <Link
-                        href="/trayectoria/agregarIdioma"
+                        href="/agregar/idioma"
                         className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                       >
                         Agregar idioma
@@ -90,16 +88,19 @@ const Header = () => {
                   </div>
                 </MenuItems>
               </Menu>
+
             </li>
 
   
 
+=======
+            </li> */}
             <li>
               
               <Link
                 className={`flex items-center justify-center hover:border-b-2 ${pathname === "/documentosSoporte" ? "border-b-2" : ""
                   }`}
-                href="/"
+                href="/index"
               >
                 
                 <img src="/imagenes/usuario.png" alt=""

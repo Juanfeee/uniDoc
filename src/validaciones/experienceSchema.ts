@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
 const tipo_experiencia = [
-  "Investigacion",
+  "Investigación",
   "docencia_universitaria",
   "docencia_no_universitaria",
   "profesional",
@@ -11,7 +11,7 @@ const tipo_experiencia = [
 export type TipoExperiencia = (typeof tipo_experiencia)[number];
 
 export const mappeoTipoExperiencia: { [key in TipoExperiencia]: string } = {
-  Investigacion: "Investigacion",
+  Investigación: "Investigación",
   docencia_universitaria: "Docencia universitaria",
   docencia_no_universitaria: "Docencia no universitaria",
   profesional: "Profesional",

@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import { public_Sans } from "./ui/fonts";
-import Header from "./header";
+import Header from "./componentes/header";
 
 
 
@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Agregar experiencia",
-  description: "Agrega tu experiencia",
+  title: "UniDoc",
+  description: "uniDoc",
 };
 
 export default function RootLayout({
@@ -29,14 +29,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
 
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Header/>
+        
+      <body className={`${public_Sans.className} antialiased flex flex-col gap-y-8 h-screen`}>
         {children}
-      
-      </body>
-    </html>
+
+    </body>
+   </html>
   );
 }

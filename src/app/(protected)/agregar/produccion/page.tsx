@@ -1,7 +1,7 @@
 "use client";
 import { AdjuntarArchivo } from "@/app/componentes/formularios/AdjuntarArchivo";
 import { ButtonPrimary } from "@/app/componentes/formularios/ButtonPrimary";
-import InputErros from "@/app/componentes/formularios/InputErros";
+import InputErros from "@/app/componentes/formularios/InputErrors";
 import { InputLabel } from "@/app/componentes/formularios/InputLabel";
 import { SelectForm } from "@/app/componentes/formularios/SelectForm";
 import TextInput from "@/app/componentes/formularios/TextInput";
@@ -40,7 +40,7 @@ const AgregarProduccion = () => {
         <div className="flex flex-col sm:grid grid-cols-3  bg-white gap-y-10  py-12 px-8 rounded-xl">
           <h3 className="font-bold text-3xl col-span-full">
             {" "}
-            Agregar produccion academica
+            Agregar producción academica
           </h3>
           <div className="flex flex-col sm:grid sm:grid-cols-2 sm:col-span-full gap-4">
             <div className="flex flex-col w-full">
@@ -54,10 +54,10 @@ const AgregarProduccion = () => {
             <div className="flex flex-col w-full">
               <InputLabel
                 htmlFor="tipo_ambito_divulgacion"
-                value="Ambito divulgacion"
+                value="Ambito divulgación"
               />
               <TextInput
-                placeholder="Ambito divulgacion"
+                placeholder="Ambito divulgación"
                 id="tipo_ambito_divulgacion"
                 {...register("tipo_ambito_divulgacion")}
               />
@@ -90,11 +90,11 @@ const AgregarProduccion = () => {
             <div className="flex flex-col w-full">
               <InputLabel
                 htmlFor="medio_divulgacion"
-                value="Medio de divulgacion"
+                value="Medio de divulgación"
               />
               <TextInput
                 id="medio_divulgacion"
-                placeholder="medio_divulgacion"
+                placeholder="medio_divulgación"
                 {...register("medio_divulgacion")}
               />
               <InputErros errors={errors} name="medio_divulgacion" />
@@ -102,7 +102,7 @@ const AgregarProduccion = () => {
             <div className="flex flex-col w-full">
               <InputLabel
                 htmlFor="fecha_divulgacion"
-                value="Fecha de divulgacion"
+                value="Fecha de divulgación"
               />
               <TextInput
                 id="fecha_divulgacion"
@@ -114,10 +114,10 @@ const AgregarProduccion = () => {
           </div>
           <AdjuntarArchivo
             id="adjuntar_archivo"
-            value="Adjuntar archivo de produccion academica"
+            value="Adjuntar archivo de producción academica"
           />
           <div className="flex justify-center col-span-full">
-            <ButtonPrimary value="Agregar produccion" />
+            <ButtonPrimary value="Agregar producción" />
           </div>
         </div>
       </form>
