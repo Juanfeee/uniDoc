@@ -9,6 +9,7 @@ import { InformacionContacto } from "@/app/datosPersona/InformacionContacto";
 
 import { Formulario } from "@/app/componentes/formulario";
 import { informacionPersonaSchema } from "@/validaciones/informacionPersonaSchema";
+import { Rut } from "@/app/datosPersona/Rut";
 
 
 
@@ -42,6 +43,8 @@ const InformacionPersona = () => {
         Componente={DatosPersonales}
         Schema={userSchema} />
         <Formulario Componente={InformacionContacto}
+        Schema={informacionPersonaSchema} />
+        <Formulario Componente={Rut}
         Schema={informacionPersonaSchema} />
     </>
   );
