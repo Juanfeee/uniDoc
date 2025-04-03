@@ -3,9 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ButtonPrimary } from "./formularios/ButtonPrimary";
 import { Inputs } from "@/types/inputs";
+import { useState } from "react";
 
 
-export const Formulario = ({ Componente, Schema }) => {
+export const Formulario = ({ Componente, Schema, Texto }) => {
 
   const componenteNombre: string = Componente.name;
   const {
@@ -30,24 +31,43 @@ export const Formulario = ({ Componente, Schema }) => {
   };
   console.log("Errores ", errors);
   console.log("Formulario", watch());
+  const [acordeonAbierto, setAcordeonAbierto] = useState(false);
+
+  const toggleAcordeon = () => {
+    setAcordeonAbierto(!acordeonAbierto)
+  }
   return (
     <>
-      <form className="flex flex-col gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative  bg-white rounded-xl overflow-hidden mb-6" onSubmit={handleSubmit(onSubmit)}>
-        {Componente && (
-          <Componente
-            watch={watch}
-            setValue={setValue}
-            handleSubmit={handleSubmit}
-            onSubmit={onSubmit}
-            register={register}
-            errors={errors}
-          />
-        )}
-        <div className="bg-white p-5 items-center justify-center rounded-xl flex" >
-          <ButtonPrimary
-            type="submit"
-            value="Guardar"
-          />
+      <form className="bg-white w-full rounded-2xl" onSubmit={handleSubmit(onSubmit)}>
+        <div
+          className={`acordeon-titulo flex justify-between items-center p-6 cursor-pointer ${acordeonAbierto ? 'active' : ''}`}
+          onClick={toggleAcordeon}
+        >
+          <h3 className="font-bold text-3xl">{Texto}</h3>
+          <span className="acordeon-icono text-3xl">
+            {acordeonAbierto ? '−' : '+'}
+          </span>
+        </div>
+        <div className="acordeon">
+          <div className={`acordeon-contenido ${acordeonAbierto ? 'block' : 'hidden'}`}>
+            {Componente && (
+              <Componente
+                watch={watch}
+                setValue={setValue}
+                handleSubmit={handleSubmit}
+                onSubmit={onSubmit}
+                register={register}
+                errors={errors}
+                acordeonAbierto={acordeonAbierto}
+              />
+            )}
+            <div className="bg-white p-5 items-center justify-center rounded-xl flex" >
+              <ButtonPrimary
+                type="submit"
+                value="Guardar"
+              />
+            </div>
+          </div>
         </div>
       </form>
     </>
