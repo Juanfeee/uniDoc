@@ -54,7 +54,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
 
   
   return (
-    <div className="acordeon bg-white rounded-xl overflow-hidden mb-6">
+    <div className="acordeon">
       <div 
         className={`acordeon-titulo flex justify-between items-center p-6 cursor-pointer ${acordeonAbierto ? 'active' : ''}`}
         onClick={toggleAcordeon}

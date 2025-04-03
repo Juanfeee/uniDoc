@@ -62,18 +62,17 @@ export const mappeoTipoIdentificacion:{[key in TipoIdentificacion]: string} = {
 
 //definimos el esquema de validacion de los datos del usuario
 export const userSchema = z.object({
-  identificacion: z.string().min(6, {message:"La identificación debe tener al menos 6 caracteres"}),
   
+  identificacion: z.string().min(6, {message:"La identificación debe tener al menos 6 caracteres"}),
+
   primer_nombre: z.string().min(1, { message: "Campo vacio" }),
+  
   segundo_nombre: z.string().min(1, { message: "Campo vacio" }),
   primer_apellido: z.string().min(1, { message: "Campo vacio" }),
   segundo_apellido: z.string().min(1, { message: "Campo vacio" }),
   libreta_militar: z.string().optional(),
   distrito_militar: z.string().optional(),  
-  direccion: z.string().min(1, { message: "Campo vacio" }),
-  barrio: z.string().min(1, { message: "Campo vacio" }),
-  celular: z.string().min(1, { message: "Campo vacio" }),
-  email: z.string().email({ message: "Correo no valido" }),
+
   fecha_nacimiento: z.string().min(1, { message: "Seleccione su fecha de nacimiento" }),
   
   genero: z.enum(["masculino", "femenino", "otro"],{
@@ -81,22 +80,9 @@ export const userSchema = z.object({
   }),
   categoria_libreta_militar: z.enum(["primera_clase", "segunda_clase"]).optional().or(z.literal("")),
 
-  pais_residencia: z.enum(pais ,{
-    errorMap: () => ({ message: "El pais no es valido" })
-  }),
-
   pais: z.enum(pais,{
     errorMap: () => ({ message: "El pais no es valido" })
   }),
-
-
-  tipo_identificacion: z.enum(tipo_identificaciones,{
-    errorMap: () => ({ message: "El tipo de identificación no es valido" })
-  }),
-
-  estado_civil: z.enum(estadoCivil,{
-    errorMap: () => ({ message: "El estado civil no es valido" })
-  })
 
 
 })
