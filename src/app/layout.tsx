@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${public_Sans.className} antialiased flex flex-col gap-y-8 h-screen`}>
+      <body className={`${public_Sans.className} antialiased flex flex-col min-h-screen`}>
         {children}
       </body>
     </html>

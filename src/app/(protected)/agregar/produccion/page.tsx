@@ -1,12 +1,14 @@
 "use client";
 import { AdjuntarArchivo } from "@/app/componentes/formularios/AdjuntarArchivo";
 import { ButtonPrimary } from "@/app/componentes/formularios/ButtonPrimary";
+import { ButtonRegresar } from "@/app/componentes/formularios/ButtonRegresar";
 import InputErros from "@/app/componentes/formularios/InputErrors";
 import { InputLabel } from "@/app/componentes/formularios/InputLabel";
 import { SelectForm } from "@/app/componentes/formularios/SelectForm";
 import TextInput from "@/app/componentes/formularios/TextInput";
 import { productionSchema } from "@/validaciones/productionSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 type Props = {};
@@ -37,11 +39,16 @@ const AgregarProduccion = () => {
           alert("Formulario enviado");
         })}
       >
-        <div className="flex flex-col sm:grid grid-cols-3  bg-white gap-y-10  py-12 px-8 rounded-xl">
-          <h3 className="font-bold text-3xl col-span-full">
-            {" "}
-            Agregar producción académica
-          </h3>
+        <div className="flex flex-col sm:grid grid-cols-3  
+        bg-white gap-y-10  py-12 px-8 rounded-xl">
+          <div className='flex gap-x-4 col-span-full' >
+            <Link href={"/index"}>
+              <ButtonRegresar />
+            </Link>
+            <h3 className="font-bold text-3xl col-span-full">
+              Agregar producción académica
+            </h3>
+          </div>
           <div className="flex flex-col sm:grid sm:grid-cols-2 sm:col-span-full gap-4">
             <div className="flex flex-col w-full">
               <InputLabel htmlFor="tipo_produccion" value="Tipo de estudio" />

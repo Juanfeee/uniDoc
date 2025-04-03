@@ -70,7 +70,6 @@ const InformacionPersona = () => {
         <div className="bg-white p-5 flex items-center justify-center rounded-xl" >
           <ButtonPrimary
             type="submit"
-            className="absolute bottom-4 right-4"
             value="Guardar"
           />
         </div>

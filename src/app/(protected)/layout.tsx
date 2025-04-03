@@ -8,7 +8,7 @@ const layout = ({
   return (
     <>
     <Header />
-    < main className = "px-4 sm:px-8" >
+    < main className = "px-4 sm:px-8 py-8" >
       <div>{ children } </div>
       </main>
       < footer > </footer>

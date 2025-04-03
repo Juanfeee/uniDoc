@@ -11,6 +11,8 @@ import { ButtonPrimary } from "@/app/componentes/formularios/ButtonPrimary";
 import InputErros from "@/app/componentes/formularios/InputErrors";
 import { languageSchema } from "@/validaciones/languageSchema";
 import { useState } from "react";
+import Link from "next/link";
+import { ButtonRegresar } from "@/app/componentes/formularios/ButtonRegresar";
 
 type Inputs = {
   idioma: string;
@@ -55,7 +57,12 @@ const AgregarIdioma = () => {
       >
         <div className="flex flex-col sm:grid grid-cols-3  bg-white gap-y-10  py-12 px-8 rounded-xl">
           <div className="grid grid-cols-1 sm:grid-cols-2 col-span-full gap-4">
-            <h3 className="font-bold text-3xl col-span-full">Agregar idioma</h3>
+            <div className='flex gap-x-4 col-span-full' >
+              <Link href={"/index"}>
+                <ButtonRegresar />
+              </Link>
+              <h3 className="font-bold text-3xl col-span-full">Agregar idioma</h3>
+            </div>
             <div className="flex flex-col w-full">
               <InputLabel htmlFor="idioma" value="Idioma" />
               <TextInput

@@ -49,12 +49,13 @@ const Login = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 bg-white gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative h-[90vh] ">
+      <div className="grid grid-cols-2 bg-white gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative h-[90vh]">
         <div className="bg-[#266AAE] text-white items-center justify-center md:flex flex-col rounded-md hidden">
         </div>
         <div className="col-span-full md:col-span-1">
           <form className="flex w-full h-full flex-col gap-y-4 py-12 px-8 items-center justify-center"
             onSubmit={handleSubmit(onSubmit)}>
+            <h3 className="font-semibold text-3xl ">Iniciar sesión</h3>
             <div className="flex flex-col w-full">
               <InputLabel htmlFor="email" value="Email" />
               <TextInput
