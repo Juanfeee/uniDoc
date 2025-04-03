@@ -77,7 +77,6 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
                 id="tipo_identificacion"
                 register={register("tipo_identificacion")}
               />
-              <InputErros errors={errors} name="tipo_identificacion" />
             </div>
             <div className="flex flex-col">
               <InputLabel htmlFor="identificacion" value="Identificación" />
@@ -87,7 +86,6 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
                 {...register("identificacion")}
                 placeholder="Identificación..."
               />
-              <InputErros errors={errors} name="identificacion" />
             </div>
             <div className="grid col-span-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4 w-full">
               <div className="">

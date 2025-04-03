@@ -9,6 +9,8 @@ import { InformacionContacto } from "@/app/datosPersona/InformacionContacto";
 
 import { Formulario } from "@/app/componentes/formulario";
 import { informacionPersonaSchema } from "@/validaciones/informacionPersonaSchema";
+import { Eps } from "@/app/datosPersona/Eps";
+import { epsSchema } from "@/validaciones/epsSchema";
 
 
 
@@ -43,6 +45,8 @@ const InformacionPersona = () => {
         Schema={userSchema} />
         <Formulario Componente={InformacionContacto}
         Schema={informacionPersonaSchema} />
+        <Formulario Componente={Eps}
+        Schema={epsSchema} />
     </>
   );
 };

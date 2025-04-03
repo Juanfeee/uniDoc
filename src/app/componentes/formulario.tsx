@@ -4,7 +4,10 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { ButtonPrimary } from "./formularios/ButtonPrimary";
 import { Inputs } from "@/types/inputs";
 
+
 export const Formulario = ({ Componente, Schema }) => {
+
+  const componenteNombre: string = Componente.name;
   const {
     // useForm es un hook de react-hook-form que se encarga de manejar el estado del formulario
     // register es una funcion que se encarga de registrar los inputs del formulario
@@ -21,7 +24,7 @@ export const Formulario = ({ Componente, Schema }) => {
   } = useForm<Inputs>({ resolver: zodResolver(Schema) });
   //El submithandler es una funcion que se encarga de manejar el submit del formulario
   const onSubmit: SubmitHandler<Inputs> = () => {
-    console.log("Formulario enviado");
+    console.log("Formulario enviado del componente", componenteNombre);
     //mensaje de exito
     alert("Formulario enviado");
   };
