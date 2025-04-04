@@ -33,7 +33,7 @@ const InformacionPersona = () => {
           Schema={epsSchema} />
         <Formulario Componente={Rut}
           Texto="Agregar rut"
-          Schema={informacionPersonaSchema}
+          Schema={informacionPersonaSchema} />
       </div>
     </>
   );
