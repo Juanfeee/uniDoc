@@ -35,103 +35,89 @@ export const Eps = ({ watch, setValue, handleSubmit, onSubmit, register, errors 
   }
 
   return (
-    <div className="acordeon bg-white rounded-xl overflow-hidden mb-6">
-      <div
-        className={`acordeon-titulo flex justify-between items-center p-6 cursor-pointer ${acordeonAbierto ? 'active' : ''}`}
-        onClick={toggleAcordeon}
-      >
-        <h3 className="font-bold text-3xl">Información de eps</h3>
-        <span className="acordeon-icono text-3xl">
-          {acordeonAbierto ? '−' : '+'}
-        </span>
-      </div>
-
-      <div className={`acordeon-contenido ${acordeonAbierto ? 'block' : 'hidden'} gap-y-6 py-6 px-8`}>
-      
-          <div className="grid flex-col gap-y-4 md:grid-cols-2 sm:gap-y-10 sm:gap-x-4">
-            <div className="grid col-span-full md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 w-full">
-              <div className="flex flex-col">
-                <InputLabel
-                  htmlFor="tipo_afiliacion"
-                  value="Tipo de afiliación"
-                />
-                <SelectForm
-                  id="tipo_afiliacion"
-                  register={register("tipo_afiliacion")}
-                />
-              </div>
-              <div className="">
-                <InputLabel htmlFor="nombre_eps" value="Nombre de la eps" />
-                <TextInput
-                  className="w-full"
-                  id="nombre_eps"
-                  type="text"
-                  placeholder="Nombre de la eps..."
-                  {...register("nombre_eps")}
-                />
-                <InputErros errors={errors} name="nombre_eps" />
-              </div>
-              <div className="flex flex-col">
-                <InputLabel
-                  htmlFor="estado_afiliacion"
-                  value="Estado de afiliación"
-                />
-                <SelectForm
-                  id="estado_afiliacion"
-                  register={register("tipo_afiliacion")}
-                />
-              </div>
-            </div>
-            <div className='grid col-span-full sm:grid-cols-2 gap-x-8 gap-y-4 w-full'>
-              <div>
-                <InputLabel
-                  htmlFor="fecha_afiliacion_efectiva"
-                  value="Fecha de afiliación efectiva"
-                />
-                <TextInput
-                  className="w-full"
-                  id="fecha_afiliacion_efectiva"
-                  type="date"
-                  {...register("fecha_afiliacion_efectiva")}
-                />
-                <InputErros errors={errors} name="fecha_afiliacion_efectiva" />
-              </div>
-              <div>
-                <InputLabel
-                  htmlFor="fecha_finalizacion_afiliacion"
-                  value="Fecha de finalización de afiliación"
-                />
-                <TextInput
-                  className="w-full"
-                  id="fecha_finalizacion_afiliacion"
-                  type="date"
-                  {...register("fecha_finalizacion_afiliacion")}
-                />
-                <InputErros errors={errors} name="fecha_finalizacion_afiliacion" />
-              </div>
-            </div>
-            <div className='grid col-span-full sm:grid-cols-2 gap-x-8 gap-y-4 w-full'>
-              <div className="flex flex-col">
-                <InputLabel htmlFor="tipo_afiliado" value="Tipo de afiliado" />
-                <SelectForm
-                  id="tipo_afiliado"
-                  register={register("tipo_afiliado")}
-                />
-              </div>
-              <div className="flex flex-col">
-                <InputLabel htmlFor="numero_afiliado" value="Número de afiliado" />
-                <TextInput
-                  className="w-full"
-                  id="numero_afiliado"
-                  type="text"
-                  placeholder="Número de afiliado..."
-                  {...register("numero_afiliado")}
-                />
-                <InputErros errors={errors} name="numero_afiliado" />
-              </div>
-            </div>
-          </div>
+    <div className="grid flex-col gap-y-4 md:grid-cols-2 sm:gap-y-10 sm:gap-x-4 gap-y-6 py-6 px-8">
+      <div className="grid col-span-full md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 w-full">
+        <div className="flex flex-col">
+          <InputLabel
+            htmlFor="tipo_afiliacion"
+            value="Tipo de afiliación"
+          />
+          <SelectForm
+            id="tipo_afiliacion"
+            register={register("tipo_afiliacion")}
+          />
         </div>
+        <div className="">
+          <InputLabel htmlFor="nombre_eps" value="Nombre de la eps" />
+          <TextInput
+            className="w-full"
+            id="nombre_eps"
+            type="text"
+            placeholder="Nombre de la eps..."
+            {...register("nombre_eps")}
+          />
+          <InputErros errors={errors} name="nombre_eps" />
+        </div>
+        <div className="flex flex-col">
+          <InputLabel
+            htmlFor="estado_afiliacion"
+            value="Estado de afiliación"
+          />
+          <SelectForm
+            id="estado_afiliacion"
+            register={register("tipo_afiliacion")}
+          />
+        </div>
+      </div>
+      <div className='grid col-span-full md:grid-cols-2 gap-x-8 gap-y-4 w-full'>
+        <div>
+          <InputLabel
+            htmlFor="fecha_afiliacion_efectiva"
+            value="Fecha de afiliación efectiva"
+          />
+          <TextInput
+            className="w-full"
+            id="fecha_afiliacion_efectiva"
+            type="date"
+            {...register("fecha_afiliacion_efectiva")}
+          />
+          <InputErros errors={errors} name="fecha_afiliacion_efectiva" />
+        </div>
+        <div>
+          <InputLabel
+            htmlFor="fecha_finalizacion_afiliacion"
+            value="Fecha de finalización de afiliación"
+          />
+          <TextInput
+            className="w-full"
+            id="fecha_finalizacion_afiliacion"
+            type="date"
+            {...register("fecha_finalizacion_afiliacion")}
+          />
+          <InputErros errors={errors} name="fecha_finalizacion_afiliacion" />
+        </div>
+      </div>
+      <div className='grid col-span-full sm:grid-cols-2 gap-x-8 gap-y-4 w-full'>
+        <div className="flex flex-col">
+          <InputLabel htmlFor="tipo_afiliado" value="Tipo de afiliado" />
+          <SelectForm
+            id="tipo_afiliado"
+            register={register("tipo_afiliado")}
+          />
+        </div>
+        <div className="flex flex-col">
+          <InputLabel htmlFor="numero_afiliado" value="Número de afiliado" />
+          <TextInput
+            className="w-full"
+            id="numero_afiliado"
+            type="text"
+            placeholder="Número de afiliado..."
+            {...register("numero_afiliado")}
+          />
+          <InputErros errors={errors} name="numero_afiliado" />
+        </div>
+      </div>
     </div>
+
   )
 }
