@@ -1,12 +1,14 @@
 "use client";
 import { AdjuntarArchivo } from "@/app/componentes/formularios/AdjuntarArchivo";
 import { ButtonPrimary } from "@/app/componentes/formularios/ButtonPrimary";
+import { ButtonRegresar } from "@/app/componentes/formularios/ButtonRegresar";
 import InputErros from "@/app/componentes/formularios/InputErrors";
 import { InputLabel } from "@/app/componentes/formularios/InputLabel";
 import { SelectForm } from "@/app/componentes/formularios/SelectForm";
 import TextInput from "@/app/componentes/formularios/TextInput";
 import { productionSchema } from "@/validaciones/productionSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 
 type Props = {};
@@ -37,11 +39,24 @@ const AgregarProduccion = () => {
           alert("Formulario enviado");
         })}
       >
+<<<<<<< HEAD
         <div className="flex flex-col sm:grid grid-cols-3  bg-white gap-y-10  py-12 px-8 rounded-xl">
           <h3 className="font-bold text-3xl col-span-full">
             {" "}
             Agregar producción academica
           </h3>
+=======
+        <div className="flex flex-col sm:grid grid-cols-3  
+        bg-white gap-y-10  py-12 px-8 rounded-xl">
+          <div className='flex gap-x-4 col-span-full' >
+            <Link href={"/index"}>
+              <ButtonRegresar />
+            </Link>
+            <h3 className="font-bold text-3xl col-span-full">
+              Agregar producción académica
+            </h3>
+          </div>
+>>>>>>> cd064f00444c8e5e981ac041990453af863b4d97
           <div className="flex flex-col sm:grid sm:grid-cols-2 sm:col-span-full gap-4">
             <div className="flex flex-col w-full">
               <InputLabel htmlFor="tipo_produccion" value="Tipo de estudio" />
@@ -67,7 +82,7 @@ const AgregarProduccion = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 col-span-full gap-4">
             <div className="flex flex-col w-full">
-              <InputLabel htmlFor="titulo" value="Titulo" />
+              <InputLabel htmlFor="titulo" value="Título" />
               <TextInput
                 id="titulo"
                 placeholder="Titulo"
@@ -76,7 +91,7 @@ const AgregarProduccion = () => {
               <InputErros errors={errors} name="titulo" />
             </div>
             <div className="flex flex-col w-full">
-              <InputLabel htmlFor="numero_autores" value="Numero de autores" />
+              <InputLabel htmlFor="numero_autores" value="Número de autores" />
               <TextInput
                 type="number"
                 id="numero_autores"
@@ -114,7 +129,11 @@ const AgregarProduccion = () => {
           </div>
           <AdjuntarArchivo
             id="adjuntar_archivo"
+<<<<<<< HEAD
             value="Adjuntar archivo de producción academica"
+=======
+            value="Adjuntar archivo de producción académica"
+>>>>>>> cd064f00444c8e5e981ac041990453af863b4d97
           />
           <div className="flex justify-center col-span-full">
             <ButtonPrimary value="Agregar producción" />

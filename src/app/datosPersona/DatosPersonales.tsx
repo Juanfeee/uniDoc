@@ -6,7 +6,7 @@ import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister, UseFo
 import TextInput from "../componentes/formularios/TextInput";
 import InputErros from "../componentes/formularios/InputErrors";
 import { Inputs } from "@/types/inputs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   watch: UseFormWatch<Inputs>;
@@ -36,6 +36,7 @@ export type Inputs = {
 };
 
 export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,errors}:Props) => {
+  const [acordeonAbierto, setAcordeonAbierto] = useState(false);
 
 
   const genero = watch("genero");
@@ -47,10 +48,17 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
     }
   }, [genero, setValue]);
 
+  const toggleAcordeon = () => {
+    setAcordeonAbierto(!acordeonAbierto)
+  }
 
+  
   return (
-    <>
-      <div className="flex flex-col bg-white gap-y-6 py-12 px-8 rounded-xl">
+    <div className="acordeon">
+      <div 
+        className={`acordeon-titulo flex justify-between items-center p-6 cursor-pointer ${acordeonAbierto ? 'active' : ''}`}
+        onClick={toggleAcordeon}
+      >
         <h3 className="font-bold text-3xl">Agregar datos personales</h3>
         <div
           className="flex flex-col gap-y-4 sm:grid grid-cols-2 sm:gap-y-10 sm:gap-x-4"
@@ -58,7 +66,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
           <div className="flex flex-col">
             <InputLabel
               htmlFor="tipo_identificacion"
-              value="Tipo de identificación"
+              value="Tipo de identificacion"
             />
 
             <SelectForm
@@ -68,7 +76,7 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
             <InputErros errors={errors} name="tipo_identificacion" />
           </div>
           <div className="flex flex-col">
-            <InputLabel htmlFor="identificacion" value="identificación" />
+            <InputLabel htmlFor="identificacion" value="Identificacion" />
             <TextInput
               id="identificacion"
               type="number"
@@ -90,190 +98,188 @@ export const DatosPersonales = ({watch, setValue,handleSubmit,onSubmit,register,
               <InputErros errors={errors} name="primer_nombre" />
             </div>
 
-            <div className="">
-              <InputLabel htmlFor="segundo_nombre" value="Segundo nombre" />
-              <TextInput
-                className="w-full"
-                id="segundo_nombre"
-                type="text"
-                placeholder="Segundo nombre..."
-                {...register("segundo_nombre")}
-              />
-              <InputErros errors={errors} name="segundo_nombre" />
-            </div>
-
-            <div className="">
-              <InputLabel htmlFor="primer_apellido" value="Primer apellido" />
-              <TextInput
-                className="w-full"
-                id="primer_apellido"
-                type="text"
-                placeholder="Primer apellido..."
-                {...register("primer_apellido")}
-              />
-              <InputErros errors={errors} name="primer_apellido" />
-            </div>
-
-            <div className="">
-              <InputLabel htmlFor="segundo_apellido" value="Segundo apellido" />
-              <TextInput
-                className="w-full"
-                id="segundo_apellido"
-                type="text"
-                placeholder="Segundo apellido..."
-                {...register("segundo_apellido")}
-              />
-              <InputErros errors={errors} name="segundo_apellido" />
-            </div>
-          </div>
-          <div className="grid gap-y-4 sm:grid-cols-2 lg:grid-cols-3 col-span-full sm:gap-x-8">
-            <div className="flex flex-col sm:col-span-full lg:col-span-1">
-              <InputLabel
-                htmlFor="fecha_nacimiento"
-                value="Fecha de nacimiento"
-              />
-              <TextInput
-                id="fecha_nacimiento"
-                type="date"
-                {...register("fecha_nacimiento")}
-              />
-              <InputErros errors={errors} name="fecha_nacimiento" />
-            </div>
-            <div>
-              <InputLabel htmlFor="pais" value="Pais" />
-              <SelectForm id="pais" register={register("pais")} />
-              <InputErros errors={errors} name="pais" />
-            </div>
-            <div>
-              <InputLabel htmlFor="departamento" value="Departamento" />
-              <SelectForm
-                id="departamento"
-                register={register("departamento")}
-              />
-              <InputErros errors={errors} name="departamento" />
-            </div>
-            <div>
-              <InputLabel htmlFor="ciudad" value="Ciudad" />
-              <SelectForm id="ciudad" register={register("ciudad")} />
-              <InputErros errors={errors} name="ciudad" />
-            </div>
-          </div>
-
-          <div className="sm:col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 w-full items-center justify-center gap-y-4">
-            <div className="col-span-2">
-              <InputLabel htmlFor="masculino" value="Genero"></InputLabel>
-              <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11">
-                <div className="flex items-center gap-x-1">
-                  <LabelRadio htmlFor="masculino">Masculino</LabelRadio>
-                  <TextInput
-                    type="radio"
-                    id="masculino"
-                    value="masculino"
-                    {...register("genero")}
-                  />
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <LabelRadio htmlFor="femenino">Femenino</LabelRadio>
-                  <TextInput
-                    type="radio"
-                    id="femenino"
-                    value="femenino"
-                    {...register("genero")}
-                  />
-                </div>
-                <div className="flex items-center gap-x-1">
-                  <LabelRadio htmlFor="otro">Otro</LabelRadio>
-                  <TextInput
-                    className=""
-                    type="radio"
-                    id="otro"
-                    value="otro"
-                    {...register("genero")}
-                  />
-                </div>
+              <div className="">
+                <InputLabel htmlFor="segundo_nombre" value="Segundo nombre" />
+                <TextInput
+                  className="w-full"
+                  id="segundo_nombre"
+                  type="text"
+                  placeholder="Segundo nombre..."
+                  {...register("segundo_nombre")}
+                />
+                <InputErros errors={errors} name="segundo_nombre" />
               </div>
-              <InputErros errors={errors} name="genero" />
+
+              <div className="">
+                <InputLabel htmlFor="primer_apellido" value="Primer apellido" />
+                <TextInput
+                  className="w-full"
+                  id="primer_apellido"
+                  type="text"
+                  placeholder="Primer apellido..."
+                  {...register("primer_apellido")}
+                />
+                <InputErros errors={errors} name="primer_apellido" />
+              </div>
+
+              <div className="">
+                <InputLabel htmlFor="segundo_apellido" value="Segundo apellido" />
+                <TextInput
+                  className="w-full"
+                  id="segundo_apellido"
+                  type="text"
+                  placeholder="Segundo apellido..."
+                  {...register("segundo_apellido")}
+                />
+                <InputErros errors={errors} name="segundo_apellido" />
+              </div>
             </div>
-            <div className="col-span-2">
-              <InputLabel htmlFor="estado_civil" value="Estado civil" />
-              <SelectForm
-                id="estado_civil"
-                register={register("estado_civil")}
-              />
-              <InputErros errors={errors} name="estado_civil" />
+            <div className="grid gap-y-4 sm:grid-cols-2 lg:grid-cols-3 col-span-full sm:gap-x-8">
+              <div className="flex flex-col sm:col-span-full lg:col-span-1">
+                <InputLabel
+                  htmlFor="fecha_nacimiento"
+                  value="Fecha de nacimiento"
+                />
+                <TextInput
+                  id="fecha_nacimiento"
+                  type="date"
+                  {...register("fecha_nacimiento")}
+                />
+                <InputErros errors={errors} name="fecha_nacimiento" />
+              </div>
+              <div>
+                <InputLabel htmlFor="pais" value="País" />
+                <SelectForm id="pais" register={register("pais")} />
+                <InputErros errors={errors} name="pais" />
+              </div>
+              <div>
+                <InputLabel htmlFor="departamento" value="Departamento" />
+                <SelectForm
+                  id="departamento"
+                  register={register("departamento")}
+                />
+                <InputErros errors={errors} name="departamento" />
+              </div>
+              <div>
+                <InputLabel htmlFor="ciudad" value="Ciudad" />
+                <SelectForm id="ciudad" register={register("ciudad")} />
+                <InputErros errors={errors} name="ciudad" />
+              </div>
             </div>
-          </div>
-          {watch("genero") === "masculino" && (
-            <>
-            
-              <div className="grid sm:grid-cols-2 md:grid-cols-4 col-span-full gap-x-8 gap-y-4">
-                <div className="sm:col-span-3 lg:col-span-2">
-                  <InputLabel
-                    htmlFor=""
-                    value="Categoria librete militar"
-                  ></InputLabel>
-                  <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11">
-                    <div className="flex items-center gap-x-1">
-                      <LabelRadio
-                        htmlFor="primera_clase"
-                        value="Primera clase"
-                      ></LabelRadio>
-                      <TextInput
-                        type="radio"
-                        id="primera_clase"
-                        value="primera_clase"
-                        {...register("categoria_libreta_militar")}
-                      />
-                    </div>
-                    <div className="flex items-center gap-x-1">
-                      <LabelRadio
-                        htmlFor="segunda_clase"
-                        value="Segunda clase"
-                      ></LabelRadio>
-                      <TextInput
-                        type="radio"
-                        id="segunda_clase"
-                        value="segunda_clase"
-                        {...register("categoria_libreta_militar")}
-                      />
-                    </div>
+
+            <div className="sm:col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 w-full items-center justify-center gap-y-4">
+              <div className="col-span-2">
+                <InputLabel htmlFor="masculino" value="Género"></InputLabel>
+                <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11">
+                  <div className="flex items-center gap-x-1">
+                    <LabelRadio htmlFor="masculino">Masculino</LabelRadio>
+                    <TextInput
+                      type="radio"
+                      id="masculino"
+                      value="masculino"
+                      {...register("genero")}
+                    />
                   </div>
-                  <InputErros
-                    errors={errors}
-                    name="categoria_libreta_militar"
-                  />
+                  <div className="flex items-center gap-x-1">
+                    <LabelRadio htmlFor="femenino">Femenino</LabelRadio>
+                    <TextInput
+                      type="radio"
+                      id="femenino"
+                      value="femenino"
+                      {...register("genero")}
+                    />
+                  </div>
+                  <div className="flex items-center gap-x-1">
+                    <LabelRadio htmlFor="otro">Otro</LabelRadio>
+                    <TextInput
+                      className=""
+                      type="radio"
+                      id="otro"
+                      value="otro"
+                      {...register("genero")}
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col ">
-                  <InputLabel
-                    htmlFor="libreta_militar"
-                    value="Numero libreta militar"
-                  />
-                  <TextInput
-                    id="libreta_militar"
-                    type="number"
-                    {...register("libreta_militar")}
-                  />
-                  <InputErros errors={errors} name="libreta_militar" />
-                </div>
-                <div className="flex flex-col col-span-1">
-                  <InputLabel
-                    htmlFor="distrito_militar"
-                    value="Numero distrito militar"
-                  />
-                  <TextInput
-                    id="distrito_militar"
-                    type="number"
-                    {...register("distrito_militar")}
-                  />
-                  <InputErros errors={errors} name="distrito_militar" />
-                </div>
+                <InputErros errors={errors} name="genero" />
               </div>
-            </>
-          )}
-
-
+              <div className="col-span-2">
+                <InputLabel htmlFor="estado_civil" value="Estado civil" />
+                <SelectForm
+                  id="estado_civil"
+                  register={register("estado_civil")}
+                />
+                <InputErros errors={errors} name="estado_civil" />
+              </div>
+            </div>
+            {watch("genero") === "masculino" && (
+              <>
+                <div className="grid sm:grid-cols-2 md:grid-cols-4 col-span-full gap-x-8 gap-y-4">
+                  <div className="sm:col-span-3 lg:col-span-2">
+                    <InputLabel
+                      htmlFor=""
+                      value="Categoria libreta militar"
+                    ></InputLabel>
+                    <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11">
+                      <div className="flex items-center gap-x-1">
+                        <LabelRadio
+                          htmlFor="primera_clase"
+                          value="Primera clase"
+                        ></LabelRadio>
+                        <TextInput
+                          type="radio"
+                          id="primera_clase"
+                          value="primera_clase"
+                          {...register("categoria_libreta_militar")}
+                        />
+                      </div>
+                      <div className="flex items-center gap-x-1">
+                        <LabelRadio
+                          htmlFor="segunda_clase"
+                          value="Segunda clase"
+                        ></LabelRadio>
+                        <TextInput
+                          type="radio"
+                          id="segunda_clase"
+                          value="segunda_clase"
+                          {...register("categoria_libreta_militar")}
+                        />
+                      </div>
+                    </div>
+                    <InputErros
+                      errors={errors}
+                      name="categoria_libreta_militar"
+                    />
+                  </div>
+                  <div className="flex flex-col ">
+                    <InputLabel
+                      htmlFor="libreta_militar"
+                      value="Numero libreta militar"
+                    />
+                    <TextInput
+                      id="libreta_militar"
+                      type="number"
+                      {...register("libreta_militar")}
+                    />
+                    <InputErros errors={errors} name="libreta_militar" />
+                  </div>
+                  <div className="flex flex-col col-span-1">
+                    <InputLabel
+                      htmlFor="distrito_militar"
+                      value="Numero distrito militar"
+                    />
+                    <TextInput
+                      id="distrito_militar"
+                      type="number"
+                      {...register("distrito_militar")}
+                    />
+                    <InputErros errors={errors} name="distrito_militar" />
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };

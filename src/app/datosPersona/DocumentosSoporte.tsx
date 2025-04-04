@@ -2,7 +2,7 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { AdjuntarArchivo } from "../componentes/formularios/AdjuntarArchivo";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userSchema } from "@/validaciones/userSchema";
+import { userSchema } from "@/validaciones/datosPersonaSchema";
 import { Archivo } from "next/font/google";
 import InputErros from "../componentes/formularios/InputErrors";
 

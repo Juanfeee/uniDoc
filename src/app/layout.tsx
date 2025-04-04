@@ -29,9 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-
-        
+    <html lang="en">
       <body className={`${public_Sans.className} antialiased flex flex-col gap-y-8 h-screen`}>
         {children}
 

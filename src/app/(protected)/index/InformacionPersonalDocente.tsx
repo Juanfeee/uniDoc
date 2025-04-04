@@ -12,7 +12,7 @@ const InformacionPersonalDocente = (props: Props) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 bg-white py-12 px-8 rounded-xl gap-7">
           <div className="flex flex-col md:flex-row gap-y-2 col-span-full justify-between">
             <h2 className="font-bold text-3xl">Hoja de vida</h2>
-            <p className="font-medium text-lg">Estado de validación academica: <span>{carga}</span> </p>
+            <p className="font-medium text-lg">Estado de validacion academmica: <span>{carga}</span> </p>
           </div>
           <div className="grid items-center sm:grid-cols-2 col-span-full gap-y-4">
             <h3 className="col-span-full font-semibold text-lg">Datos personales</h3>
@@ -44,7 +44,7 @@ const InformacionPersonalDocente = (props: Props) => {
                 value="Ubicación"
               />
               <Texto
-                value="Popayan, Cauca"
+                value="Popayán, Cauca"
               />
             </div>
             <div>

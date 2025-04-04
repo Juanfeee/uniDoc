@@ -37,7 +37,7 @@ export const AdjuntarArchivo = ({
       <button
         className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md shadow-md mt-4 hover:bg-gray-300 transition"
       >
-        Subir certificado
+        Subir archivo
       </button>
     </div>
   );

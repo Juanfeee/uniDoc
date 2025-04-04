@@ -27,7 +27,7 @@ const FormacionEducativa = () => {
               <div className="text-[#637887]">
                 <p className="font-semibold text-[#121417]">Posgrado</p>
                 <p>Ingenieria en desarrollo de software</p>
-                <p>Coorporacion autónoma del cauca sadasd</p>
+                <p>Coorporacion autonoma del cauca sadasd</p>
                 <p>02/03/24</p>
               </div>
             </li>
