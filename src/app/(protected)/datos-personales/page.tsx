@@ -11,6 +11,7 @@ import { Formulario } from "@/app/componentes/formulario";
 import { informacionPersonaSchema } from "@/validaciones/informacionPersonaSchema";
 import { Eps } from "@/app/datosPersona/Eps";
 import { epsSchema } from "@/validaciones/epsSchema";
+import { Rut } from "@/app/datosPersona/Rut";
 
 
 
@@ -30,6 +31,9 @@ const InformacionPersona = () => {
         <Formulario Componente={Eps}
           Texto="Agregar eps"
           Schema={epsSchema} />
+        <Formulario Componente={Rut}
+          Texto="Agregar rut"
+          Schema={informacionPersonaSchema}
       </div>
     </>
   );
