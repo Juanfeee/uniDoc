@@ -22,6 +22,7 @@ const InformacionPersona = () => {
       <div className="flex w-full flex-col gap-y-8 lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative">
         <Formulario
           Componente={DatosPersonales}
+          Ruta="actualizar-usuario"
           Texto="Agregar datos personales"
           Schema={userSchema} />
         <Formulario Componente={InformacionContacto}

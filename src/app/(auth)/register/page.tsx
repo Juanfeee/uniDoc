@@ -23,10 +23,8 @@ type Inputs = {
   segundo_apellido: string
   fecha_nacimiento: string
   genero: string
-  tipo_identificacion: string
-  numero_identificacion: string
   estado_civil: string
-  user_municipio_id: number
+  municipio_id: number
 }
 const Registro = () => {
 
@@ -41,7 +39,7 @@ const Registro = () => {
   } = useForm<Inputs>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      user_municipio_id: 1
+      municipio_id: 1
     }
   });
   console.log(errors)
@@ -95,41 +93,6 @@ const Registro = () => {
                   {...register("password")}
                 />
                 < InputErrors errors={errors} name="password" />
-              </div>
-              < div className="" >
-                <InputLabel htmlFor="confirm_password" value="Confirmar contraseña" />
-                <TextInput
-                  className="w-full"
-                  id="confirm_password"
-                  type="password"
-                  placeholder="Confirmar contraseña..."
-                  {...register("confirm_password")}
-                />
-                < InputErrors errors={errors} name="confirm_password" />
-              </div>
-            </div>
-            < div className='grid col-span-full gridcols-2 sm:grid-cols-2 gap-x-8 gap-y-4' >
-              <div className="flex flex-col" >
-                <InputLabel
-                  htmlFor="tipo_identificacion"
-                  value="Tipo de identificación"
-                />
-
-                <SelectForm
-                  id="tipo_identificacion"
-                  register={register("tipo_identificacion")}
-                />
-                <InputErrors errors={errors} name="tipo_identificacion" />
-              </div>
-              < div className="flex flex-col" >
-                <InputLabel htmlFor="numero_identificacion" value="Identificación" />
-                <TextInput
-                  id="numero_identificacion"
-                  type="number"
-                  placeholder="Identificación..."
-                  {...register("numero_identificacion")}
-                />
-                < InputErrors errors={errors} name="numero_identificacion" />
               </div>
             </div>
             < div className="grid col-span-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4" >

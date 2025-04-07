@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation"; 
 import Link from "next/link"
 import { ButtonPrimary } from "../../componentes/formularios/ButtonPrimary"
 import { ButtonSecondary } from "../../componentes/formularios/ButtonSecondary"
@@ -10,8 +11,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/validaciones/loginSchema"
 import InputErrors from "../../componentes/formularios/InputErrors";
 import axios from "axios";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
-type Props = {}
 type Inputs = {
   email: string
   password: string
@@ -21,9 +23,11 @@ type Inputs = {
 
 const Login = () => {
 
+  
+  const router = useRouter();
+  const url = process.env.NEXT_PUBLIC_API_URL + "/auth/iniciar-sesion";
+  const [isLoading, setIsLoading] = useState(false);
 
-  const url=process.env.NEXT_PUBLIC_API_URL+"/auth/iniciar-sesion"
-  console.log("url ",url)
 
   const {
     register,
@@ -34,17 +38,49 @@ const Login = () => {
 
 
   console.log("formulario",watch());
-  const onSubmit: SubmitHandler<Inputs> = () => {
-    console.log("Formulario enviado");
-    //mensaje de exito
-    alert("Formulario enviado");
-    //Enviar datos al servidor
-    axios.post(url,watch())
-    .then(response => {
-      console.log(response);
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+
+
+    // Activar el estado de carga
+    setIsLoading(true);
+
+
+    try {
+      // Petición POST a la API
+      const response = await axios.post(url, data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      // extraer token y datos del usuario de la respuesta
+      const { token, user } = response.data;
+      
+      // Guardar token y datos del usuario
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      
+      toast.success("Inicio de sesión exitoso");
+      router.push("/datos-personales");
+    } catch (error: any) {
+      console.error("Error en el login:", error);
+      
+      let errorMessage = "Error al iniciar sesión";
+      if (error.response) {
+        if (error.response.status === 401) {
+          errorMessage = "Credenciales incorrectas";
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        }
+      }
+      
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    )
   }
+
 
   return (
     <>

@@ -1,26 +1,6 @@
 import { z } from "zod";
 //definimos los tipos que vamos a usar
-const tipo_identificaciones = [
-  "cedula_ciudadania",
-  "cedula_extranjera",
-  "numero_identificacion",
-  "pasaporte",
-] as const;
-const pais = [
-  "colombia",
-  "venezuela",
-  "ecuador",
-  "peru",
-  "brasil",
-  "argentina",
-  "chile",
-  "uruguay",
-  "paraguay",
-  "bolivia",
-  "guyana",
-  "surinam",
-  "guyana_francesa",
-] as const;
+
 const departamentos = ["amazonas", "antioquia", "arauca", "cauca"] as const;
 const ciudadesCauca = [
   "popayan",
@@ -31,8 +11,7 @@ const ciudadesCauca = [
 const estadoCivil = ["soltero", "casado", "divorciado", "viudo"] as const;
 
 //definimos el tipo de los datos
-export type TipoIdentificacion = (typeof tipo_identificaciones)[number];
-export type Pais = (typeof pais)[number];
+
 export type Departamento = (typeof departamentos)[number];
 export type CiudadCauca = (typeof ciudadesCauca)[number];
 export type EstadoCivil = (typeof estadoCivil)[number];
@@ -75,19 +54,11 @@ export const mappeoPais: { [key in Pais]: string } = {
 };
 
 //array definido con los tipos de identificaciones exportamos para usar en otros archivos
-export const mappeoTipoIdentificacion: { [key in TipoIdentificacion]: string } =
-  {
-    cedula_ciudadania: "Cédula de ciudadanía",
-    cedula_extranjera: "Cédula de extranjería",
-    numero_identificacion: "Número de identificación",
-    pasaporte: "Pasaporte",
-  };
+
 
 //definimos el esquema de validacion de los datos del usuario
 export const userSchema = z.object({
-  identificacion: z
-    .string()
-    .min(6, { message: "La identificación debe tener al menos 6 caracteres" }),
+
 
   primer_nombre: z.string().min(1, { message: "Campo vacio" }),
 
@@ -105,7 +76,7 @@ export const userSchema = z.object({
       message: "Formato de fecha incorrecto",
     }),
 
-  genero: z.enum(["masculino", "femenino", "otro"], {
+  genero: z.enum(["Masculino", "Femenino", "Otro"], {
     errorMap: () => ({ message: "El genero no es valido" }),
   }),
   categoria_libreta_militar: z
@@ -113,7 +84,4 @@ export const userSchema = z.object({
     .optional()
     .or(z.literal("")),
 
-  pais: z.enum(pais, {
-    errorMap: () => ({ message: "El pais no es valido" }),
-  }),
 });
