@@ -45,6 +45,9 @@ export const registerSchema = z
     password: z
       .string()
       .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
+      password_confirmation: z
+      .string()
+      .min(1, { message: "La confirmación de contraseña es requerida" }),
 
     fecha_nacimiento: z
       .string({
@@ -58,5 +61,8 @@ export const registerSchema = z
     estado_civil: z.enum(estadoCivil, {
       errorMap: () => ({ message: "El estado civil no es valido" }),
     }),
-  })
+  }).refine((data) => data.password === data.password_confirmation, {
+    message: "Las contraseñas no coinciden",
+    path: ["password_confirmation"] 
+  });
 

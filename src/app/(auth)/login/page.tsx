@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import Link from "next/link"
 import { ButtonPrimary } from "../../componentes/formularios/ButtonPrimary"
 import { ButtonSecondary } from "../../componentes/formularios/ButtonSecondary"
@@ -11,8 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/validaciones/loginSchema"
 import InputErrors from "../../componentes/formularios/InputErrors";
 import axios from "axios";
-import { useState } from "react";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from 'react-toastify';
 
 type Inputs = {
   email: string
@@ -23,10 +22,9 @@ type Inputs = {
 
 const Login = () => {
 
-  
+
   const router = useRouter();
   const url = process.env.NEXT_PUBLIC_API_URL + "/auth/iniciar-sesion";
-  const [isLoading, setIsLoading] = useState(false);
 
 
   const {
@@ -34,56 +32,66 @@ const Login = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>( {resolver: zodResolver(loginSchema)});
+  } = useForm<Inputs>({ resolver: zodResolver(loginSchema) });
 
-
-  console.log("formulario",watch());
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
 
 
-    // Activar el estado de carga
-    setIsLoading(true);
-
-
     try {
-      // Petición POST a la API
       const response = await axios.post(url, data, {
         headers: {
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        timeout: 10000 // 10 segundos timeout
       });
-      
-      // extraer token y datos del usuario de la respuesta
+
       const { token, user } = response.data;
-      
-      // Guardar token y datos del usuario
+
+      // Guardar el token y el usuario en localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      
-      toast.success("Inicio de sesión exitoso");
-      router.push("/datos-personales");
-    } catch (error: any) {
-      console.error("Error en el login:", error);
-      
+
+      toast.success("¡Bienvenido! Redirigiendo...", {
+        autoClose: 1000,
+        position: "top-center",
+        onClose: () => router.push("/datos-personales")
+      });
+    } catch (error: unknown) {
       let errorMessage = "Error al iniciar sesión";
-      if (error.response) {
-        if (error.response.status === 401) {
-          errorMessage = "Credenciales incorrectas";
-        } else if (error.response.data?.message) {
-          errorMessage = error.response.data.message;
+
+      if (axios.isAxiosError(error)) {
+        if (error.code === 'ECONNABORTED') {
+          errorMessage = "Tiempo de espera agotado. Intente nuevamente";
+        } else if (error.response) {
+          switch (error.response.status) {
+            case 401:
+              errorMessage = "Credenciales incorrectas";
+              break;
+            case 500:
+              errorMessage = "Error en el servidor";
+              break;
+            default:
+              errorMessage = error.response.data?.message || errorMessage;
+          }
+        } else if (error.request) {
+          errorMessage = "No se recibió respuesta del servidor";
         }
       }
-      
-      toast.error(errorMessage);
-    } finally {
-      setIsLoading(false);
+
+      toast.error(errorMessage, {
+        autoClose: 2000,
+        position: "top-center"
+      });
     }
-  }
+  };
+
 
 
   return (
     <>
+      <ToastContainer />
       <div className="grid grid-cols-2 bg-white gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative h-[90vh]">
         <div className="bg-[#266AAE] text-white items-center justify-center md:flex flex-col rounded-md hidden">
         </div>
@@ -105,10 +113,10 @@ const Login = () => {
               <TextInput
                 id="password"
                 type="password"
-                placeholder="Contraseña..." 
+                placeholder="Contraseña..."
                 {...register('password')} />
               <InputErrors errors={errors} name="password" />
-                
+
             </div>
             <div className="flex flex-col gap-y-5 w-full items-center">
               <ButtonPrimary
@@ -122,7 +130,7 @@ const Login = () => {
                   <ButtonSecondary
                     className="w-fit"
                     value="Registrarse"
-                    />
+                  />
                 </Link>
 
               </div>
