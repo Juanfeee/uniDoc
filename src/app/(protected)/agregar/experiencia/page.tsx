@@ -134,26 +134,21 @@ const AgregarExperiencia = () => {
           </div>
         </div>
 
-<<<<<<< HEAD
+
         <div className="grid grid-cols-1 sm:grid-cols-2 col-span-full gap-4">
           <div className="flex flex-col w-full">
             <InputLabel htmlFor="institución" value="Institución" />
-=======
         < div className="grid grid-cols-1 sm:grid-cols-2 col-span-full gap-4" >
           <div className="flex flex-col w-full" >
             <InputLabel htmlFor="institucion" value="Institución" />
->>>>>>> cd064f00444c8e5e981ac041990453af863b4d97
             <TextInput
               id="institución"
               placeholder="Institución"
               {...register("institucion")}
             />
-<<<<<<< HEAD
             <InputErros errors={errors} name="institución" />
-=======
             < InputErros errors={errors} name="institucion" />
->>>>>>> cd064f00444c8e5e981ac041990453af863b4d97
-          </div>
+            </div>
           < div className="flex flex-col w-full" >
             <InputLabel htmlFor="cargo" value="Cargo" />
             <TextInput id="cargo" placeholder="cargo" {...register("cargo")} />

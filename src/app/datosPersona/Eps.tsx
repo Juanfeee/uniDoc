@@ -18,16 +18,39 @@ type Props = {
 
 // type inputs es un objeto que contiene los campos del formulario esto es para que typescript pueda inferir el tipo de dato de cada campo
 export type Inputs = {
-  tipo_afiliacion: string;
   nombre_eps: string;
+  tipo_afiliacion: string;
   estado_afiliacion: string;
   fecha_afiliacion_efectiva: string;
   fecha_finalizacion_afiliacion: string;
   tipo_afiliado: string;
   numero_afiliado: string;
+  archivo : FileList | null;
 }
 
+
+//await axios.post(url,formData){
+//   headers: {
+//     "Content-Type": "application/json",}
+//}
+
+//formData
 export const Eps = ({ watch, setValue, handleSubmit, onSubmit, register, errors }: Props) => {
+  const url = process.env.NEXT_PUBLIC_API_URL + "/aspirantes/crear-eps"
+  console.log("url ", url)
+
+  const formData = {
+    nombre_eps: watch("nombre_eps"),
+    tipo_afiliacion: watch("tipo_afiliacion"),
+    estado_afiliacion: watch("estado_afiliacion"),
+    fecha_afiliacion_efectiva: watch("fecha_afiliacion_efectiva"),
+    fecha_finalizacion_afiliacion: watch("fecha_finalizacion_afiliacion"),
+    tipo_afiliado: watch("tipo_afiliado"),
+    numero_afiliado: watch("numero_afiliado")
+  }
+  
+
+
   const [acordeonAbierto, setAcordeonAbierto] = useState(false)
 
   const toggleAcordeon = () => {
