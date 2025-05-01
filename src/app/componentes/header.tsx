@@ -2,8 +2,6 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React from 'react'
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import axios from 'axios'
 import { toast, ToastContainer } from 'react-toastify'
 import Cookies from 'js-cookie'

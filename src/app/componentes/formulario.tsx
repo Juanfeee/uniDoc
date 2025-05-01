@@ -39,7 +39,7 @@ export const Formulario = ({ Componente, Schema, Texto, Ruta, }: FormularioProps
     const url = `${process.env.NEXT_PUBLIC_API_URL}${Ruta}`;
 
     toast.promise(
-      axios.put(url, formData, {
+      axios.post(url, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },

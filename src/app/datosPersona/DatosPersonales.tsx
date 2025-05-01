@@ -9,7 +9,6 @@ import { Inputs } from "@/types/inputs";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
-import { set } from "zod";
 
 type Props = {
   watch: UseFormWatch<Inputs>;
@@ -34,10 +33,9 @@ export type Inputs = {
 
 export const DatosPersonales = ({ setValue, register, errors, watch }: Props) => {
 
-  //estado de los datos del usuario
-  const [datosUsuario, setDatosUsuario] = useState<Inputs | null>(null);
   const [tiposIdentificacion, setTiposIdentificacion] = useState<{ value: string, label: string }[]>([]);
-  const [estadosCivil, setEstadosCivil] = useState<{ value: string, label: string }[]>([]);
+  const [estadoCivil, setEstadosCivil] = useState<{ value: string, label: string }[]>([]);
+
 
 
   // Traer las opciones de identificación y estado civil desde la API
@@ -67,8 +65,8 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
           },
         });
 
-        const estados = responseEstadoCivil.data.estado_civil;
-        const opcionesEstadoCivil = estados.map((estado: string) => ({
+        const estado = responseEstadoCivil.data.estado_civil;
+        const opcionesEstadoCivil = estado.map((estado: string) => ({
           value: estado,
           label: estado,
         }));
@@ -94,7 +92,7 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
       //mostrar los datos en consola
     }).then((response) => {
       const data = response.data.user;
-      setDatosUsuario(data);
+
       //mapear los datos del usuario a los campos del formulario
       setValue("tipo_identificacion", data.tipo_identificacion);
       setValue("numero_identificacion", data.numero_identificacion);
@@ -120,7 +118,7 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
         <SelectForm
           id="tipo_identificacion"
           register={register("tipo_identificacion")}
-          options={tiposIdentificacion}
+          options={[{ value: "", label: "Seleccione una opción" }, ...tiposIdentificacion]}
         />
         <InputErrors errors={errors} name="tipo_identificacion" />
       </div>
@@ -201,7 +199,7 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
         <SelectForm
           id="estado_civil"
           register={register("estado_civil")}
-          options={estadosCivil}
+          options={estadoCivil}
         />
         <InputErrors errors={errors} name="estado_civil" />
       </div>
