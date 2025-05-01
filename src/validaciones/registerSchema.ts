@@ -1,41 +1,10 @@
 import { z } from "zod";
-const estadoCivil = ["Soltero", "Casado", "Divorciado", "Viudo"] as const;
-const tipo_identificaciones = [
-  "CEDULA_DE_EXTRANJERIA",
-  "NUMERO_UNICO_IDENTIFICACION_PERSONAL",
-  "PASAPORTE",
-  "REGISTRO_CIVIL",
-  "Cédula de ciudadanía",
-  "NUMERO_POR_SECRETARIA_DE_EDUCACION",
-  "SERVICIO_NACIONAL_DE_PRUEBAS",
-  "TARJETA_DE_IDENTIDAD",
-  "TARJETA_PROFESIONAL",
-] as const;
 
-export type EstadoCivil = (typeof estadoCivil)[number];
-export type TipoIdentificacion = (typeof tipo_identificaciones)[number];
-
-export const mappeoEstadoCivil: { [key in EstadoCivil]: string } = {
-  Soltero: "Soltero",
-  Casado: "Casado",
-  Divorciado: "Divorciado",
-  Viudo: "Viudo",
-};
-export const mappeoTipoIdentificacion: { [key in TipoIdentificacion]: string } =
-  {
-    "Cédula de ciudadanía": "Cédula de ciudadanía",
-    CEDULA_DE_EXTRANJERIA: "Cédula de extranjería",
-    NUMERO_UNICO_IDENTIFICACION_PERSONAL: "Número unico de identificación personal",
-    PASAPORTE: "Pasaporte",
-    REGISTRO_CIVIL: "Registro civil",
-    NUMERO_POR_SECRETARIA_DE_EDUCACION: "Número por secretaría de educación",
-    SERVICIO_NACIONAL_DE_PRUEBAS: "Servicio nacional de pruebas",
-    TARJETA_DE_IDENTIDAD: "Tarjeta de identidad",
-    TARJETA_PROFESIONAL: "Tarjeta profesional",
-  };
 
 export const registerSchema = z
   .object({
+
+    numero_identificacion: z.string().min(1, { message: "Campo vacio" }),
     primer_nombre: z.string().min(1, { message: "Campo vacio" }),
     segundo_nombre: z.string().min(1, { message: "Campo vacio" }),
     primer_apellido: z.string().min(1, { message: "Campo vacio" }),
@@ -55,12 +24,16 @@ export const registerSchema = z
       .refine((val) => !isNaN(Date.parse(val)), {
         message: "Formato de fecha incorrecto",
       }),
-    estado_civil: z.enum(estadoCivil, {
-      errorMap: () => ({ message: "El estado civil no es valido" }),
-    }),
     genero: z.enum(["Masculino", "Femenino", "Otro"], {
       errorMap: () => ({ message: "Seleccione un genero" }),
     }),
+    tipo_identificacion: z
+    .string()
+    .min(1, { message: "Seleccione un tipo de identificación" }),
+
+  estado_civil: z
+    .string()
+    .min(1, { message: "Seleccione un estado civil" }),
   }).refine((data) => data.password === data.password_confirmation, {
     message: "Las contraseñas no coinciden",
     path: ["password_confirmation"] 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TextInput from '../../componentes/formularios/TextInput'
 import InputErrors from '../../componentes/formularios/InputErrors'
 import { InputLabel } from '../../componentes/formularios/InputLabel'
@@ -11,12 +11,9 @@ import { ButtonPrimary } from '../../componentes/formularios/ButtonPrimary';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import Link from 'next/link';
-import { ButtonRegresar } from '@/app/componentes/formularios/ButtonRegresar';
 import { toast, ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/navigation';
-import { set } from 'zod';
 
-type Props = {}
 type Inputs = {
   email: string
   password: string
@@ -29,15 +26,72 @@ type Inputs = {
   genero: string
   estado_civil: string
   municipio_id: number
+  tipo_identificacion: string
+  numero_identificacion: string
 }
 const Registro = () => {
+  //Opciones del select identificacion
+  const [tipoIdentificacion, setTipoIdentificacion] = useState<{ value: string, label: string }[]>([]);
+  const [estadoCivil, setEstadoCivil] = useState<{ value: string, label: string }[]>([]);
+
+
+  //Cargar las opciones del select de identificacion
+  useEffect(() => {
+    const fetchTipoIdentificacion = async () => {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipos-documento", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        });
+
+        const tipos = response.data.tipos_documento;
+        const opcionesFormateadas = tipos.map((tipo: string) => ({
+          value: tipo,
+          label: tipo
+        }));
+        setTipoIdentificacion(opcionesFormateadas);
+
+      } catch (error) {
+        console.error("Error al cargar las opciones de tipo de identificación", error);
+      }
+    };
+
+    fetchTipoIdentificacion();
+  }, []);
+  useEffect(() => {
+    const fetchEstadoCivil = async () => {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/estado-civil", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        });
+
+        const estados = response.data.estado_civil;
+        const opcionesFormateadas = estados.map((estado: string) => ({
+          value: estado,
+          label: estado
+        }));
+        setEstadoCivil(opcionesFormateadas);
+
+      } catch (error) {
+        console.error("Error al cargar las opciones de estado civil", error);
+      }
+    };
+
+    fetchEstadoCivil();
+  }, []);
+
+
 
   //Hook de Next.js para la navegación
   const router = useRouter();
 
   //Url de la API
   const url = process.env.NEXT_PUBLIC_API_URL + "/auth/registrar-usuario"
-  console.log("url ", url)
 
   const {
     register,
@@ -53,6 +107,8 @@ const Registro = () => {
 
   // enviar data a la API
   const formData = {
+    tipo_identificacion: watch("tipo_identificacion"),
+    numero_identificacion: watch("numero_identificacion"),
     primer_nombre: watch("primer_nombre"),
     segundo_nombre: watch("segundo_nombre"),
     primer_apellido: watch("primer_apellido"),
@@ -109,6 +165,7 @@ const Registro = () => {
         autoClose: 5000
       });
     }
+
   };
 
 
@@ -121,6 +178,9 @@ const Registro = () => {
       return await trigger(["primer_nombre", "segundo_nombre", "primer_apellido", "segundo_apellido"]);
     }
     if (step === 2) {
+      return await trigger(["tipo_identificacion", "numero_identificacion"]);
+    }
+    if (step === 3) {
       return await trigger(["estado_civil", "fecha_nacimiento", "genero"]);
     }
     return true;
@@ -138,7 +198,6 @@ const Registro = () => {
   const handlePrev = () => {
     setStep((prev) => prev - 1);
   }
-
 
 
 
@@ -207,8 +266,38 @@ const Registro = () => {
                 </div>
               </>
             )}
-
             {step === 2 && (
+              <>
+                < div className="flex flex-col gap-4" >
+                  <div className='font-semibold text-xl' >
+                    <h3>¡Sigamos con tu <span className='text-blue-500 font-bold'>identificación</span>!</h3>
+
+                  </div>
+                  <div className="" >
+                    <InputLabel htmlFor="tipo_identificacion" value="Tipo identificación" />
+                    <SelectForm
+                      id="tipo_identificacion"
+                      options={tipoIdentificacion}
+                      register={register("tipo_identificacion")}
+                    />
+                    < InputErrors errors={errors} name="tipo_identificacion" />
+                  </div>
+
+                  < div className="" >
+                    <InputLabel htmlFor="identificación" value="Numero identificación" />
+                    <TextInput
+                      id="numero_identificacion"
+                      type="number"
+                      placeholder="Numero identificación..."
+                      {...register("numero_identificacion")}
+                    />
+                    < InputErrors errors={errors} name="numero_identificacion" />
+                  </div>
+                </div>
+              </>
+            )}
+
+            {step === 3 && (
               <>
                 < div className='flex flex-col gap-4' >
                   <div className='font-semibold text-xl' >
@@ -223,6 +312,7 @@ const Registro = () => {
                     <SelectForm
                       id="estado_civil"
                       register={register("estado_civil")}
+                      options={estadoCivil}
                     />
                     <InputErrors errors={errors} name="estado_civil" />
                   </div>
@@ -266,7 +356,7 @@ const Registro = () => {
                 </div>
               </>
             )}
-            {step === 3 && (
+            {step === 4 && (
               <>
                 < div className="flex flex-col gap-4" >
                   <div className='font-semibold text-xl' >
@@ -315,7 +405,7 @@ const Registro = () => {
           </div>
           <div className="flex justify-center gap-8" >
             {step > 1 && <button className='bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-16 rounded-2xl' type="button" onClick={handlePrev}>Anterior</button>}
-            {step < 3 ? (<button className='bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-16 rounded-2xl' type="button" onClick={handleNext}>Siguiente</button>) : (
+            {step < 4 ? (<button className='bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-16 rounded-2xl' type="button" onClick={handleNext}>Siguiente</button>) : (
               <ButtonPrimary
                 className="w-full bg-green-500 text-white hover:bg-green-600"
 

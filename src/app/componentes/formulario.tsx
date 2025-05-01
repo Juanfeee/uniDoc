@@ -5,9 +5,8 @@ import { ButtonPrimary } from "./formularios/ButtonPrimary";
 import { Inputs } from "@/types/inputs";
 import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import Coockie from "js-cookie";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 type FormularioProps = {
   Componente: React.ComponentType<any>;
@@ -16,7 +15,7 @@ type FormularioProps = {
   Ruta: string;
 };
 
-export const Formulario = ({ Componente, Schema, Texto, Ruta }: FormularioProps) => {
+export const Formulario = ({ Componente, Schema, Texto, Ruta, }: FormularioProps) => {
   const [acordeonAbierto, setAcordeonAbierto] = useState(false);
 
   const {
@@ -40,7 +39,7 @@ export const Formulario = ({ Componente, Schema, Texto, Ruta }: FormularioProps)
     const url = `${process.env.NEXT_PUBLIC_API_URL}${Ruta}`;
 
     toast.promise(
-      axios.post(url, formData, {
+      axios.put(url, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
