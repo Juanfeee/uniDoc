@@ -26,16 +26,38 @@ export type Inputs = {
   telefono?: string,
   celular: string,
   celular_alternativo?: string,
-  email: string,
   email_alternativo?: string,
+  tipo_identificacion: string,
+  identificacion: string,
 }
 
 export const InformacionContacto = ({ watch, setValue, handleSubmit, onSubmit, register, errors }: Props) => {
+
+  //enviar los datos al servidor
 
 
   return (
     <div className="flex flex-col gap-y-6 py-6 px-8">
       <div className="flex flex-col gap-y-4 sm:grid grid-cols-2 sm:gap-y-10 sm:gap-x-4">
+        <div className="flex flex-col">
+          <InputLabel
+            htmlFor="tipo_identificacion"
+            value="Tipo de identificación"
+          />
+          <SelectForm
+            id="tipo_identificacion"
+            register={register("tipo_identificacion")}
+          />
+        </div>
+        <div className="flex flex-col">
+          <InputLabel htmlFor="identificacion" value="Identificación" />
+          <TextInput
+            id="identificacion"
+            type="number"
+            {...register("identificacion")}
+            placeholder="Identificación..."
+          />
+        </div>
         <div className="grid col-span-2 sm:grid-cols-2 gap-x-8 gap-y-4 w-full">
           <div className="">
             <InputLabel htmlFor="direccion" value="Dirección de residencia" />
@@ -111,17 +133,6 @@ export const InformacionContacto = ({ watch, setValue, handleSubmit, onSubmit, r
               {...register("celular_alternativo")}
             />
             <InputErros errors={errors} name="celular_alternativo" />
-          </div>
-          <div>
-            <InputLabel htmlFor="email" value="Email" />
-            <TextInput
-              className="w-full"
-              id="email"
-              type="email"
-              placeholder="Email..."
-              {...register("email")}
-            />
-            <InputErros errors={errors} name="email" />
           </div>
           <div>
             <InputLabel htmlFor="email_alternativo" value="Email alternativo" />

@@ -19,8 +19,7 @@ type Props = {
 };
 
 export type Inputs = {
-  tipo_identificacion: string;
-  identificacion: string;
+
   primer_nombre: string;
   segundo_nombre: string;
   primer_apellido: string;
@@ -28,7 +27,6 @@ export type Inputs = {
   fecha_nacimiento: string;
   pais: string;
   departamento?: string;
-  ciudad?: string;
   genero: string;
   estado_civil: string;
   libreta_militar?: string;
@@ -39,65 +37,117 @@ export type Inputs = {
 
 export const DatosPersonales = ({ watch, setValue, handleSubmit, onSubmit, register, errors }: Props) => {
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const genero = watch("genero");
+  // Cargar datos del usuario al montar el componente
   useEffect(() => {
-    if (genero === "femenino" || genero === "otro") {
-      setValue("categoria_libreta_militar", "");
-      setValue("libreta_militar", "");
-      setValue("distrito_militar", "");
-    }
-  }, [genero, setValue]);
+    const cargarDatosUsuario = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error("No se encontró token de autenticación");
+        }
 
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/obtener-usuario-autenticado`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
 
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${await response.text()}`);
+        }
 
+        const { user } = await response.json();
+
+        // Mapeo de campos con transformación de datos
+        const fieldMappings = [
+          { source: 'primer_nombre', target: 'primer_nombre' },
+          { source: 'segundo_nombre', target: 'segundo_nombre' },
+          { source: 'primer_apellido', target: 'primer_apellido' },
+          { source: 'segundo_apellido', target: 'segundo_apellido' },
+          { source: 'fecha_nacimiento', target: 'fecha_nacimiento' },
+          { source: 'genero', target: 'genero'},
+          
+        ];
+
+        fieldMappings.forEach(({ source, target }) => {
+          if (user[source] !== undefined && user[source] !== null) {
+            const value = user[source];
+            setValue(target as keyof Inputs, value, {
+              shouldValidate: true,
+              shouldDirty: true,
+              shouldTouch: true
+            });
+          }
+        });
+
+      } catch (err) {
+        console.error("Error al cargar datos:", err);
+        setError(err instanceof Error ? err.message : "Error desconocido al cargar datos");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    cargarDatosUsuario();
+  }, [setValue]);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="ml-2">Cargando datos personales...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <strong>Error:</strong> {error}
+      </div>
+    );
+  }
 
   return (
-    <div className="acordeon">
-      <div 
-        className={`acordeon-titulo flex justify-between items-center p-6 cursor-pointer ${acordeonAbierto ? 'active' : ''}`}
-        onClick={toggleAcordeon}
-      >
-        <h3 className="font-bold text-3xl">Agregar datos personales</h3>
-        <span className="acordeon-icono text-3xl">
-          {acordeonAbierto ? '−' : '+'}
-        </span>
+    <div className="flex flex-col gap-y-6 py-6 px-8">
+      <div className="flex flex-col">
+        <InputLabel
+          htmlFor="tipo_identificacion"
+          value="Tipo de identificación"
+        />
+        <SelectForm
+          id="tipo_identificacion"
+          register={register("tipo_identificacion")}
+        />
       </div>
-      
-      <div className={`acordeon-contenido ${acordeonAbierto ? 'block' : 'hidden'}`}>
-        <div className="flex flex-col gap-y-6 py-6 px-8">
-          <div className="flex flex-col gap-y-4 sm:grid grid-cols-2 sm:gap-y-10 sm:gap-x-4">
-            <div className="flex flex-col">
-              <InputLabel
-                htmlFor="tipo_identificacion"
-                value="Tipo de identificación"
-              />
-              <SelectForm
-                id="tipo_identificacion"
-                register={register("tipo_identificacion")}
-              />
-            </div>
-            <div className="flex flex-col">
-              <InputLabel htmlFor="identificacion" value="Identificación" />
-              <TextInput
-                id="identificacion"
-                type="number"
-                {...register("identificacion")}
-                placeholder="Identificación..."
-              />
-            </div>
-            <div className="grid col-span-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4 w-full">
-              <div className="">
-                <InputLabel htmlFor="primer_nombre" value="Primer nombre" />
-                <TextInput
-                  className="w-full"
-                  id="primer_nombre"
-                  type="text"
-                  placeholder="Primer nombre..."
-                  {...register("primer_nombre")}
-                />
-                <InputErros errors={errors} name="primer_nombre" />
-              </div>
+      <div className="flex flex-col">
+        <InputLabel htmlFor="identificacion" value="Identificación" />
+        <TextInput
+          id="identificacion"
+          type="number"
+          {...register("identificacion")}
+          placeholder="Identificación..."
+        />
+      </div>
+      <div className="grid col-span-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4 w-full">
+        <div className="">
+          <InputLabel htmlFor="primer_nombre" value="Primer nombre" />
+          <TextInput
+            className="w-full"
+            id="primer_nombre"
+            type="text"
+            placeholder="Primer nombre..."
+            {...register("primer_nombre")}
+          />
+          <InputErros errors={errors} name="primer_nombre" />
+        </div>
 
         <div className="">
           <InputLabel htmlFor="segundo_nombre" value="Segundo nombre" />
@@ -148,7 +198,7 @@ export const DatosPersonales = ({ watch, setValue, handleSubmit, onSubmit, regis
           />
           <InputErros errors={errors} name="fecha_nacimiento" />
         </div>
-        <div>
+        {/* <div>
           <InputLabel htmlFor="pais" value="País" />
           <SelectForm id="pais" register={register("pais")} />
           <InputErros errors={errors} name="pais" />
@@ -160,43 +210,43 @@ export const DatosPersonales = ({ watch, setValue, handleSubmit, onSubmit, regis
             register={register("departamento")}
           />
           <InputErros errors={errors} name="departamento" />
-        </div>
-        <div>
+        </div> */}
+        {/* <div>
           <InputLabel htmlFor="ciudad" value="Ciudad" />
           <SelectForm id="ciudad" register={register("ciudad")} />
           <InputErros errors={errors} name="ciudad" />
-        </div>
+        </div> */}
       </div>
 
       <div className="sm:col-span-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 w-full items-center justify-center gap-y-4">
         <div className="col-span-2">
-          <InputLabel htmlFor="masculino" value="Género"></InputLabel>
+          <InputLabel htmlFor="Masculino" value="Género"></InputLabel>
           <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11">
             <div className="flex items-center gap-x-1">
-              <LabelRadio htmlFor="masculino">Masculino</LabelRadio>
+              <LabelRadio htmlFor="Masculino">Masculino</LabelRadio>
               <TextInput
                 type="radio"
-                id="masculino"
-                value="masculino"
+                id="Masculino"
+                value="Masculino"
                 {...register("genero")}
               />
             </div>
             <div className="flex items-center gap-x-1">
-              <LabelRadio htmlFor="femenino">Femenino</LabelRadio>
+              <LabelRadio htmlFor="Femenino">Femenino</LabelRadio>
               <TextInput
                 type="radio"
-                id="femenino"
-                value="femenino"
+                id="Femenino"
+                value="Femenino"
                 {...register("genero")}
               />
             </div>
             <div className="flex items-center gap-x-1">
-              <LabelRadio htmlFor="otro">Otro</LabelRadio>
+              <LabelRadio htmlFor="Otro">Otro</LabelRadio>
               <TextInput
                 className=""
                 type="radio"
-                id="otro"
-                value="otro"
+                id="Otro"
+                value="Otro"
                 {...register("genero")}
               />
             </div>
@@ -212,7 +262,7 @@ export const DatosPersonales = ({ watch, setValue, handleSubmit, onSubmit, regis
           <InputErros errors={errors} name="estado_civil" />
         </div>
       </div>
-      {watch("genero") === "masculino" && (
+      {/* {watch("genero") === "masculino" && (
         <>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 col-span-full gap-x-8 gap-y-4">
             <div className="col-span-full lg:col-span-2 xl:col-span-1">
@@ -277,7 +327,7 @@ export const DatosPersonales = ({ watch, setValue, handleSubmit, onSubmit, regis
             </div>
           </div>
         </>
-      )}
+      )} */}
     </div >
   );
 };

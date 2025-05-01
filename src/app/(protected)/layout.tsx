@@ -1,18 +1,20 @@
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Header from "../componentes/header";
 
-const layout = ({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
+
+
   return (
     <>
-    <Header />
-    < main className = "px-4 sm:px-8 py-8" >
-      <div>{ children } </div>
+      <Header />
+      <main className="px-4 sm:px-8 py-8">
+        <div>{children}</div>
       </main>
-      < footer > </footer>
-      </>
-  )
-}
-export default layout
+      <footer></footer>
+    </>
+  );
+};
+
+export default Layout;

@@ -1,13 +1,10 @@
 import React from 'react'
-import axios from 'axios';
-import { useEffect, useState } from 'react'
 import InformacionPersonalDocente from './InformacionPersonalDocente'
 import InformacionTrayectoriaDocente from './InformacionTrayectoriaDocente'
 
 type Props = {}
 
 const Index = () => {
- 
   return (
     <>
       <div className='flex  flex-col gap-y-4'>

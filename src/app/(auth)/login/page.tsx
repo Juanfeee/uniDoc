@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import Link from "next/link"
 import { ButtonPrimary } from "../../componentes/formularios/ButtonPrimary"
 import { ButtonSecondary } from "../../componentes/formularios/ButtonSecondary"
@@ -10,8 +11,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/validaciones/loginSchema"
 import InputErrors from "../../componentes/formularios/InputErrors";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
 
-type Props = {}
 type Inputs = {
   email: string
   password: string
@@ -22,32 +23,75 @@ type Inputs = {
 const Login = () => {
 
 
-  const url=process.env.NEXT_PUBLIC_API_URL+"/auth/iniciar-sesion"
-  console.log("url ",url)
+  const router = useRouter();
+  const url = process.env.NEXT_PUBLIC_API_URL + "/auth/iniciar-sesion";
+
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>( {resolver: zodResolver(loginSchema)});
+  } = useForm<Inputs>({ resolver: zodResolver(loginSchema) });
 
 
-  console.log("formulario",watch());
-  const onSubmit: SubmitHandler<Inputs> = () => {
-    console.log("Formulario enviado");
-    //mensaje de exito
-    alert("Formulario enviado");
-    //Enviar datos al servidor
-    axios.post(url,watch())
-    .then(response => {
-      console.log(response);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+
+
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        timeout: 10000 // 10 segundos timeout
+      });
+
+      const { token, user } = response.data;
+
+      // Guardar el token y el usuario en localStorage
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      toast.success("¡Bienvenido! Redirigiendo...", {
+        autoClose: 1000,
+        position: "top-center",
+        onClose: () => router.push("/datos-personales")
+      });
+    } catch (error: unknown) {
+      let errorMessage = "Error al iniciar sesión";
+
+      if (axios.isAxiosError(error)) {
+        if (error.code === 'ECONNABORTED') {
+          errorMessage = "Tiempo de espera agotado. Intente nuevamente";
+        } else if (error.response) {
+          switch (error.response.status) {
+            case 401:
+              errorMessage = "Credenciales incorrectas";
+              break;
+            case 500:
+              errorMessage = "Error en el servidor";
+              break;
+            default:
+              errorMessage = error.response.data?.message || errorMessage;
+          }
+        } else if (error.request) {
+          errorMessage = "No se recibió respuesta del servidor";
+        }
+      }
+
+      toast.error(errorMessage, {
+        autoClose: 2000,
+        position: "top-center"
+      });
     }
-    )
-  }
+  };
+
+
 
   return (
     <>
+      <ToastContainer />
       <div className="grid grid-cols-2 bg-white gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative h-[90vh]">
         <div className="bg-[#266AAE] text-white items-center justify-center md:flex flex-col rounded-md hidden">
         </div>
@@ -69,10 +113,10 @@ const Login = () => {
               <TextInput
                 id="password"
                 type="password"
-                placeholder="Contraseña..." 
+                placeholder="Contraseña..."
                 {...register('password')} />
               <InputErrors errors={errors} name="password" />
-                
+
             </div>
             <div className="flex flex-col gap-y-5 w-full items-center">
               <ButtonPrimary
@@ -86,7 +130,7 @@ const Login = () => {
                   <ButtonSecondary
                     className="w-fit"
                     value="Registrarse"
-                    />
+                  />
                 </Link>
 
               </div>

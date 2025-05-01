@@ -12,25 +12,30 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import Link from 'next/link';
 import { ButtonRegresar } from '@/app/componentes/formularios/ButtonRegresar';
+import { toast, ToastContainer } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 
 
 type Props = {}
 type Inputs = {
   email: string
   password: string
+  password_confirmation: string
   primer_nombre: string
   segundo_nombre: string
   primer_apellido: string
   segundo_apellido: string
   fecha_nacimiento: string
   genero: string
-  tipo_identificacion: string
-  numero_identificacion: string
   estado_civil: string
-  user_municipio_id: number
+  municipio_id: number
 }
 const Registro = () => {
 
+  //Hook de Next.js para la navegación
+  const router = useRouter();
+
+  //Url de la API
   const url = process.env.NEXT_PUBLIC_API_URL + "/auth/registrar-usuario"
   console.log("url ", url)
 
@@ -41,25 +46,72 @@ const Registro = () => {
     formState: { errors },
   } = useForm<Inputs>({
     resolver: zodResolver(registerSchema),
-    defaultValues: {
-      user_municipio_id: 1
-    }
   });
   console.log(errors)
   console.log(watch())
-  const onSubmit: SubmitHandler<Inputs> = () => {
-    console.log("Formulario enviado", watch());
-    //mensaje de exito
-    alert("Formulario enviado");
-    //Enviar datos al servidor
-    axios.post(url, watch())
-      .then(response => {
-        console.log(response);
+
+  //formData lo que se envia al servidor
+  const formData = {
+    email: watch("email"),
+    password: watch("password"),
+    primer_nombre: watch("primer_nombre"),
+    segundo_nombre: watch("segundo_nombre"),
+    primer_apellido: watch("primer_apellido"),
+    segundo_apellido: watch("segundo_apellido"),
+    fecha_nacimiento: watch("fecha_nacimiento"),
+    genero: watch("genero"),
+    estado_civil: watch("estado_civil"),
+    municipio_id: 1
+  }
+
+
+  console.log("formData ", formData)
+const onSubmit: SubmitHandler<Inputs> = async () => {
+  try {
+    // await es necesario para esperar la respuesta de la API antes de continuar
+    await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      timeout: 10000,
+    });
+
+    toast.success("¡Bienvenido! Redirigiendo...", {
+      autoClose: 1000,
+      position: "top-center",
+      onClose: () => router.push("/")
+    });
+  } catch (error) {
+    let errorMessage = "Error al registrar";
+
+    if (axios.isAxiosError(error)) {
+      if (error.code === 'ECONNABORTED') {
+        errorMessage = "Tiempo de espera agotado. Intente nuevamente";
+      } else if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            errorMessage = "Email ya existe";
+            break;
+          case 500:
+            errorMessage = "Error en el servidor";
+            break;
+          default:
+            errorMessage = "Error desconocido";
+        }
+      } else {
+        errorMessage = "Error desconocido";
       }
-      )
-  };
+    }
+
+    toast.error(errorMessage, {
+      position: "top-center",
+      autoClose: 5000
+    });
+  }
+};
   return (
     <>
+      <ToastContainer />
       <form className='flex flex-col gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative'
         onSubmit={handleSubmit(onSubmit)} >
 
@@ -98,39 +150,15 @@ const Registro = () => {
                 < InputErrors errors={errors} name="password" />
               </div>
               < div className="" >
-                <InputLabel htmlFor="confirm_password" value="Confirmar contraseña" />
+                <InputLabel htmlFor="password" value="Confirmar contraseña" />
                 <TextInput
                   className="w-full"
-                  id="confirm_password"
+                  id="password_confirmation"
                   type="password"
                   placeholder="Confirmar contraseña..."
-                  {...register("confirm_password")}
+                  {...register("password_confirmation")}
                 />
-                < InputErrors errors={errors} name="confirm_password" />
-              </div>
-            </div>
-            < div className='grid col-span-full gridcols-2 sm:grid-cols-2 gap-x-8 gap-y-4' >
-              <div className="flex flex-col" >
-                <InputLabel
-                  htmlFor="tipo_identificacion"
-                  value="Tipo de identificación"
-                />
-
-                <SelectForm
-                  id="tipo_identificacion"
-                  register={register("tipo_identificacion")}
-                />
-                <InputErrors errors={errors} name="tipo_identificacion" />
-              </div>
-              < div className="flex flex-col" >
-                <InputLabel htmlFor="numero_identificacion" value="Identificación" />
-                <TextInput
-                  id="numero_identificacion"
-                  type="number"
-                  placeholder="Identificación..."
-                  {...register("numero_identificacion")}
-                />
-                < InputErrors errors={errors} name="numero_identificacion" />
+                < InputErrors errors={errors} name="password_confirmation" />
               </div>
             </div>
             < div className="grid col-span-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4" >

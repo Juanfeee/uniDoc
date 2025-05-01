@@ -42,13 +42,13 @@ export const registerSchema = z
     primer_apellido: z.string().min(1, { message: "Campo vacio" }),
     segundo_apellido: z.string().min(1, { message: "Campo vacio" }),
     email: z.string().email({ message: "Correo no valido" }),
-    numero_identificacion: z.string().min(1, "Campo requerido"),
     password: z
       .string()
       .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
-    confirm_password: z
+      password_confirmation: z
       .string()
-      .min(6, { message: "La contraseña debe tener al menos 6 caracteres" }),
+      .min(1, { message: "La confirmación de contraseña es requerida" }),
+
     fecha_nacimiento: z
       .string({
         invalid_type_error: "Esa no es una fecha",
@@ -56,15 +56,13 @@ export const registerSchema = z
       .refine((val) => !isNaN(Date.parse(val)), {
         message: "Formato de fecha incorrecto",
       }),
-    tipo_identificacion: z.enum(tipo_identificaciones, {
-      errorMap: () => ({ message: "El tipo de identificación no es valido" }),
-    }),
+
 
     estado_civil: z.enum(estadoCivil, {
       errorMap: () => ({ message: "El estado civil no es valido" }),
     }),
-  })
-  .refine((data) => data.password === data.confirm_password, {
+  }).refine((data) => data.password === data.password_confirmation, {
     message: "Las contraseñas no coinciden",
-    path: ["confirm_password"],
+    path: ["password_confirmation"] 
   });
+
