@@ -15,7 +15,6 @@ const tipo_identificaciones = [
 export type EstadoCivil = (typeof estadoCivil)[number];
 export type TipoIdentificacion = (typeof tipo_identificaciones)[number];
 
-
 export const mappeoEstadoCivil: { [key in EstadoCivil]: string } = {
   Soltero: "Soltero",
   Casado: "Casado",
@@ -56,10 +55,11 @@ export const registerSchema = z
       .refine((val) => !isNaN(Date.parse(val)), {
         message: "Formato de fecha incorrecto",
       }),
-
-
     estado_civil: z.enum(estadoCivil, {
       errorMap: () => ({ message: "El estado civil no es valido" }),
+    }),
+    genero: z.enum(["Masculino", "Femenino", "Otro"], {
+      errorMap: () => ({ message: "Seleccione un genero" }),
     }),
   }).refine((data) => data.password === data.password_confirmation, {
     message: "Las contraseñas no coinciden",

@@ -1,5 +1,5 @@
 "use client";
-import React from 'react'
+import React, { useState } from 'react'
 import TextInput from '../../componentes/formularios/TextInput'
 import InputErrors from '../../componentes/formularios/InputErrors'
 import { InputLabel } from '../../componentes/formularios/InputLabel'
@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { ButtonRegresar } from '@/app/componentes/formularios/ButtonRegresar';
 import { toast, ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+import { set } from 'zod';
 
 type Props = {}
 type Inputs = {
@@ -42,235 +43,294 @@ const Registro = () => {
     register,
     handleSubmit,
     watch,
+    trigger,
     formState: { errors },
   } = useForm<Inputs>({
+    mode: "onChange",
     resolver: zodResolver(registerSchema),
   });
-  console.log(errors)
-  console.log(watch())
 
-  //formData lo que se envia al servidor
+
+  // enviar data a la API
   const formData = {
-    email: watch("email"),
-    password: watch("password"),
     primer_nombre: watch("primer_nombre"),
     segundo_nombre: watch("segundo_nombre"),
     primer_apellido: watch("primer_apellido"),
     segundo_apellido: watch("segundo_apellido"),
+    email: watch("email"),
+    password: watch("password"),
     fecha_nacimiento: watch("fecha_nacimiento"),
-    genero: watch("genero"),
     estado_civil: watch("estado_civil"),
-    municipio_id: 1
-  }
+    genero: watch("genero"),
+    municipio_id: 1,
+  };
 
 
-  console.log("formData ", formData)
-const onSubmit: SubmitHandler<Inputs> = async () => {
-  try {
-    // await es necesario para esperar la respuesta de la API antes de continuar
-    await axios.post(url, formData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      timeout: 10000,
-    });
+  const onSubmit: SubmitHandler<Inputs> = async () => {
+    try {
+      // await es necesario para esperar la respuesta de la API antes de continuar
+      await axios.post(url, formData, {
+        //Cabeceras de la peticion
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 10000,
+      });
 
-    toast.success("¡Bienvenido! Redirigiendo...", {
-      autoClose: 1000,
-      position: "top-center",
-      onClose: () => router.push("/")
-    });
-  } catch (error) {
-    let errorMessage = "Error al registrar";
+      toast.success("¡Bienvenido! Redirigiendo...", {
+        autoClose: 1000,
+        position: "top-center",
+        onClose: () => router.push("/")
+      });
+    } catch (error) {
+      let errorMessage = "Error al registrar";
 
-    if (axios.isAxiosError(error)) {
-      if (error.code === 'ECONNABORTED') {
-        errorMessage = "Tiempo de espera agotado. Intente nuevamente";
-      } else if (error.response) {
-        switch (error.response.status) {
-          case 400:
-            errorMessage = "Email ya existe";
-            break;
-          case 500:
-            errorMessage = "Error en el servidor";
-            break;
-          default:
-            errorMessage = "Error desconocido";
+      if (axios.isAxiosError(error)) {
+        if (error.code === 'ECONNABORTED') {
+          errorMessage = "Tiempo de espera agotado. Intente nuevamente";
+        } else if (error.response) {
+          switch (error.response.status) {
+            case 400:
+              errorMessage = "Email ya existe";
+              break;
+            case 500:
+              errorMessage = "Error en el servidor";
+              break;
+            default:
+              errorMessage = "Error desconocido";
+          }
+        } else {
+          errorMessage = "Error desconocido";
         }
-      } else {
-        errorMessage = "Error desconocido";
       }
-    }
 
-    toast.error(errorMessage, {
-      position: "top-center",
-      autoClose: 5000
-    });
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 5000
+      });
+    }
+  };
+
+
+  // Estado para el paso del formulario
+  const [step, setStep] = React.useState(1);
+
+  // Validacion de los campos del formulario
+  const validateStep = async () => {
+    if (step === 1) {
+      return await trigger(["primer_nombre", "segundo_nombre", "primer_apellido", "segundo_apellido"]);
+    }
+    if (step === 2) {
+      return await trigger(["estado_civil", "fecha_nacimiento", "genero"]);
+    }
+    return true;
+  };
+
+  // Validar y pasar al siguiente paso 
+  const handleNext = async () => {
+    const isValid = await validateStep();
+    if (isValid) {
+      setStep((prev) => prev + 1);
+    }
+  };
+
+  // Manejo del paso anterior del formulario
+  const handlePrev = () => {
+    setStep((prev) => prev - 1);
   }
-};
+
+
+
+
   return (
     <>
-      <ToastContainer />
-      <form className='flex flex-col gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative'
+      <form
         onSubmit={handleSubmit(onSubmit)} >
 
-        <div className="flex flex-col bg-white gap-y-6 py-12 px-8 rounded-xl" >
-          <div className='flex gap-x-4 items-center ' >
-            <Link href={"/"}>
-              <ButtonRegresar />
-            </Link>
-            < h3 className="font-bold text-3xl" > Registro </h3>
+        <div className="flex bg-white flex-col gap-4 px-8 py-8 w-[500px] min-h-[550px] shadow-lg justify-around relative rounded-3xl" >
+          <ToastContainer />
+          <div className='flex flex-col gap-x-2 w-full justify-between ' >
+            < h3 className="font-bold text-2xl" > Registro </h3>
           </div>
           < div
-            className="grid sm:grid grid-cols-2 sm:gap-x-4 gap-y-6"
+            className=""
           >
-            <div className="grid col-span-full sm:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-4" >
-              <div className="col-span-full xl:col-span-1" >
-                <InputLabel htmlFor="email" value="Email" />
-                <TextInput
-                  className="w-full"
-                  id="email"
-                  type="text"
-                  placeholder="Email..."
-                  {...register("email")}
-                />
-                < InputErrors errors={errors} name="email" />
-              </div>
+            {step === 1 && (
+              <>
+                < div className="flex flex-col gap-4" >
+                  <div className='font-semibold text-xl' >
+                    <h3>¿Eres nuevo? <span className='text-blue-500 font-bold'>Empecemos</span> con tu nombre</h3>
+                  </div>
+                  <div className="" >
+                    <InputLabel htmlFor="primer_nombre" value="Primer nombre" />
+                    <TextInput
+                      id="primer_nombre"
+                      type="text"
+                      placeholder="Primer nombre..."
+                      {...register("primer_nombre")}
+                    />
+                    < InputErrors errors={errors} name="primer_nombre" />
+                  </div>
 
-              < div className="" >
-                <InputLabel htmlFor="password" value="Contraseña" />
-                <TextInput
-                  className="w-full"
-                  id="password"
-                  type="password"
-                  placeholder="Contraseña..."
-                  {...register("password")}
-                />
-                < InputErrors errors={errors} name="password" />
-              </div>
-              < div className="" >
-                <InputLabel htmlFor="password" value="Confirmar contraseña" />
-                <TextInput
-                  className="w-full"
-                  id="password_confirmation"
-                  type="password"
-                  placeholder="Confirmar contraseña..."
-                  {...register("password_confirmation")}
-                />
-                < InputErrors errors={errors} name="password_confirmation" />
-              </div>
-            </div>
-            < div className="grid col-span-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4" >
-              <div className="" >
-                <InputLabel htmlFor="primer_nombre" value="Primer nombre" />
-                <TextInput
-                  className="w-full"
-                  id="primer_nombre"
-                  type="text"
-                  placeholder="Primer nombre..."
-                  {...register("primer_nombre")}
-                />
-                < InputErrors errors={errors} name="primer_nombre" />
-              </div>
+                  < div className="" >
+                    <InputLabel htmlFor="segundo_nombre" value="Segundo nombre" />
+                    <TextInput
+                      id="segundo_nombre"
+                      type="text"
+                      placeholder="Segundo nombre..."
+                      {...register("segundo_nombre")}
+                    />
+                    < InputErrors errors={errors} name="segundo_nombre" />
+                  </div>
 
-              < div className="" >
-                <InputLabel htmlFor="segundo_nombre" value="Segundo nombre" />
-                <TextInput
-                  className="w-full"
-                  id="segundo_nombre"
-                  type="text"
-                  placeholder="Segundo nombre..."
-                  {...register("segundo_nombre")}
-                />
-                < InputErrors errors={errors} name="segundo_nombre" />
-              </div>
+                  < div className="" >
+                    <InputLabel htmlFor="primer_apellido" value="Primer apellido" />
+                    <TextInput
+                      id="primer_apellido"
+                      type="text"
+                      placeholder="Primer apellido..."
+                      {...register("primer_apellido")}
+                    />
+                    < InputErrors errors={errors} name="primer_apellido" />
+                  </div>
 
-              < div className="" >
-                <InputLabel htmlFor="primer_apellido" value="Primer apellido" />
-                <TextInput
-                  className="w-full"
-                  id="primer_apellido"
-                  type="text"
-                  placeholder="Primer apellido..."
-                  {...register("primer_apellido")}
-                />
-                < InputErrors errors={errors} name="primer_apellido" />
-              </div>
-
-              < div className="" >
-                <InputLabel htmlFor="segundo_apellido" value="Segundo apellido" />
-                <TextInput
-                  className="w-full"
-                  id="segundo_apellido"
-                  type="text"
-                  placeholder="Segundo apellido..."
-                  {...register("segundo_apellido")}
-                />
-                < InputErrors errors={errors} name="segundo_apellido" />
-              </div>
-            </div>
-            < div className='grid col-span-full lg:grid-cols-2 gap-x-8 gap-y-4' >
-              <div className="" >
-                <InputLabel htmlFor="estado_civil" value="Estado civil" />
-                <SelectForm
-                  id="estado_civil"
-                  register={register("estado_civil")}
-                />
-                <InputErrors errors={errors} name="estado_civil" />
-              </div>
-              < div className="flex flex-col sm:col-span-full lg:col-span-1" >
-                <InputLabel
-                  htmlFor="fecha_nacimiento"
-                  value="Fecha de nacimiento"
-                />
-                <TextInput
-                  id="fecha_nacimiento"
-                  type="date"
-                  {...register("fecha_nacimiento")}
-                />
-                < InputErrors errors={errors} name="fecha_nacimiento" />
-              </div>
-              < div className="flex flex-col gap-x-8 " >
-                <div>
-                  <InputLabel htmlFor="MASCULINO" value="Género" > </InputLabel>
-                  < div className="flex flex-wrap w-full rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] md:h-11 gap-x-8 px-2 sm:justify-evenly" >
-                    <div className="flex items-center gap-x-1" >
-                      <LabelRadio htmlFor="MASCULINO" > Masculino </LabelRadio>
-                      < TextInput
-                        type="radio"
-                        id="MASCULINO"
-                        value="Masculino"
-                        {...register("genero")}
-                      />
-                    </div>
-                    < div className="flex items-center gap-x-1" >
-                      <LabelRadio htmlFor="FEMENINO" > Femenino </LabelRadio>
-                      < TextInput
-                        type="radio"
-                        id="FEMENINO"
-                        value="Femenino"
-                        {...register("genero")}
-                      />
-                    </div>
-                    < div className="flex items-center gap-x-1" >
-                      <LabelRadio htmlFor="OTRO" > Otro </LabelRadio>
-                      < TextInput
-                        className=""
-                        type="radio"
-                        id="OTRO"
-                        value="Otro"
-                        {...register("genero")}
-                      />
-                    </div>
+                  < div className="" >
+                    <InputLabel htmlFor="segundo_apellido" value="Segundo apellido" />
+                    <TextInput
+                      id="segundo_apellido"
+                      type="text"
+                      placeholder="Segundo apellido..."
+                      {...register("segundo_apellido")}
+                    />
+                    < InputErrors errors={errors} name="segundo_apellido" />
                   </div>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                < div className='flex flex-col gap-4' >
+                  <div className='font-semibold text-xl' >
+                    <h3>
+                      Ya falta poco, <span className='text-yellow-500 font-bold'>completa</span> esta información.
+                    </h3>
+
+
+                  </div>
+                  <div className="" >
+                    <InputLabel htmlFor="estado_civil" value="Estado civil" />
+                    <SelectForm
+                      id="estado_civil"
+                      register={register("estado_civil")}
+                    />
+                    <InputErrors errors={errors} name="estado_civil" />
+                  </div>
+                  < div className="" >
+                    <InputLabel
+                      htmlFor="fecha_nacimiento"
+                      value="Fecha de nacimiento"
+                    />
+                    <TextInput
+                      id="fecha_nacimiento"
+                      type="date"
+                      {...register("fecha_nacimiento")}
+                    />
+                    < InputErrors errors={errors} name="fecha_nacimiento" />
+                  </div>
+                  < div className="" >
+                    <InputLabel htmlFor="genero" value="Género" />
+
+                    <div className="flex flex-row flex-wrap gap-4 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-4">
+                      <LabelRadio
+                        htmlFor="genero-masculino"
+                        value="Masculino"
+                        inputProps={register("genero")}
+                        label="Masculino"
+                      />
+                      <LabelRadio
+                        htmlFor="genero-femenino"
+                        value="Femenino"
+                        inputProps={register("genero")}
+                        label="Femenino"
+                      />
+                      <LabelRadio
+                        htmlFor="genero-otro"
+                        value="Otro"
+                        inputProps={register("genero")}
+                        label="Otro"
+                      />
+                    </div>
+                    <InputErrors errors={errors} name="genero" />
+                  </div>
+                </div>
+              </>
+            )}
+            {step === 3 && (
+              <>
+                < div className="flex flex-col gap-4" >
+                  <div className='font-semibold text-xl' >
+                    <h3>
+                      ¡Genial!
+                      Ahora tu
+                      <span className='text-blue-500 font-bold'> correo</span> y
+                      <span className='text-yellow-500 font-bold'> contraseña</span>
+                    </h3>
+
+                  </div>
+                  <div className="" >
+                    <InputLabel htmlFor="email" value="Email" />
+                    <TextInput
+                      id="email"
+                      type="text"
+                      placeholder="Email..."
+                      {...register("email")}
+                    />
+                    < InputErrors errors={errors} name="email" />
+                  </div>
+
+                  < div className="" >
+                    <InputLabel htmlFor="password" value="Contraseña" />
+                    <TextInput
+                      id="password"
+                      type="password"
+                      placeholder="Contraseña..."
+                      {...register("password")}
+                    />
+                    < InputErrors errors={errors} name="password" />
+                  </div>
+                  < div className="" >
+                    <InputLabel htmlFor="password_confirmation" value="Confirmar contraseña" />
+                    <TextInput
+                      id="password_confirmation"
+                      type="password"
+                      placeholder="Confirmar contraseña..."
+                      {...register("password_confirmation")}
+                    />
+                    < InputErrors errors={errors} name="password_confirmation" />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-          < ButtonPrimary
-            type='submit'
-            value='Registrarse'
-          />
+          <div className="flex justify-center gap-8" >
+            {step > 1 && <button className='bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-16 rounded-2xl' type="button" onClick={handlePrev}>Anterior</button>}
+            {step < 3 ? (<button className='bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-16 rounded-2xl' type="button" onClick={handleNext}>Siguiente</button>) : (
+              <ButtonPrimary
+                className="w-full bg-green-500 text-white hover:bg-green-600"
+
+                type='submit'
+                value='Registrarse'
+              />
+            )}
+          </div>
+          <p className="text-base text-gray-500 text-center">
+            ¿Ya tienes una cuenta?{" "}
+            <Link href="/login" className="text-blue-500 hover:text-blue-600">
+              Iniciar sesión
+            </Link>
+          </p>
+          <div className='absolute size-full right-0 rotate-5 rounded-3xl -z-10  bg-blue-500'></div>
         </div>
       </form>
     </>

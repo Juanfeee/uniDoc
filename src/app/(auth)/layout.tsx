@@ -5,7 +5,7 @@ export const layout = ({ children,
 }>) => {
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center py-10">{children}</div>
+      <div className="min-h-screen flex py-5 items-start justify-center">{children}</div>
     </>
   )
 }

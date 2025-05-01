@@ -1,30 +1,23 @@
 
 // Input de texto
 
-type Props={
-  type: string;
-  className?: string;
-  placeholder?: string;
-  id?: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  name?: string;
-  required?: boolean;
-  disabled?: boolean;
-  readOnly?: boolean;
-  autoFocus?: boolean;
-}
 
-const TextInput = ({type="text", className="", ...props}) => {
+const TextInput = ({ type = "text", className = "", ...props }) => {
 
 
 
 
   return (
     <input
-    {...props}
-    type= {type}
-    className={`${className} rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] px-1 py-2 h-11`}
+      {...props}
+      type={type}
+      className={`${className}         
+        h-11 w-full rounded-lg  border-[1.8px] border-blue-600 
+        bg-slate-100/40
+        p-3 text-sm text-slate-950/90
+        placeholder-slate-950/60 outline-none
+        focus:border-blue-700 focus:ring-1  focus:ring-blue-700
+        transition duration-300 ease-in-out`}
 
     >
 

@@ -11,7 +11,7 @@ type Props = {
 
 }
 
-export const SelectForm = ({ id,className, register }: Props) => {
+export const SelectForm = ({ id, className, register }: Props) => {
   //mappeo de opciones
   const optionsMap = {
     tipo_identificacion: mappeoTipoIdentificacion,
@@ -22,7 +22,7 @@ export const SelectForm = ({ id,className, register }: Props) => {
     tipo_estudio: mappeoTipoEstudio,
     tipo_experiencia: mappeoTipoExperiencia,
     tipo_produccion: mappeoTipoProduccion,
-    };
+  };
 
 
   //mapeamos las opciones dependiendo del id
@@ -33,12 +33,19 @@ export const SelectForm = ({ id,className, register }: Props) => {
   return (
     <>
       <div className="flex flex-col">
-        <select 
-        defaultValue=""
-        {...register}
-        key={id} 
-        id={id}
-        className={`${className} rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] px-1 py-2 h-11`}>
+        <select
+          defaultValue=""
+          {...register}
+          key={id}
+          id={id}
+          className={`${className} 
+                  
+          h-11 w-full rounded-lg  border-[1.8px] border-blue-600 
+        bg-slate-100/40
+        p-3 text-sm text-slate-950/90
+        placeholder-slate-950/60 outline-none
+        focus:border-blue-700 focus:ring-1  focus:ring-blue-700
+        transition duration-300 ease-in-out}`}>
           <option key={id} value="" disabled>Seleccione una opcion</option>
           //mostramos las opciones
           {options}
