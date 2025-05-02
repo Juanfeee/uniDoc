@@ -24,21 +24,49 @@ type Inputs = {
 }
 
 export const EpsFormulario = () => {
+
   const [tiposAfiliacion, setTiposAfiliacion] = useState<{ value: string; label: string }[]>([]);
   const [estadosAfiliacion, setEstadosAfiliacion] = useState<{ value: string; label: string }[]>([]);
   const [tiposAfiliado, setTiposAfiliado] = useState<{ value: string; label: string }[]>([]);
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/aspirante/crear-eps`;
+
 
   const {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<Inputs>({
     resolver: zodResolver(epsSchema),
     defaultValues: {
     },
   });
+
+
+  //Traer los datos del usuario al cargar el componente
+  useEffect(() => {
+    const url2 = `${process.env.NEXT_PUBLIC_API_URL}/aspirante/obtener-eps`;
+    axios.get(url2, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("token")}`,
+      },
+    })
+      .then((response) => {
+        const data = response.data.eps;
+        setValue("tipo_afiliacion", data.tipo_afiliacion);
+        setValue("nombre_eps", data.nombre_eps);
+        setValue("estado_afiliacion", data.estado_afiliacion);
+        setValue("fecha_afiliacion_efectiva", data.fecha_afiliacion_efectiva);
+        setValue("fecha_finalizacion_afiliacion", data.fecha_finalizacion_afiliacion);
+        setValue("tipo_afiliado", data.tipo_afiliado);
+        setValue("numero_afiliado", data.numero_afiliado);
+      })
+      .catch((error) => {
+        console.error("Error al cargar los datos del usuario:", error);
+      });
+  }, [setValue]);
+  
   // Cargar los tipos de afiliación desde la API
   useEffect(() => {
     const fetchTipoIdentificacion = async () => {
@@ -116,7 +144,6 @@ export const EpsFormulario = () => {
   }, []);
 
   // Obtener los valores del formulario y 
-
   const onSubmit: SubmitHandler<Inputs> = async () => {
     const formValues = {
       tipo_afiliacion: watch("tipo_afiliacion"),
@@ -144,6 +171,7 @@ export const EpsFormulario = () => {
       toast.error("No hay token de autenticación");
       return;
     }
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/aspirante/crear-eps`;
 
     try {
       await toast.promise(
@@ -239,6 +267,16 @@ export const EpsFormulario = () => {
           <input type="file" id="archivo" {...register("archivo")} accept=".pdf, .jpg, .png" className="w-full h-11 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-3 text-sm text-slate-950/90 placeholder-slate-950/60 outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 transition duration-300 ease-in-out" />
           <InputErrors errors={errors} name="archivo" />
         </div>
+        <div>
+        <label className="block font-semibold">Archivo actual:</label>
+        {archivoUrl ? (
+          <a href={archivoUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+            Ver archivo
+          </a>
+        ) : (
+          <p className="text-gray-500">No hay archivo cargado</p>
+        )}
+      </div>
 
         <div className="col-span-full text-center">
           <ButtonPrimary type="submit" value="Guardar" />
