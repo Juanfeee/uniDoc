@@ -8,6 +8,7 @@ import { Eps } from "@/app/datosPersona/Eps";
 import { epsSchema } from "@/validaciones/epsSchema";
 import { Rut } from "@/app/datosPersona/Rut";
 import { ToastContainer } from "react-toastify";
+import { rutSchema } from "@/validaciones/rutSchema";
 
 
 
@@ -23,6 +24,7 @@ const InformacionPersona = () => {
           Schema={userSchema}
           Ruta="/auth/actualizar-usuario"
         />
+        
         <Formulario
           Componente={InformacionContacto}
           Schema={informacionPersonaSchema}
@@ -35,10 +37,11 @@ const InformacionPersona = () => {
           Texto="Agregar eps"
           Schema={epsSchema}
           Ruta="" />
+
         <Formulario Componente={Rut}
           Texto="Agregar rut"
-          Ruta=""
-          Schema={informacionPersonaSchema}
+          Ruta="aspirante/crear-rut"
+          Schema={rutSchema}
         //Luego meter la ruta de la api
         />
       </div>
