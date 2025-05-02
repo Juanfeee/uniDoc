@@ -9,6 +9,7 @@ import { Inputs } from "@/types/inputs";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { AdjuntarArchivo } from "../componentes/formularios/AdjuntarArchivo";
 
 type Props = {
   watch: UseFormWatch<Inputs>;
@@ -29,6 +30,9 @@ export type Inputs = {
   genero: string;
   estado_civil: string;
   acordeonAbierto?: boolean;
+  archivo: FileList;
+  tipo_identificacion: string;
+  numero_identificacion: string;
 };
 
 export const DatosPersonales = ({ setValue, register, errors, watch }: Props) => {
@@ -38,9 +42,9 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
 
 
 
-  // Traer las opciones de identificación y estado civil desde la API
+  // Traer las opciones de tipos de identificación desde la API
   useEffect(() => {
-    const fetchOptions = async () => {
+    const fetchTipoIdentificacion = async () => {
       try {
         // Obtener tipos de identificación
         const responseTipoIdentificacion = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/constantes/tipos-documento`, {
@@ -56,7 +60,18 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
           label: tipo,
         }));
         setTiposIdentificacion(opcionesTipoIdentificacion);
+      } catch (error) {
+        console.error("Error al cargar las opciones de tipo de identificación", error);
+      }
+    };
 
+    fetchTipoIdentificacion();
+  }, []);
+
+  // Traer las opciones de estado civil desde la API
+  useEffect(() => {
+    const fetchEstadoCivil = async () => {
+      try {
         // Obtener estados civiles
         const responseEstadoCivil = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/constantes/estado-civil`, {
           headers: {
@@ -65,19 +80,20 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
           },
         });
 
-        const estado = responseEstadoCivil.data.estado_civil;
-        const opcionesEstadoCivil = estado.map((estado: string) => ({
+        const estados = responseEstadoCivil.data.estado_civil;
+        const opcionesEstadoCivil = estados.map((estado: string) => ({
           value: estado,
           label: estado,
         }));
         setEstadosCivil(opcionesEstadoCivil);
       } catch (error) {
-        console.error("Error al cargar las opciones", error);
+        console.error("Error al cargar las opciones de estado civil", error);
       }
     };
 
-    fetchOptions();
+    fetchEstadoCivil();
   }, []);
+
 
   //Traer los datos del usuario al cargar el componente
   useEffect(() => {
@@ -92,7 +108,6 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
       //mostrar los datos en consola
     }).then((response) => {
       const data = response.data.user;
-
       //mapear los datos del usuario a los campos del formulario
       setValue("tipo_identificacion", data.tipo_identificacion);
       setValue("numero_identificacion", data.numero_identificacion);
@@ -103,12 +118,9 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
       setValue("fecha_nacimiento", data.fecha_nacimiento);
       setValue("genero", data.genero);
       setValue("estado_civil", data.estado_civil);
-      console.log("Datos del usuario:", data);
 
     });
   }, [setValue]);
-  console.log("Datos a enviar:", watch());
-
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 px-8">
@@ -118,7 +130,7 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
         <SelectForm
           id="tipo_identificacion"
           register={register("tipo_identificacion")}
-          options={[{ value: "", label: "Seleccione una opción" }, ...tiposIdentificacion]}
+          options={tiposIdentificacion}
         />
         <InputErrors errors={errors} name="tipo_identificacion" />
       </div>
@@ -228,6 +240,13 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
           />
         </div>
         <InputErrors errors={errors} name="genero" />
+        <div>
+          <input type="file"
+            id="archivo"
+            accept=".pdf"
+            {...register("archivo")}
+          ></input>
+        </div>
       </div>
     </div>
 
