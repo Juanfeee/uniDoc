@@ -1,25 +1,20 @@
 "use client";
-import { InputLabel } from "../componentes/formularios/InputLabel";
-import { LabelRadio } from "../componentes/formularios/LabelRadio";
-import { SelectForm } from "../componentes/formularios/SelectForm";
-import { FieldErrors, SubmitHandler, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from "react-hook-form";
-import TextInput from "../componentes/formularios/TextInput";
-import InputErrors from "../componentes/formularios/InputErrors";
-import { Inputs } from "@/types/inputs";
-import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import axios from "axios";
-import { AdjuntarArchivo } from "../componentes/formularios/AdjuntarArchivo";
 
-type Props = {
-  watch: UseFormWatch<Inputs>;
-  setValue: UseFormSetValue<Inputs>;
-  handleSubmit: UseFormHandleSubmit<Inputs>;
-  onSubmit: SubmitHandler<Inputs>;
-  register: UseFormRegister<Inputs>;
-  errors: FieldErrors<Inputs>;
-  className?: string;
-};
+import { datosPersonaSchema } from "@/validaciones/informacionPersonaSchema";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { InputLabel } from "../componentes/formularios/InputLabel";
+import { SelectForm } from "../componentes/formularios/SelectForm";
+import InputErrors from "../componentes/formularios/InputErrors";
+import TextInput from "../componentes/formularios/TextInput";
+import  Cookies  from "js-cookie";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LabelRadio } from "../componentes/formularios/LabelRadio";
+import { ButtonPrimary } from "../componentes/formularios/ButtonPrimary";
+import { userSchema } from "@/validaciones/datosPersonaSchema";
+
 
 export type Inputs = {
   primer_nombre: string;
@@ -29,17 +24,27 @@ export type Inputs = {
   fecha_nacimiento: string;
   genero: string;
   estado_civil: string;
-  acordeonAbierto?: boolean;
   archivo: FileList;
   tipo_identificacion: string;
   numero_identificacion: string;
 };
 
-export const DatosPersonales = ({ setValue, register, errors, watch }: Props) => {
+export const DatosPersonales = () => {
 
   const [tiposIdentificacion, setTiposIdentificacion] = useState<{ value: string, label: string }[]>([]);
   const [estadoCivil, setEstadosCivil] = useState<{ value: string, label: string }[]>([]);
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<Inputs>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+    },
+  });
 
 
   // Traer las opciones de tipos de identificación desde la API
@@ -122,133 +127,197 @@ export const DatosPersonales = ({ setValue, register, errors, watch }: Props) =>
     });
   }, [setValue]);
 
+  // Obtener los valores del formulario y enviarlos a la API
+  const onSubmit: SubmitHandler<Inputs> = async () => {
+    const formValues = {
+      tipo_identificacion: watch("tipo_identificacion"),
+      numero_identificacion: watch("numero_identificacion"),
+      primer_nombre: watch("primer_nombre"),
+      segundo_nombre: watch("segundo_nombre"),
+      primer_apellido: watch("primer_apellido"),
+      segundo_apellido: watch("segundo_apellido"),
+      fecha_nacimiento: watch("fecha_nacimiento"),
+      genero: watch("genero"),
+      estado_civil: watch("estado_civil"),
+      archivo: watch("archivo"),
+    };
+    //crear formdata para enviar a la API
+
+    const formData = new FormData();
+    formData.append("tipo_identificacion", formValues.tipo_identificacion);
+    formData.append("numero_identificacion", formValues.numero_identificacion);
+    formData.append("primer_nombre", formValues.primer_nombre);
+    formData.append("segundo_nombre", formValues.segundo_nombre);
+    formData.append("primer_apellido", formValues.primer_apellido);
+    formData.append("segundo_apellido", formValues.segundo_apellido);
+    formData.append("fecha_nacimiento", formValues.fecha_nacimiento);
+    formData.append("genero", formValues.genero);
+    formData.append("estado_civil", formValues.estado_civil);
+    formData.append("archivo", formValues.archivo[0]);
+
+    const token = Cookies.get("token");
+    if (!token) {
+      toast.error("No hay token de autenticación");
+      return;
+    }
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/actualizar-usuario`;
+
+    try {
+      await toast.promise(
+        axios.post(url, formData, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 10000
+        }),
+        {
+          pending: "Enviando datos...",
+          success: "Datos guardados correctamente",
+          error: "Error al guardar los datos"
+        }
+      );
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+    }
+    console.log("Datos enviados:", formValues);
+  }
+
+ console.log("Errores:", errors);
+  console.log("Valores del formulario:", watch());
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 px-8">
-      {/* Identificación */}
-      <div>
-        <InputLabel htmlFor="tipo_identificacion" value="Tipo de identificación" />
-        <SelectForm
-          id="tipo_identificacion"
-          register={register("tipo_identificacion")}
-          options={tiposIdentificacion}
-        />
-        <InputErrors errors={errors} name="tipo_identificacion" />
-      </div>
-      <div>
-        <InputLabel htmlFor="numero_identificacion" value="Número de identificación" />
-        <TextInput
-          className="w-full"
-          id="numero_identificacion"
-          type="text"
-          placeholder="Número de identificación..."
-          {...register("numero_identificacion")}
-        />
-        <InputErrors errors={errors} name="numero_identificacion" />
-      </div>
-      {/* Nombres */}
-      <div>
-        <InputLabel htmlFor="primer_nombre" value="Primer nombre" />
-        <TextInput
-          className="w-full"
-          id="primer_nombre"
-          type="text"
-          placeholder="Primer nombre..."
-          {...register("primer_nombre")}
-        />
-        <InputErrors errors={errors} name="primer_nombre" />
-      </div>
-
-      <div>
-        <InputLabel htmlFor="segundo_nombre" value="Segundo nombre" />
-        <TextInput
-          className="w-full"
-          id="segundo_nombre"
-          type="text"
-          placeholder="Segundo nombre..."
-          {...register("segundo_nombre")}
-        />
-        <InputErrors errors={errors} name="segundo_nombre" />
-      </div>
-
-      <div>
-        <InputLabel htmlFor="primer_apellido" value="Primer apellido" />
-        <TextInput
-          className="w-full"
-          id="primer_apellido"
-          type="text"
-          placeholder="Primer apellido..."
-          {...register("primer_apellido")}
-        />
-        <InputErrors errors={errors} name="primer_apellido" />
-      </div>
-
-      <div>
-        <InputLabel htmlFor="segundo_apellido" value="Segundo apellido" />
-        <TextInput
-          className="w-full"
-          id="segundo_apellido"
-          type="text"
-          placeholder="Segundo apellido..."
-          {...register("segundo_apellido")}
-        />
-        <InputErrors errors={errors} name="segundo_apellido" />
-      </div>
-
-      {/* Fecha y Estado civil */}
-      <div>
-        <InputLabel htmlFor="fecha_nacimiento" value="Fecha de nacimiento" />
-        <TextInput
-          className="w-full"
-          id="fecha_nacimiento"
-          type="date"
-          {...register("fecha_nacimiento")}
-        />
-        <InputErrors errors={errors} name="fecha_nacimiento" />
-      </div>
-
-      <div>
-        <InputLabel htmlFor="estado_civil" value="Estado civil" />
-        <SelectForm
-          id="estado_civil"
-          register={register("estado_civil")}
-          options={estadoCivil}
-        />
-        <InputErrors errors={errors} name="estado_civil" />
-      </div>
-
-      {/* Género */}
-      <div className="col-span-full">
-        <InputLabel htmlFor="genero" value="Género" />
-        <div className="flex flex-wrap gap-4 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-4">
-          <LabelRadio
-            htmlFor="masculino"
-            value="Masculino"
-            inputProps={register("genero")}
-            label="Masculino"
-          />
-          <LabelRadio
-            htmlFor="femenino"
-            value="Femenino"
-            inputProps={register("genero")}
-            label="Femenino"
-          />
-          <LabelRadio
-            htmlFor="otro"
-            value="Otro"
-            inputProps={register("genero")}
-            label="Otro"
-          />
-        </div>
-        <InputErrors errors={errors} name="genero" />
+    <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-4xl mx-auto">
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Identificación */}
         <div>
-          <input type="file"
-            id="archivo"
-            accept=".pdf"
-            {...register("archivo")}
-          ></input>
+          <InputLabel htmlFor="tipo_identificacion" value="Tipo de identificación" />
+          <SelectForm
+            id="tipo_identificacion"
+            register={register("tipo_identificacion")}
+            options={tiposIdentificacion}
+          />
+          <InputErrors errors={errors} name="tipo_identificacion" />
         </div>
-      </div>
-    </div>
+        <div>
+          <InputLabel htmlFor="numero_identificacion" value="Número de identificación" />
+          <TextInput
+            className="w-full"
+            id="numero_identificacion"
+            type="text"
+            placeholder="Número de identificación..."
+            {...register("numero_identificacion")}
+          />
+          <InputErrors errors={errors} name="numero_identificacion" />
+        </div>
+        {/* Nombres */}
+        <div>
+          <InputLabel htmlFor="primer_nombre" value="Primer nombre" />
+          <TextInput
+            className="w-full"
+            id="primer_nombre"
+            type="text"
+            placeholder="Primer nombre..."
+            {...register("primer_nombre")}
+          />
+          <InputErrors errors={errors} name="primer_nombre" />
+        </div>
+
+        <div>
+          <InputLabel htmlFor="segundo_nombre" value="Segundo nombre" />
+          <TextInput
+            className="w-full"
+            id="segundo_nombre"
+            type="text"
+            placeholder="Segundo nombre..."
+            {...register("segundo_nombre")}
+          />
+          <InputErrors errors={errors} name="segundo_nombre" />
+        </div>
+
+        <div>
+          <InputLabel htmlFor="primer_apellido" value="Primer apellido" />
+          <TextInput
+            className="w-full"
+            id="primer_apellido"
+            type="text"
+            placeholder="Primer apellido..."
+            {...register("primer_apellido")}
+          />
+          <InputErrors errors={errors} name="primer_apellido" />
+        </div>
+
+        <div>
+          <InputLabel htmlFor="segundo_apellido" value="Segundo apellido" />
+          <TextInput
+            className="w-full"
+            id="segundo_apellido"
+            type="text"
+            placeholder="Segundo apellido..."
+            {...register("segundo_apellido")}
+          />
+          <InputErrors errors={errors} name="segundo_apellido" />
+        </div>
+
+        {/* Fecha y Estado civil */}
+        <div>
+          <InputLabel htmlFor="fecha_nacimiento" value="Fecha de nacimiento" />
+          <TextInput
+            className="w-full"
+            id="fecha_nacimiento"
+            type="date"
+            {...register("fecha_nacimiento")}
+          />
+          <InputErrors errors={errors} name="fecha_nacimiento" />
+        </div>
+
+        <div>
+          <InputLabel htmlFor="estado_civil" value="Estado civil" />
+          <SelectForm
+            id="estado_civil"
+            register={register("estado_civil")}
+            options={estadoCivil}
+          />
+          <InputErrors errors={errors} name="estado_civil" />
+        </div>
+
+        {/* Género */}
+        <div className="col-span-full">
+          <InputLabel htmlFor="genero" value="Género" />
+          <div className="flex flex-wrap gap-4 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-4">
+            <LabelRadio
+              htmlFor="masculino"
+              value="Masculino"
+              inputProps={register("genero")}
+              label="Masculino"
+            />
+            <LabelRadio
+              htmlFor="femenino"
+              value="Femenino"
+              inputProps={register("genero")}
+              label="Femenino"
+            />
+            <LabelRadio
+              htmlFor="otro"
+              value="Otro"
+              inputProps={register("genero")}
+              label="Otro"
+            />
+          </div>
+          <InputErrors errors={errors} name="genero" />
+          <div>
+            <input type="file"
+              id="archivo"
+              accept=".pdf"
+              {...register("archivo")}
+            ></input>
+            <InputErrors errors={errors} name="archivo" />
+          </div>
+        </div>
+        <div className="col-span-full text-center">
+          <ButtonPrimary type="submit" value="Guardar" />
+        </div>
+      </form>
+    </div >
 
   );
 };

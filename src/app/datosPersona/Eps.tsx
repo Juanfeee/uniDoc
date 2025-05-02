@@ -66,7 +66,7 @@ export const EpsFormulario = () => {
         console.error("Error al cargar los datos del usuario:", error);
       });
   }, [setValue]);
-  
+
   // Cargar los tipos de afiliación desde la API
   useEffect(() => {
     const fetchTipoIdentificacion = async () => {
@@ -155,7 +155,8 @@ export const EpsFormulario = () => {
       numero_afiliado: watch("numero_afiliado"),
       archivo: watch("archivo")
     };
-    // Crear FormData correctamente
+    //crear formdata para enviar a la API
+
     const formData = new FormData();
     formData.append('tipo_afiliacion', formValues.tipo_afiliacion);
     formData.append('nombre_eps', formValues.nombre_eps);
@@ -267,17 +268,6 @@ export const EpsFormulario = () => {
           <input type="file" id="archivo" {...register("archivo")} accept=".pdf, .jpg, .png" className="w-full h-11 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-3 text-sm text-slate-950/90 placeholder-slate-950/60 outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 transition duration-300 ease-in-out" />
           <InputErrors errors={errors} name="archivo" />
         </div>
-        <div>
-        <label className="block font-semibold">Archivo actual:</label>
-        {archivoUrl ? (
-          <a href={archivoUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-            Ver archivo
-          </a>
-        ) : (
-          <p className="text-gray-500">No hay archivo cargado</p>
-        )}
-      </div>
-
         <div className="col-span-full text-center">
           <ButtonPrimary type="submit" value="Guardar" />
         </div>

@@ -4,148 +4,266 @@ import { InputLabel } from '../componentes/formularios/InputLabel'
 import { SelectForm } from '../componentes/formularios/SelectForm'
 import InputErros from '../componentes/formularios/InputErrors'
 import TextInput from '../componentes/formularios/TextInput'
-
+import Cookies from 'js-cookie'
 import { FieldErrors, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { datosPersonaSchema } from '@/validaciones/informacionPersonaSchema'
+import { toast } from 'react-toastify'
+import axios from 'axios'
+import { ButtonPrimary } from '../componentes/formularios/ButtonPrimary'
 
-type Props = {
-  watch: UseFormWatch<Inputs>;
-  setValue: UseFormSetValue<Inputs>;
-  handleSubmit: UseFormHandleSubmit<Inputs>;
-  onSubmit: SubmitHandler<Inputs>;
-  register: UseFormRegister<Inputs>;
-  errors: FieldErrors<Inputs>;
-}
+
 
 // type inputs es un objeto que contiene los campos del formulario esto es para que typescript pueda inferir el tipo de dato de cada campo
 export type Inputs = {
-  pais_residencia: string,
-  departamento_residencia: string,
-  ciudad_residencia: string,
-  direccion: string,
+  municipio_id: number,
+  categoria_libreta_militar: string,
+  numero_libreta_militar: string,
+  numero_distrito_militar: string,
+  direccion_residencia: string,
   barrio: string,
-  telefono?: string,
-  celular: string,
-  celular_alternativo?: string,
-  email_alternativo?: string,
-  tipo_identificacion: string,
-  identificacion: string,
+  telefono_movil: string,
+  celular_alternativo: string,
+  correo_alternativo: string,
+  archivo: FileList
 }
 
-export const InformacionContacto = ({ watch, setValue, handleSubmit, onSubmit, register, errors }: Props) => {
+export const InformacionContacto = () => {
 
-  //enviar los datos al servidor
 
+  const [categoriaLibretaMilitar, setCategoriaLibretaMilitar] = useState<{ value: string; label: string }[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<Inputs>({
+    resolver: zodResolver(datosPersonaSchema),
+    defaultValues: {
+    },
+  });
+
+  //Traer los datos del usuario al cargar la pagina
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = Cookies.get("token");
+      if (!token) {
+        toast.error("No hay token de autenticación");
+        return;
+      }
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/aspirante/obtener-informacion-contacto`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000
+        });
+        const data = response.data.informacion_contacto;
+        setValue("categoria_libreta_militar", data.categoria_libreta_militar);
+        setValue("numero_libreta_militar", data.numero_libreta_militar);
+        setValue("numero_distrito_militar", data.numero_distrito_militar);
+        setValue("direccion_residencia", data.direccion_residencia);
+        setValue("barrio", data.barrio);
+        setValue("telefono_movil", data.telefono_movil);
+        setValue("celular_alternativo", data.celular_alternativo);
+        setValue("correo_alternativo", data.correo_alternativo);
+      } catch (error) {
+        console.error(error)
+      }
+    };
+    fetchUserData()
+  }
+  , []);
+
+
+  //Traer los datos de la API para el select de categoria libreta militar
+  useEffect(() => {
+    const fetchCategoriaLibretaMilitar = async () => {
+
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/categoria-libreta-militar", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000
+        });
+        const tipos = response.data.tipo_libreta_militar;
+        const options = tipos.map((tipo: string) => ({
+          value: tipo,
+          label: tipo
+        }));
+        setCategoriaLibretaMilitar(options);
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    fetchCategoriaLibretaMilitar()
+  }, [])
+
+
+  // enviar data a la API
+  const onSubmit: SubmitHandler<Inputs> = async () => {
+    const formValues = {
+      municipio_id: 1,
+      categoria_libreta_militar: watch("categoria_libreta_militar"),
+      numero_libreta_militar: watch("numero_libreta_militar"),
+      numero_distrito_militar: watch("numero_distrito_militar"),
+      direccion_residencia: watch("direccion_residencia"),
+      barrio: watch("barrio"),
+      telefono_movil: watch("telefono_movil"),
+      celular_alternativo: watch("celular_alternativo"),
+      correo_alternativo: watch("correo_alternativo"),
+      archivo: watch("archivo"),
+    };
+  
+    // Crear formData solo si se envía un archivo
+    const formData = new FormData();
+    formData.append("municipio_id", formValues.municipio_id.toString());
+    formData.append("categoria_libreta_militar", formValues.categoria_libreta_militar);
+    formData.append("numero_libreta_militar", formValues.numero_libreta_militar);
+    formData.append("numero_distrito_militar", formValues.numero_distrito_militar);
+    formData.append("direccion_residencia", formValues.direccion_residencia);
+    formData.append("barrio", formValues.barrio);
+    formData.append("telefono_movil", formValues.telefono_movil);
+    formData.append("celular_alternativo", formValues.celular_alternativo);
+    formData.append("correo_alternativo", formValues.correo_alternativo);
+  
+    // Solo agregar el archivo si existe
+    if (formValues.archivo && formValues.archivo.length > 0) {
+      formData.append("archivo", formValues.archivo[0]);
+    }
+  
+    const token = Cookies.get("token");
+    if (!token) {
+      toast.error("No hay token de autenticación");
+      return;
+    }
+  
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/aspirante/crear-informacion-contacto`;
+  
+    try {
+      await toast.promise(
+        axios.post(url, formData, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 10000
+        }),
+        {
+          pending: "Enviando datos...",
+          success: "Datos guardados correctamente",
+          error: "Error al guardar los datos"
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
 
   return (
-      <div className="flex flex-col sm:grid grid-cols-2 sm:gap-y-6 sm:gap-x-4 gap-y-6 px-8">
-        <div className="flex flex-col">
-          <InputLabel
-            htmlFor="tipo_identificacion"
-            value="Tipo de identificación"
-          />
-          <SelectForm
-            id="tipo_identificacion"
-            register={register("tipo_identificacion")}
-          />
-        </div>
-        <div className="flex flex-col">
-          <InputLabel htmlFor="identificacion" value="Identificación" />
-          <TextInput
-            id="identificacion"
-            type="number"
-            {...register("identificacion")}
-            placeholder="Identificación..."
-          />
-        </div>
-        <div className="grid col-span-2 sm:grid-cols-2 gap-x-8 gap-y-4 w-full">
-          <div className="">
-            <InputLabel htmlFor="direccion" value="Dirección de residencia" />
-            <TextInput
-              className="w-full"
-              id="direccion"
-              type="text"
-              placeholder="Direccion de residencia..."
-              {...register("direccion")}
-            />
-            <InputErros errors={errors} name="direccion" />
-          </div>
+    <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">Informacion de contacto</h2>
 
-          <div className="">
-            <InputLabel htmlFor="barrio" value="Barrio" />
-            <TextInput
-              className="w-full"
-              id="barrio"
-              type="text"
-              placeholder="Barrio..."
-              {...register("barrio")}
-            />
-            <InputErros errors={errors} name="barrio" />
-          </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div>
+          <InputLabel htmlFor="categoria_libreta_militar" value="Categoria libreta militar" />
+          <SelectForm id="categoria_libreta_militar" register={register("categoria_libreta_militar")}
+            options={categoriaLibretaMilitar} />
+          <InputErros errors={errors} name="categoria_libreta_militar" />
         </div>
-        <div className="grid gap-y-4 sm:grid-cols-2 lg:grid-cols-3 col-span-full sm:gap-x-8">
-          <div>
-            <InputLabel htmlFor="pais_residencia" value="País" />
-            <SelectForm id="pais_residencia" register={register("pais_residencia")} />
-            <InputErros errors={errors} name="pais_residencia" />
-          </div>
-          <div>
-            <InputLabel htmlFor="departamento_residencia" value="Departamento" />
-            <SelectForm id="departamento_residencia" register={register("departamento_residencia")} />
-            <InputErros errors={errors} name="departamento_residencia" />
-          </div>
-          <div>
-            <InputLabel htmlFor="ciudad_residencia" value="Ciudad" />
-            <SelectForm id="ciudad_residencia" register={register("ciudad_residencia")} />
-            <InputErros errors={errors} name="ciudad_residencia" />
-          </div>
+        <div>
+          <InputLabel htmlFor="numero_libreta_militar" value="Número libreta militar" />
+          <TextInput
+            className="w-full"
+            id="numero_libreta_militar"
+            type="text"
+            placeholder="Número libreta militar..."
+            {...register("numero_libreta_militar")}
+          />
+          <InputErros errors={errors} name="numero_libreta_militar" />
         </div>
-        <div className='grid gap-y-4 sm:grid-cols-2 lg:grid-cols-3 col-span-full sm:gap-x-8'>
-          <div>
-            <InputLabel htmlFor="telefono" value="Teléfono" />
-            <TextInput
-              className="w-full"
-              id="telefono"
-              type="number"
-              placeholder="Telefono..."
-              {...register("telefono")}
-            />
-            <InputErros errors={errors} name="telefono" />
-          </div>
-          <div>
-            <InputLabel htmlFor="celular" value="Celular" />
-            <TextInput
-              className="w-full"
-              id="celular"
-              type="number"
-              placeholder="Celular..."
-              {...register("celular")}
-            />
-            <InputErros errors={errors} name="celular" />
-          </div>
-          <div>
-            <InputLabel htmlFor="celular_alternativo" value="Celular alternativo" />
-            <TextInput
-              className="w-full"
-              id="celular_alternativo"
-              type="number"
-              placeholder="Celular alternativo..."
-              {...register("celular_alternativo")}
-            />
-            <InputErros errors={errors} name="celular_alternativo" />
-          </div>
-          <div>
-            <InputLabel htmlFor="email_alternativo" value="Email alternativo" />
-            <TextInput
-              className="w-full"
-              id="email_alternativo"
-              type="email"
-              placeholder="Email alternativo..."
-              {...register("email_alternativo")}
-            />
-            <InputErros errors={errors} name="email_alternativo" />
-          </div>
+        <div>
+          <InputLabel htmlFor="numero_distrito_militar" value="Número distrito militar" />
+          <TextInput
+            className="w-full"
+            id="numero_distrito_militar"
+            type="text"
+            placeholder="Número distrito militar..."
+            {...register("numero_distrito_militar")}
+          />
+          <InputErros errors={errors} name="numero_distrito_militar" />
         </div>
-      </div>
+        <div className="">
+          <InputLabel htmlFor="direccion" value="Dirección de residencia" />
+          <TextInput
+            className="w-full"
+            id="direccion"
+            type="text"
+            placeholder="Direccion de residencia..."
+            {...register("direccion_residencia")}
+          />
+          <InputErros errors={errors} name="direccion" />
+        </div>
+
+        <div className="">
+          <InputLabel htmlFor="barrio" value="Barrio" />
+          <TextInput
+            className="w-full"
+            id="barrio"
+            type="text"
+            placeholder="Barrio..."
+            {...register("barrio")}
+          />
+          <InputErros errors={errors} name="barrio" />
+        </div>
+        <div>
+          <InputLabel htmlFor="telefono_movil" value="Teléfono" />
+          <TextInput
+            className="w-full"
+            id="telefono_movil"
+            type="number"
+            placeholder="Telefono..."
+            {...register("telefono_movil")}
+          />
+          <InputErros errors={errors} name="telefono_movil" />
+        </div>
+        <div>
+          <InputLabel htmlFor="celular_alternativo" value="Celular alternativo" />
+          <TextInput
+            className="w-full"
+            id="celular_alternativo"
+            type="number"
+            placeholder="Celular alternativo..."
+            {...register("celular_alternativo")}
+          />
+          <InputErros errors={errors} name="celular_alternativo" />
+        </div>
+        <div>
+          <InputLabel htmlFor="correo_alternativo" value="Email alternativo" />
+          <TextInput
+            className="w-full"
+            id="correo_alternativo"
+            type="email"
+            placeholder="Correo alternativo..."
+            {...register("correo_alternativo")}
+          />
+          <InputErros errors={errors} name="correo_alternativo" />
+        </div>
+        <div>
+          <InputLabel htmlFor="archivo" value="Archivo" />
+          <input type="file" id="archivo" {...register("archivo")} accept=".pdf, .jpg, .png" className="w-full h-11 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-3 text-sm text-slate-950/90 placeholder-slate-950/60 outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 transition duration-300 ease-in-out" />
+          <InputErros errors={errors} name="archivo" />
+        </div>
+        <div className="col-span-full text-center">
+          <ButtonPrimary type="submit" value="Guardar" />
+        </div>
+      </form>
+    </div>
 
   )
 }

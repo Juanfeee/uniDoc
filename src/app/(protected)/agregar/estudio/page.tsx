@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { InputLabel } from '../../../componentes/formularios/InputLabel'
 import { SelectForm } from '../../../componentes/formularios/SelectForm'
 import { LabelRadio } from '../../../componentes/formularios/LabelRadio'
@@ -12,28 +12,57 @@ import { ButtonPrimary } from '../../../componentes/formularios/ButtonPrimary';
 import { AdjuntarArchivo } from '@/app/componentes/formularios/AdjuntarArchivo';
 import Link from 'next/link';
 import { ButtonRegresar } from '@/app/componentes/formularios/ButtonRegresar';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
 
-type Props = {}
 type Inputs = {
   tipo_estudio: string;
-  institucion: string;
   graduado: string;
-  fecha_grado: string;
-  titulo: string;
+  institucion: string;
+  fecha_graduacion: string;
   titulo_convalidado: string;
-  fecha_convalidacion?: string;
+  fecha_convalidacion: string;
   resolucion_convalidacion?: string;
-  pais: string;
-  departamento?: string;
-  ciudad?: string;
+  posible_fecha_convalidacion?: string;
+  titulo_estudio: string;
   fecha_inicio: string;
   fecha_fin: string;
-  adjuntar_archivo: File;
+  archivo: FileList;
 }
 
 
-
 const AgregarEstudio = () => {
+
+  const [tipoEstudio, setTipoEstudio] = useState<{ value: string; label: string }[]>([]);
+
+
+  // Cargar los tipos de afiliación desde la API
+  useEffect(() => {
+    const fetchTipoEstudio = async () => {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipos-estudio", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        });
+
+        const tipos = response.data.tipo_estudio;
+        const opcionesFormateadas = tipos.map((tipo: string) => ({
+          value: tipo,
+          label: tipo
+        }));
+        setTipoEstudio(opcionesFormateadas);
+
+      } catch (error) {
+        console.error("Error al cargar las opciones de tipo de identificación", error);
+      }
+    };
+
+    fetchTipoEstudio();
+  }, []);
+
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<Inputs>({ resolver: zodResolver(studySchema) });
   console.log("Formulario", watch());
 
@@ -45,11 +74,86 @@ const AgregarEstudio = () => {
     }
   }, [convalido, setValue]);
 
-  const onSubmit: SubmitHandler<Inputs> = () => {
-    console.log("Formulario enviado");
-    //mensaje de exito
-    alert("Formulario enviado");
-  };
+  useEffect(() => {
+    if (watch('graduado') === 'Si') {
+      setValue('posible_fecha_convalidacion', '');
+    } else if (watch('graduado') === 'No') {
+      setValue('fecha_graduacion', '');
+    }
+  }, [watch('graduado'), setValue]);
+
+  useEffect(() => {
+    if (watch('titulo_convalidado') === 'Si') {
+      setValue('resolucion_convalidacion', '');
+    } else if (watch('titulo_convalidado') === 'No') {
+      setValue('fecha_convalidacion', '');
+    }
+  }, [watch('titulo_convalidado'), setValue]);
+
+  const onSubmit: SubmitHandler<Inputs> = async () => {
+    const formValues = {
+      tipo_estudio: watch('tipo_estudio'),
+      graduado: watch('graduado'),
+      institucion: watch('institucion'),
+      fecha_graduacion: watch('fecha_graduacion'),
+      titulo_convalidado: watch('titulo_convalidado'),
+      fecha_convalidacion: watch('fecha_convalidacion'),
+      resolucion_convalidacion: watch('resolucion_convalidacion'),
+      posible_fecha_convalidacion: watch('posible_fecha_convalidacion'),
+      titulo_estudio: watch('titulo_estudio'),
+      fecha_inicio: watch('fecha_inicio'),
+      fecha_fin: watch('fecha_fin'),
+      archivo: watch('archivo')
+    };
+    //crear formdata para enviar a la API
+
+    const formData = new FormData();
+    formData.append('tipo_estudio', formValues.tipo_estudio);
+    formData.append('graduado', formValues.graduado);
+    formData.append('institucion', formValues.institucion);
+    formData.append('fecha_graduacion', formValues.fecha_graduacion);
+    formData.append('titulo_convalidado', formValues.titulo_convalidado);
+    formData.append('fecha_convalidacion', formValues.fecha_convalidacion);
+    formData.append('resolucion_convalidacion', formValues.resolucion_convalidacion ?? '');
+    formData.append('posible_fecha_convalidacion', formValues.posible_fecha_convalidacion ?? '');
+    formData.append('titulo_estudio', formValues.titulo_estudio);
+    formData.append('fecha_inicio', formValues.fecha_inicio);
+    formData.append('fecha_fin', formValues.fecha_fin);
+    formData.append('archivo', formValues.archivo[0]);
+
+
+    const token = Cookies.get("token");
+    if (!token) {
+      toast.error("No hay token de autenticación");
+      return;
+    }
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/aspirante/crear-estudio`;
+
+    try {
+      await toast.promise(
+        axios.post(url, formData, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 10000
+        }),
+        {
+          pending: "Enviando datos...",
+          success: "Datos guardados correctamente",
+          error: "Error al guardar los datos"
+        }
+      );
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+    } finally {
+      // Cambiamos la pagina a la de estudios
+      window.location.href = "/index";
+    }
+    console.log("Datos enviados:", formValues);
+
+  }
+
   return (
     <>
       <form className='flex flex-col gap-y-4 rounded-md lg:w-[800px] xl:w-[1000px] 2xl:w-[1200px] m-auto relative'
@@ -67,42 +171,54 @@ const AgregarEstudio = () => {
               <SelectForm
                 id='tipo_estudio'
                 register={register('tipo_estudio')}
+                options={tipoEstudio}
               />
               <InputErros errors={errors} name="tipo_estudio" />
             </div>
 
-            < div className='flex flex-col  w-full' >
-              <InputLabel htmlFor='si' value='Graduado' />
-              <div className="flex flex-wrap justify-start px-2 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11" >
-                <div className="flex items-center gap-x-1" >
-                  <LabelRadio htmlFor="si_graduado" value='Si' />
-                  <TextInput
-                    type="radio"
-                    id="si_graduado"
-                    value="si"
-                    {...register('graduado')}
-                  />
-                </div>
-                < div className="flex items-center gap-x-1" >
-                  <LabelRadio htmlFor="no_graduado" value='No' />
-                  <TextInput
-                    type="radio"
-                    id="no_graduado"
-                    value="no"
-                    {...register('graduado')}
-                  />
-                </div>
-              </div>
-              < InputErros errors={errors} name="graduado" />
-            </div>
             < div className='flex flex-col w-full' >
-              <InputLabel htmlFor='fecha_grado' value='Fecha de grado' />
-              <TextInput
-                id='fecha_grado'
-                type='date'
-                {...register('fecha_grado')} />
-              < InputErros errors={errors} name="fecha_grado" />
+              <InputLabel htmlFor='graduado' value='Graduado' />
+              <div className="flex flex-row flex-wrap gap-4 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-4">
+                <LabelRadio
+                  htmlFor="graduado-si"
+                  value="Si"
+                  inputProps={register("graduado")}
+                  label="Si"
+                />
+                <LabelRadio
+                  htmlFor="graduado-no"
+                  value="No"
+                  inputProps={register("graduado")}
+                  label="No"
+                />
+              </div>
+              <InputErros errors={errors} name="graduado" />
             </div>
+            {watch('graduado') === 'Si' && (
+              <>
+                < div className='flex flex-col w-full' >
+                  <InputLabel htmlFor='fecha_grado' value='Fecha de grado' />
+                  <TextInput
+                    id='fecha_grado'
+                    type='date'
+                    {...register('fecha_graduacion')} />
+                  < InputErros errors={errors} name="fecha_grado" />
+                </div>
+              </>
+            )
+            } {watch('graduado') === 'No' && (
+              <>
+                < div className='flex flex-col w-full' >
+                  <InputLabel htmlFor='posible_fecha_convalidacion' value='Posible fecha de convalidación' />
+                  <TextInput
+                    id='posible_fecha_convalidacion'
+                    type='date'
+                    {...register('posible_fecha_convalidacion')} />
+                  < InputErros errors={errors} name="posible_fecha_convalidacion" />
+                </div>
+              </>
+            )}
+
           </div>
 
 
@@ -121,103 +237,82 @@ const AgregarEstudio = () => {
               <TextInput
                 id='titulo'
                 placeholder='Título'
-                {...register('titulo')}
+                {...register('titulo_estudio')}
               />
-              < InputErros errors={errors} name="titulo" />
+              < InputErros errors={errors} name="titulo_estudio" />
             </div>
           </div>
           < div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 col-span-full gap-4' >
             <div className='flex flex-col w-full' >
-              <InputLabel htmlFor='' value='Convalido' />
+              < div className="" >
+                <InputLabel htmlFor="convalido" value="Convalido" />
 
-              <div className="flex flex-wrap justify-start px-4 sm:justify-star items-center gap-x-6 lg:gap-x-8 rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] sm:h-11" >
-                <div className="flex items-center gap-x-1" >
-                  <LabelRadio htmlFor="si_convalido" value='Si' />
-                  <TextInput
-                    type="radio"
-                    id="si_convalido"
-                    value="si"
-                    {...register('titulo_convalidado')}
+                <div className="flex flex-row flex-wrap gap-4 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-4">
+                  <LabelRadio
+                    htmlFor="convalido-si"
+                    value="Si"
+                    inputProps={register("titulo_convalidado")}
+                    label="Si"
+                  />
+                  <LabelRadio
+                    htmlFor="convalido-no"
+                    value="No"
+                    inputProps={register("titulo_convalidado")}
+                    label="No"
                   />
                 </div>
-                < div className="flex items-center gap-x-1" >
-                  <LabelRadio htmlFor="no_convalido" value='No' />
-                  <TextInput
-                    type="radio"
-                    id="no_convalido"
-                    value="no"
-                    {...register('titulo_convalidado')}
-                  />
-                </div>
+                <InputErros errors={errors} name="titulo_convalidado" />
               </div>
-              < InputErros errors={errors} name="titulo_convalidado" />
+              {
+                watch('titulo_convalidado') === 'Si' && (
+                  <>
+                    <div className='flex flex-col w-full' >
+                      <InputLabel htmlFor='fecha_convalidacion' value='Fecha de convalidación' />
+                      <TextInput
+                        id='fecha_convalidacion'
+                        type='date'
+                        {...register('fecha_convalidacion')}
+                      />
+                    </div>
+                    < div className='flex flex-col w-full' >
+                      <InputLabel htmlFor='resolucion_convalidacion' value='Resolución de convalidación' />
+                      <TextInput
+                        id='resolucion_convalidacion'
+                        placeholder='Resolución de convalidación'
+                        {...register('resolucion_convalidacion')}
+                      />
+                    </div>
+                  </>
+                )}
             </div>
-            {
-              watch('titulo_convalidado') === 'si' && (
-                <>
-                  <div className='flex flex-col w-full' >
-                    <InputLabel htmlFor='fecha_convalidacion' value='Fecha de convalidación' />
-                    <TextInput
-                      id='fecha_convalidacion'
-                      type='date'
-                      {...register('fecha_convalidacion')}
-                    />
-                  </div>
-                  < div className='flex flex-col w-full' >
-                    <InputLabel htmlFor='resolucion_convalidacion' value='Resolución de convalidación' />
-                    <TextInput
-                      id='resolucion_convalidacion'
-                      placeholder='Resolución de convalidación'
-                      {...register('resolucion_convalidacion')}
-                    />
-                  </div>
-                </>
-              )}
-          </div>
-          < div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 col-span-full gap-4' >
-            <div className='flex flex-col' >
-              <InputLabel htmlFor='pais' value='País' />
-              <SelectForm id='pais' register={register('pais')} />
-              <InputErros errors={errors} name="pais" />
+            < div className='grid grid-cols-1 sm:grid-cols-2 col-span-full gap-4' >
+              <div className='flex flex-col' >
+                <InputLabel htmlFor='fecha_inicio' value='Fecha de inicio' />
+                <TextInput
+                  type='date'
+                  id='fecha_inicio'
+                  {...register('fecha_inicio')}
+                />
+                < InputErros errors={errors} name="fecha_inicio" />
+              </div>
+              < div className='flex flex-col' >
+                <InputLabel htmlFor='fecha_fin' value='Fecha de fin' />
+                <TextInput
+                  type='date'
+                  id='fecha_fin'
+                  {...register('fecha_fin')}
+                />
+                < InputErros errors={errors} name="fecha_fin" />
+              </div>
             </div>
-            < div className='flex flex-col' >
-              <InputLabel htmlFor='departamento' value='Departamento' />
-              <SelectForm id='departamento' register={register('departamento')} />
-
+            <div>
+              <InputLabel htmlFor="archivo" value="Archivo" />
+              <input type="file" id="archivo" {...register("archivo")} accept=".pdf, .jpg, .png" className="w-full h-11 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-3 text-sm text-slate-950/90 placeholder-slate-950/60 outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 transition duration-300 ease-in-out" />
+              <InputErros errors={errors} name="archivo" />
             </div>
-            < div className='flex flex-col' >
-              <InputLabel htmlFor='ciudad' value='Ciudad' />
-              <SelectForm id='ciudad' register={register('ciudad')} />
-
-
+            <div className='flex justify-center col-span-full' >
+              <ButtonPrimary value='Agregar estudio' />
             </div>
-          </div>
-          < div className='grid grid-cols-1 sm:grid-cols-2 col-span-full gap-4' >
-            <div className='flex flex-col' >
-              <InputLabel htmlFor='fecha_inicio' value='Fecha de inicio' />
-              <TextInput
-                type='date'
-                id='fecha_inicio'
-                {...register('fecha_inicio')}
-              />
-              < InputErros errors={errors} name="fecha_inicio" />
-            </div>
-            < div className='flex flex-col' >
-              <InputLabel htmlFor='fecha_fin' value='Fecha de fin' />
-              <TextInput
-                type='date'
-                id='fecha_fin'
-                {...register('fecha_fin')}
-              />
-              < InputErros errors={errors} name="fecha_fin" />
-            </div>
-          </div>
-          < AdjuntarArchivo
-            id='adjuntar_archivo'
-            value='Adjuntar archivo académico'
-          />
-          <div className='flex justify-center col-span-full' >
-            <ButtonPrimary value='Agregar estudio' />
           </div>
         </div>
       </form>
