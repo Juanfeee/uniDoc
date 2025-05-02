@@ -39,13 +39,8 @@ const AgregarProduccion = () => {
           alert("Formulario enviado");
         })}
       >
-<<<<<<< HEAD
-        <div className="flex flex-col sm:grid grid-cols-3  bg-white gap-y-10  py-12 px-8 rounded-xl">
-          <h3 className="font-bold text-3xl col-span-full">
-            {" "}
-            Agregar producción academica
-          </h3>
-=======
+
+
         <div className="flex flex-col sm:grid grid-cols-3  
         bg-white gap-y-10  py-12 px-8 rounded-xl">
           <div className='flex gap-x-4 col-span-full' >
@@ -56,7 +51,7 @@ const AgregarProduccion = () => {
               Agregar producción académica
             </h3>
           </div>
->>>>>>> cd064f00444c8e5e981ac041990453af863b4d97
+
           <div className="flex flex-col sm:grid sm:grid-cols-2 sm:col-span-full gap-4">
             <div className="flex flex-col w-full">
               <InputLabel htmlFor="tipo_produccion" value="Tipo de estudio" />
@@ -129,11 +124,8 @@ const AgregarProduccion = () => {
           </div>
           <AdjuntarArchivo
             id="adjuntar_archivo"
-<<<<<<< HEAD
-            value="Adjuntar archivo de producción academica"
-=======
+
             value="Adjuntar archivo de producción académica"
->>>>>>> cd064f00444c8e5e981ac041990453af863b4d97
           />
           <div className="flex justify-center col-span-full">
             <ButtonPrimary value="Agregar producción" />

@@ -12,7 +12,6 @@ import { loginSchema } from "@/validaciones/loginSchema"
 import InputErrors from "../../componentes/formularios/InputErrors";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
-
 type Inputs = {
   email: string
   password: string

@@ -4,7 +4,7 @@ import { InputLabel } from '../componentes/formularios/InputLabel'
 import { SelectForm } from '../componentes/formularios/SelectForm'
 import InputErros from '../componentes/formularios/InputErrors'
 import TextInput from '../componentes/formularios/TextInput'
-
+import axios from 'axios';
 import { FieldErrors, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 
 type Props = {
@@ -25,7 +25,7 @@ export type Inputs = {
   fecha_finalizacion_afiliacion: string;
   tipo_afiliado: string;
   numero_afiliado: string;
-  archivo : FileList | null;
+  archivo: FileList | null;
 }
 
 
@@ -37,7 +37,6 @@ export type Inputs = {
 //formData
 export const Eps = ({ watch, setValue, handleSubmit, onSubmit, register, errors }: Props) => {
   const url = process.env.NEXT_PUBLIC_API_URL + "/aspirantes/crear-eps"
-  console.log("url ", url)
 
   const formData = {
     nombre_eps: watch("nombre_eps"),
@@ -48,7 +47,22 @@ export const Eps = ({ watch, setValue, handleSubmit, onSubmit, register, errors 
     tipo_afiliado: watch("tipo_afiliado"),
     numero_afiliado: watch("numero_afiliado")
   }
-  
+
+  const onSubmitHandler = async (data: FormData) => {
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Respuesta del servidor:", response.data);
+      alert("Datos enviados correctamente");
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+      alert("Hubo un error al enviar los datos");
+    }
+  };
+
 
 
   const [acordeonAbierto, setAcordeonAbierto] = useState(false)

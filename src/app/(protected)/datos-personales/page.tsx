@@ -26,13 +26,16 @@ const InformacionPersona = () => {
           Texto="Agregar datos personales"
           Schema={userSchema} />
         <Formulario Componente={InformacionContacto}
+          Ruta="actualizar-informacion-contacto"
           Schema={informacionPersonaSchema}
           Texto="Agregar informacion de contacto"
         />
         <Formulario Componente={Eps}
+          Ruta="actualizar-eps"
           Texto="Agregar eps"
           Schema={epsSchema} />
         <Formulario Componente={Rut}
+          Ruta="actualizar-rut"
           Texto="Agregar rut"
           Schema={informacionPersonaSchema} />
       </div>
