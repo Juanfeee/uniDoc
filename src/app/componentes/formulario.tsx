@@ -30,7 +30,6 @@ export const Formulario = ({ Componente, Schema, Texto, Ruta, }: FormularioProps
 
   const onSubmit: SubmitHandler<Inputs> = (formData) => {
     const token = Coockie.get("token");
-
     if (!token) {
       toast.error("No hay token de autenticación");
       return;

@@ -20,15 +20,12 @@ export const SelectForm = ({ id, className, register, options = [] }: Props) => 
           transition duration-300 ease-in-out`}
       >
         <option value="" disabled>Seleccione una opción</option>
-        {options.length > 0 ? (
+        {
           options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
-          ))
-        ) : (
-          <option value="" disabled>No hay opciones disponibles</option>
-        )}
+          ))}
       </select>
     </div>
   );

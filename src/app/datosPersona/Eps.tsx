@@ -1,23 +1,18 @@
 "use client"
 import React, { useEffect, useState } from 'react'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import axios from 'axios'
+import Cookies from 'js-cookie'
+import { toast } from 'react-toastify'
+import TextInput from '../componentes/formularios/TextInput'
 import { InputLabel } from '../componentes/formularios/InputLabel'
 import { SelectForm } from '../componentes/formularios/SelectForm'
-import InputErros from '../componentes/formularios/InputErrors'
-import TextInput from '../componentes/formularios/TextInput'
-import Cookies from "js-cookie"
-import { FieldErrors, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form'
-import axios from 'axios'
+import InputErrors from '../componentes/formularios/InputErrors'
+import { ButtonPrimary } from '../componentes/formularios/ButtonPrimary'
+import { epsSchema } from '@/validaciones/epsSchema'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-type Props = {
-  watch: UseFormWatch<Inputs>;
-  setValue: UseFormSetValue<Inputs>;
-  handleSubmit: UseFormHandleSubmit<Inputs>;
-  onSubmit: SubmitHandler<Inputs>;
-  register: UseFormRegister<Inputs>;
-  errors: FieldErrors<Inputs>;
-}
-
-export type Inputs = {
+type Inputs = {
   tipo_afiliacion: string;
   nombre_eps: string;
   estado_afiliacion: string;
@@ -28,134 +23,227 @@ export type Inputs = {
   archivo: FileList;
 }
 
-export const Eps = ({ watch, setValue, handleSubmit, onSubmit, register, errors }: Props) => {
-  const [acordeonAbierto, setAcordeonAbierto] = useState(false)
-  const [tiposAfiliacion, setTiposAfiliacion] = useState<{ value: string, label: string }[]>([])
-  
-  const [loading, setLoading] = useState(true) // Agregado el estado de carga
-  const [error, setError] = useState<string | null>(null) // Agregado el estado de error
+export const EpsFormulario = () => {
+  const [tiposAfiliacion, setTiposAfiliacion] = useState<{ value: string; label: string }[]>([]);
+  const [estadosAfiliacion, setEstadosAfiliacion] = useState<{ value: string; label: string }[]>([]);
+  const [tiposAfiliado, setTiposAfiliado] = useState<{ value: string; label: string }[]>([]);
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/aspirante/crear-eps`;
 
-  // Traer las opciones de afiliación desde la API
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>({
+    resolver: zodResolver(epsSchema),
+    defaultValues: {
+    },
+  });
+  // Cargar los tipos de afiliación desde la API
   useEffect(() => {
-    const fetchOptions = async () => {
+    const fetchTipoIdentificacion = async () => {
       try {
-        // Obtener tipos de afiliación
-        const responseTipoAfiliacion = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/constantes/tipo-afiliacion`, {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipo-afiliacion", {
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
+            'Content-Type': 'application/json',
           },
+          timeout: 10000,
         });
 
-        const tipos = responseTipoAfiliacion.data.tipo_afiliacion_eps;
-        const opcionesTipoAfiliacion = tipos.map((tipo: string) => ({
+        const tipos = response.data.tipo_afiliacion_eps;
+        const opcionesFormateadas = tipos.map((tipo: string) => ({
           value: tipo,
-          label: tipo,
+          label: tipo
         }));
-        setTiposAfiliacion(opcionesTipoAfiliacion);
-        setLoading(false); // Una vez que los datos se hayan cargado
+        setTiposAfiliacion(opcionesFormateadas);
+
       } catch (error) {
-        setError('Hubo un error al cargar las opciones de afiliación');
-        setLoading(false);
-        console.error(error);
+        console.error("Error al cargar las opciones de tipo de identificación", error);
       }
     };
 
-    fetchOptions();
-  }, [])
+    fetchTipoIdentificacion();
+  }, []);
+  // Cargar los estados de afiliación desde la API
+  useEffect(() => {
+    const fetchEstadosAfiliacion = async () => {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/estado-afiliacion", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        });
 
-  const toggleAcordeon = () => {
-    setAcordeonAbierto(!acordeonAbierto)
+        const estados = response.data.estado_afiliacion_eps;
+        const opcionesFormateadas = estados.map((estado: string) => ({
+          value: estado,
+          label: estado
+        }));
+        setEstadosAfiliacion(opcionesFormateadas);
+
+      } catch (error) {
+        console.error("Error al cargar las opciones de tipo de identificación", error);
+      }
+    };
+
+    fetchEstadosAfiliacion();
+  }, []);
+  // Cargar los tipos de afiliado desde la API
+  useEffect(() => {
+    const fetchTiposAfiliado = async () => {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipo-afiliado", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        });
+
+        const tipos = response.data.tipo_afiliado_eps;
+        const opcionesFormateadas = tipos.map((tipo: string) => ({
+          value: tipo,
+          label: tipo
+        }));
+        setTiposAfiliado(opcionesFormateadas);
+
+      } catch (error) {
+        console.error("Error al cargar las opciones de tipo de identificación", error);
+      }
+    };
+
+    fetchTiposAfiliado();
+  }, []);
+
+  // Obtener los valores del formulario y 
+
+  const onSubmit: SubmitHandler<Inputs> = async () => {
+    const formValues = {
+      tipo_afiliacion: watch("tipo_afiliacion"),
+      nombre_eps: watch("nombre_eps"),
+      estado_afiliacion: watch("estado_afiliacion"),
+      fecha_afiliacion_efectiva: watch("fecha_afiliacion_efectiva"),
+      fecha_finalizacion_afiliacion: watch("fecha_finalizacion_afiliacion"),
+      tipo_afiliado: watch("tipo_afiliado"),
+      numero_afiliado: watch("numero_afiliado"),
+      archivo: watch("archivo")
+    };
+    // Crear FormData correctamente
+    const formData = new FormData();
+    formData.append('tipo_afiliacion', formValues.tipo_afiliacion);
+    formData.append('nombre_eps', formValues.nombre_eps);
+    formData.append('estado_afiliacion', formValues.estado_afiliacion);
+    formData.append('fecha_afiliacion_efectiva', formValues.fecha_afiliacion_efectiva);
+    formData.append('fecha_finalizacion_afiliacion', formValues.fecha_finalizacion_afiliacion);
+    formData.append('tipo_afiliado', formValues.tipo_afiliado);
+    formData.append('numero_afiliado', formValues.numero_afiliado);
+    formData.append('archivo', formValues.archivo[0]); // Solo se envía el primer archivo
+
+    const token = Cookies.get("token");
+    if (!token) {
+      toast.error("No hay token de autenticación");
+      return;
+    }
+
+    try {
+      await toast.promise(
+        axios.post(url, formData, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 10000
+        }),
+        {
+          pending: "Enviando datos...",
+          success: "Datos guardados correctamente",
+          error: "Error al guardar los datos"
+        }
+      );
+    } catch (error) {
+      console.error("Error al enviar los datos:", error);
+    }
+    console.log("Datos enviados:", formValues);
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 col-span-full gap-y-6 px-8">
-      {/* Mostrar estado de carga o error */}
-      {loading ? (
-        <div>Loading...</div>
-      ) : error ? (
-        <div className="text-red-500">{error}</div>
-      ) : (
-        <>
-          {/* Tipo de afiliación */}
-          <div className="flex flex-col">
-            <InputLabel htmlFor="tipo_afiliacion" value="Tipo de afiliación" />
-            <SelectForm id="tipo_afiliacion" register={register("tipo_afiliacion")} options={tiposAfiliacion} />
-            <InputErros errors={errors} name="tipo_afiliacion" />
-          </div>
+    <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">Formulario EPS</h2>
 
-          {/* Nombre de la EPS */}
-          <div className="flex flex-col">
-            <InputLabel htmlFor="nombre_eps" value="Nombre de la EPS" />
-            <TextInput
-              id="nombre_eps"
-              type="text"
-              placeholder="Nombre de la EPS..."
-              {...register("nombre_eps")}
-            />
-            <InputErros errors={errors} name="nombre_eps" />
-          </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Tipo de afiliación */}
+        <div>
+          <InputLabel htmlFor="tipo_afiliacion" value="Tipo de afiliación" />
+          <SelectForm
+            id="tipo_afiliacion"
+            register={register("tipo_afiliacion")}
+            options={tiposAfiliacion}
+          />
+          <InputErrors errors={errors} name="tipo_afiliacion" />
+        </div>
 
-          {/* Estado de afiliación */}
-          <div className="flex flex-col">
-            <InputLabel htmlFor="estado_afiliacion" value="Estado de afiliación" />
-            <SelectForm id="estado_afiliacion" register={register("estado_afiliacion")} />
-            <InputErros errors={errors} name="estado_afiliacion" />
-          </div>
+        {/* Nombre de la EPS */}
+        <div>
+          <InputLabel htmlFor="nombre_eps" value="Nombre EPS" />
+          <TextInput id="nombre_eps" {...register("nombre_eps")} />
+          <InputErrors errors={errors} name="nombre_eps" />
+        </div>
 
-          {/* Fecha de afiliación efectiva */}
-          <div className="flex flex-col">
-            <InputLabel htmlFor="fecha_afiliacion_efectiva" value="Fecha de afiliación efectiva" />
-            <TextInput
-              id="fecha_afiliacion_efectiva"
-              type="date"
-              {...register("fecha_afiliacion_efectiva")}
-            />
-            <InputErros errors={errors} name="fecha_afiliacion_efectiva" />
-          </div>
+        {/* Estado de afiliación */}
+        <div>
+          <InputLabel htmlFor="estado_afiliacion" value="Estado de afiliación" />
+          <SelectForm
+            id="estado_afiliacion"
+            register={register("estado_afiliacion")}
+            options={estadosAfiliacion}
+          />
+          <InputErrors errors={errors} name="estado_afiliacion" />
+        </div>
 
-          {/* Fecha de finalización de afiliación */}
-          <div className="flex flex-col">
-            <InputLabel htmlFor="fecha_finalizacion_afiliacion" value="Fecha de finalización de afiliación" />
-            <TextInput
-              id="fecha_finalizacion_afiliacion"
-              type="date"
-              {...register("fecha_finalizacion_afiliacion")}
-            />
-            <InputErros errors={errors} name="fecha_finalizacion_afiliacion" />
-          </div>
+        {/* Fecha de afiliación efectiva */}
+        <div>
+          <InputLabel htmlFor="fecha_afiliacion_efectiva" value="Fecha afiliación efectiva" />
+          <TextInput type="date" id="fecha_afiliacion_efectiva" {...register("fecha_afiliacion_efectiva")} />
+          <InputErrors errors={errors} name="fecha_afiliacion_efectiva" />
+        </div>
 
-          {/* Tipo de afiliado */}
-          <div className="flex flex-col">
-            <InputLabel htmlFor="tipo_afiliado" value="Tipo de afiliado" />
-            <SelectForm id="tipo_afiliado" register={register("tipo_afiliado")} />
-            <InputErros errors={errors} name="tipo_afiliado" />
-          </div>
+        {/* Fecha finalización */}
+        <div>
+          <InputLabel htmlFor="fecha_finalizacion_afiliacion" value="Fecha finalización afiliación" />
+          <TextInput type="date" id="fecha_finalizacion_afiliacion" {...register("fecha_finalizacion_afiliacion")} />
+          <InputErrors errors={errors} name="fecha_finalizacion_afiliacion" />
+        </div>
 
-          {/* Número de afiliado */}
-          <div className="flex flex-col">
-            <InputLabel htmlFor="numero_afiliado" value="Número de afiliado" />
-            <TextInput
-              id="numero_afiliado"
-              type="text"
-              placeholder="Número de afiliado..."
-              {...register("numero_afiliado")}
-            />
-            <InputErros errors={errors} name="numero_afiliado" />
-          </div>
+        {/* Tipo afiliado */}
+        <div>
+          <InputLabel htmlFor="tipo_afiliado" value="Tipo afiliado" />
+          <SelectForm
+            id="tipo_afiliado"
+            register={register("tipo_afiliado")}
+            options={tiposAfiliado}
+          />
+          <InputErrors errors={errors} name="tipo_afiliado" />
+        </div>
 
-          {/* Archivo */}
-          <div className="flex flex-col">
-            <InputLabel htmlFor="archivo" value="Archivo" />
-            <TextInput
-              id="archivo"
-              type="file"
-              {...register("archivo")}
-            />
-            <InputErros errors={errors} name="archivo" />
-          </div>
-        </>
-      )}
+        {/* Número afiliado */}
+        <div>
+          <InputLabel htmlFor="numero_afiliado" value="Número afiliado" />
+          <TextInput id="numero_afiliado" placeholder="Número afiliado..."
+            {...register("numero_afiliado")} />
+          <InputErrors errors={errors} name="numero_afiliado" />
+        </div>
+
+        {/* Archivo */}
+        <div>
+          <InputLabel htmlFor="archivo" value="Archivo" />
+          <input type="file" id="archivo" {...register("archivo")} accept=".pdf, .jpg, .png" className="w-full h-11 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-3 text-sm text-slate-950/90 placeholder-slate-950/60 outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 transition duration-300 ease-in-out" />
+          <InputErrors errors={errors} name="archivo" />
+        </div>
+
+        <div className="col-span-full text-center">
+          <ButtonPrimary type="submit" value="Guardar" />
+        </div>
+      </form>
     </div>
   )
 }
