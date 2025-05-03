@@ -19,11 +19,47 @@ export const mappeoTipoExperiencia: { [key in TipoExperiencia]: string } = {
 };
 
 export const experienciaSchema = z.object({
-  tipo_experiencia: z.enum(tipo_experiencia,{message:"Tipo de experiencia no valido"}),
-  institucion: z.string().min(1, {message:"Campo vacio"}),
-  cargo: z.string().min(1, {message:"Campo vacio"}),
-  trabajo_actual: z.enum(["si", "no"],{message:"Campo vacio"}),
-  intensidad_semanal: z.string().min(1, {message:"Campo vacio"}),
-  fecha_inicio:z.string({invalid_type_error:"Esa no es una fecha"}).refine((val) => !isNaN(Date.parse(val)),{message:"Formato de fecha incorrecto"}),
-  fecha_fin:z.string({invalid_type_error:"Esa no es una fecha"}).refine((val) => !isNaN(Date.parse(val)),{message:"Formato de fecha incorrecto"}),
+  tipo_experiencia: z.string().min(1, { message: "Seleccione un tipo de experiencia" }),
+  institucion_experiencia: z.string().min(1, { message: "Campo vacío" }),
+  cargo: z.string().min(1, { message: "Campo vacío" }),
+  trabajo_actual: z.enum(["Si", "No"], {
+    errorMap: () => ({ message: "Seleccione una opción" })
+  }),
+  intensidad_horaria: z.string().min(1, { message: "Campo vacío" }),
+  experiencia_radio: z.enum(["Si", "No"], {
+    errorMap: () => ({ message: "Seleccione una opción" })
+  }),
+  fecha_inicio: z
+    .string({
+      invalid_type_error: "Esa no es una fecha válida",
+    })
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: "Formato de fecha incorrecto",
+    }),
+  fecha_finalizacion: z
+    .string({
+      invalid_type_error: "Esa no es una fecha válida",
+    })
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: "Formato de fecha incorrecto",
+    }),
+  archivo: z
+    .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
+      message: "Debes subir un archivo",
+    })
+    .refine(
+      (fileList) =>
+        fileList instanceof FileList && fileList[0].size <= 2 * 1024 * 1024,
+      {
+        message: "Archivo demasiado grande (máx 2MB)",
+      }
+    )
+    .refine(
+      (fileList) =>
+        fileList instanceof FileList &&
+        ["application/pdf"].includes(fileList[0].type),
+      {
+        message: "Formato de archivo inválido (solo PDF permitido)",
+      }
+    ),
 });
