@@ -19,9 +19,6 @@ const InformacionPersona = () => {
         <InformacionContacto/>
         <EpsFormulario/>
         <Rut/>
-
-
-        
       </div>
     </>
   );

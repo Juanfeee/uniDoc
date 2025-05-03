@@ -9,7 +9,6 @@ import { studySchema } from '@/validaciones/studySchema'
 import InputErros from '../../../componentes/formularios/InputErrors';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ButtonPrimary } from '../../../componentes/formularios/ButtonPrimary';
-import { AdjuntarArchivo } from '@/app/componentes/formularios/AdjuntarArchivo';
 import Link from 'next/link';
 import { ButtonRegresar } from '@/app/componentes/formularios/ButtonRegresar';
 import axios from 'axios';
@@ -19,15 +18,21 @@ import { toast } from 'react-toastify';
 type Inputs = {
   tipo_estudio: string;
   graduado: string;
+  graduado: string;
   institucion: string;
   fecha_graduacion: string;
+  fecha_graduacion: string;
   titulo_convalidado: string;
+  fecha_convalidacion: string;
   fecha_convalidacion: string;
   resolucion_convalidacion?: string;
   posible_fecha_convalidacion?: string;
   titulo_estudio: string;
+  posible_fecha_convalidacion?: string;
+  titulo_estudio: string;
   fecha_inicio: string;
   fecha_fin: string;
+  archivo: FileList;
   archivo: FileList;
 }
 
@@ -211,7 +216,9 @@ const AgregarEstudio = () => {
                 id='titulo'
                 placeholder='Título'
                 {...register('titulo_estudio')}
+                {...register('titulo_estudio')}
               />
+              < InputErros errors={errors} name="titulo_estudio" />
               < InputErros errors={errors} name="titulo_estudio" />
             </div>
           </div>

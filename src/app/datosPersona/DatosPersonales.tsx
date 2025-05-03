@@ -32,7 +32,6 @@ export type Inputs = {
 export const DatosPersonales = () => {
 
 
-
   const {
     register,
     handleSubmit,
@@ -44,6 +43,7 @@ export const DatosPersonales = () => {
     defaultValues: {
     },
   });
+
 
 
   //Traer los datos del usuario al cargar el componente

@@ -30,8 +30,6 @@ export type Inputs = {
 
 export const InformacionContacto = () => {
 
-
-
   const {
     register,
     handleSubmit,
@@ -43,7 +41,7 @@ export const InformacionContacto = () => {
     defaultValues: {
     },
   });
-
+  
   //Traer los datos del usuario al cargar la pagina
   useEffect(() => {
     const fetchUserData = async () => {

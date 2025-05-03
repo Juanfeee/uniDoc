@@ -1,12 +1,9 @@
 import { z } from "zod";
 
 export const languageSchema = z.object({
-  idioma: z.string().min(1, { message: "Campo vacio" }),
-  nivel_idioma: z.enum(["A1", "A2", "B1", "B2", "C1", "C2"], {
-    message: "Nivel no valido",
-  }),
-  institucion: z.string().min(1, { message: "Campo vacio" }),
-  titulo_convalidado: z.string().min(1, { message: "Campo vacio" }),
+  idioma: z.string().min(1, { message: "Campo vacío" }),
+  institucion_idioma: z.string().min(1, { message: "Campo vacío" }),
+  nivel: z.string().min(1, { message: "Seleccione un nivel" }),
   fecha_certificado: z
     .string({
       invalid_type_error: "Esa no es una fecha",
@@ -14,4 +11,23 @@ export const languageSchema = z.object({
     .refine((val) => !isNaN(Date.parse(val)), {
       message: "Formato de fecha incorrecto",
     }),
+  archivo: z
+    .custom<FileList>((val) => val instanceof FileList && val.length > 0, {
+      message: "Debes subir un archivo",
+    })
+    .refine(
+      (fileList) =>
+        fileList instanceof FileList && fileList[0].size <= 2 * 1024 * 1024,
+      {
+        message: "Archivo demasiado grande (máx 2MB)",
+      }
+    )
+    .refine(
+      (fileList) =>
+        fileList instanceof FileList &&
+        ["application/pdf"].includes(fileList[0].type),
+      {
+        message: "Formato de archivo inválido (solo PDF permitido)",
+      }
+    ),
 });
