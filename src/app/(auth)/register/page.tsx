@@ -30,60 +30,7 @@ type Inputs = {
   numero_identificacion: string
 }
 const Registro = () => {
-  //Opciones del select identificacion
-  const [tipoIdentificacion, setTipoIdentificacion] = useState<{ value: string, label: string }[]>([]);
-  const [estadoCivil, setEstadoCivil] = useState<{ value: string, label: string }[]>([]);
 
-
-  //Cargar las opciones del select de identificacion
-  useEffect(() => {
-    const fetchTipoIdentificacion = async () => {
-      try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipos-documento", {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          timeout: 10000,
-        });
-
-        const tipos = response.data.tipos_documento;
-        const opcionesFormateadas = tipos.map((tipo: string) => ({
-          value: tipo,
-          label: tipo
-        }));
-        setTipoIdentificacion(opcionesFormateadas);
-
-      } catch (error) {
-        console.error("Error al cargar las opciones de tipo de identificación", error);
-      }
-    };
-
-    fetchTipoIdentificacion();
-  }, []);
-  useEffect(() => {
-    const fetchEstadoCivil = async () => {
-      try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/estado-civil", {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          timeout: 10000,
-        });
-
-        const estados = response.data.estado_civil;
-        const opcionesFormateadas = estados.map((estado: string) => ({
-          value: estado,
-          label: estado
-        }));
-        setEstadoCivil(opcionesFormateadas);
-
-      } catch (error) {
-        console.error("Error al cargar las opciones de estado civil", error);
-      }
-    };
-
-    fetchEstadoCivil();
-  }, []);
 
 
 
@@ -277,8 +224,9 @@ const Registro = () => {
                     <InputLabel htmlFor="tipo_identificacion" value="Tipo identificación" />
                     <SelectForm
                       id="tipo_identificacion"
-                      options={tipoIdentificacion}
                       register={register("tipo_identificacion")}
+                      url="tipos-documento"
+                      data_url="tipos_documento"
                     />
                     < InputErrors errors={errors} name="tipo_identificacion" />
                   </div>
@@ -312,8 +260,10 @@ const Registro = () => {
                     <SelectForm
                       id="estado_civil"
                       register={register("estado_civil")}
-                      options={estadoCivil}
+                      url="estado-civil"
+                      data_url="estado_civil"
                     />
+
                     <InputErrors errors={errors} name="estado_civil" />
                   </div>
                   < div className="" >
@@ -328,6 +278,7 @@ const Registro = () => {
                     />
                     < InputErrors errors={errors} name="fecha_nacimiento" />
                   </div>
+                  
                   < div className="" >
                     <InputLabel htmlFor="genero" value="Género" />
 

@@ -31,8 +31,7 @@ export type Inputs = {
 
 export const DatosPersonales = () => {
 
-  const [tiposIdentificacion, setTiposIdentificacion] = useState<{ value: string, label: string }[]>([]);
-  const [estadoCivil, setEstadosCivil] = useState<{ value: string, label: string }[]>([]);
+
 
   const {
     register,
@@ -45,59 +44,6 @@ export const DatosPersonales = () => {
     defaultValues: {
     },
   });
-
-
-  // Traer las opciones de tipos de identificación desde la API
-  useEffect(() => {
-    const fetchTipoIdentificacion = async () => {
-      try {
-        // Obtener tipos de identificación
-        const responseTipoIdentificacion = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/constantes/tipos-documento`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        });
-
-        const tipos = responseTipoIdentificacion.data.tipos_documento;
-        const opcionesTipoIdentificacion = tipos.map((tipo: string) => ({
-          value: tipo,
-          label: tipo,
-        }));
-        setTiposIdentificacion(opcionesTipoIdentificacion);
-      } catch (error) {
-        console.error("Error al cargar las opciones de tipo de identificación", error);
-      }
-    };
-
-    fetchTipoIdentificacion();
-  }, []);
-
-  // Traer las opciones de estado civil desde la API
-  useEffect(() => {
-    const fetchEstadoCivil = async () => {
-      try {
-        // Obtener estados civiles
-        const responseEstadoCivil = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/constantes/estado-civil`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        });
-
-        const estados = responseEstadoCivil.data.estado_civil;
-        const opcionesEstadoCivil = estados.map((estado: string) => ({
-          value: estado,
-          label: estado,
-        }));
-        setEstadosCivil(opcionesEstadoCivil);
-      } catch (error) {
-        console.error("Error al cargar las opciones de estado civil", error);
-      }
-    };
-
-    fetchEstadoCivil();
-  }, []);
 
 
   //Traer los datos del usuario al cargar el componente
@@ -187,6 +133,7 @@ export const DatosPersonales = () => {
   console.log("Valores del formulario:", watch());
   return (
     <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">Datos personales</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* Identificación */}
         <div>
@@ -194,7 +141,8 @@ export const DatosPersonales = () => {
           <SelectForm
             id="tipo_identificacion"
             register={register("tipo_identificacion")}
-            options={tiposIdentificacion}
+            url="tipos-documento"
+            data_url="tipos_documento"
           />
           <InputErrors errors={errors} name="tipo_identificacion" />
         </div>
@@ -275,7 +223,8 @@ export const DatosPersonales = () => {
           <SelectForm
             id="estado_civil"
             register={register("estado_civil")}
-            options={estadoCivil}
+            url="estado-civil"
+            data_url="estado_civil"
           />
           <InputErrors errors={errors} name="estado_civil" />
         </div>

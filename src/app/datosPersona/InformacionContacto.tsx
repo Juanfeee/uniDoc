@@ -31,7 +31,6 @@ export type Inputs = {
 export const InformacionContacto = () => {
 
 
-  const [categoriaLibretaMilitar, setCategoriaLibretaMilitar] = useState<{ value: string; label: string }[]>([]);
 
   const {
     register,
@@ -77,31 +76,6 @@ export const InformacionContacto = () => {
     fetchUserData()
   }
   , []);
-
-
-  //Traer los datos de la API para el select de categoria libreta militar
-  useEffect(() => {
-    const fetchCategoriaLibretaMilitar = async () => {
-
-      try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/categoria-libreta-militar", {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          timeout: 10000
-        });
-        const tipos = response.data.tipo_libreta_militar;
-        const options = tipos.map((tipo: string) => ({
-          value: tipo,
-          label: tipo
-        }));
-        setCategoriaLibretaMilitar(options);
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    fetchCategoriaLibretaMilitar()
-  }, [])
 
 
   // enviar data a la API
@@ -172,8 +146,12 @@ export const InformacionContacto = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
           <InputLabel htmlFor="categoria_libreta_militar" value="Categoria libreta militar" />
-          <SelectForm id="categoria_libreta_militar" register={register("categoria_libreta_militar")}
-            options={categoriaLibretaMilitar} />
+          <SelectForm 
+            id="categoria_libreta_militar" 
+            register={register("categoria_libreta_militar")}
+            url='categoria-libreta-militar'
+            data_url='tipo_libreta_militar'
+            />
           <InputErros errors={errors} name="categoria_libreta_militar" />
         </div>
         <div>

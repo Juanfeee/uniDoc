@@ -25,10 +25,6 @@ type Inputs = {
 
 export const EpsFormulario = () => {
 
-  const [tiposAfiliacion, setTiposAfiliacion] = useState<{ value: string; label: string }[]>([]);
-  const [estadosAfiliacion, setEstadosAfiliacion] = useState<{ value: string; label: string }[]>([]);
-  const [tiposAfiliado, setTiposAfiliado] = useState<{ value: string; label: string }[]>([]);
-
 
   const {
     register,
@@ -67,81 +63,6 @@ export const EpsFormulario = () => {
       });
   }, [setValue]);
 
-  // Cargar los tipos de afiliación desde la API
-  useEffect(() => {
-    const fetchTipoIdentificacion = async () => {
-      try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipo-afiliacion", {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          timeout: 10000,
-        });
-
-        const tipos = response.data.tipo_afiliacion_eps;
-        const opcionesFormateadas = tipos.map((tipo: string) => ({
-          value: tipo,
-          label: tipo
-        }));
-        setTiposAfiliacion(opcionesFormateadas);
-
-      } catch (error) {
-        console.error("Error al cargar las opciones de tipo de identificación", error);
-      }
-    };
-
-    fetchTipoIdentificacion();
-  }, []);
-  // Cargar los estados de afiliación desde la API
-  useEffect(() => {
-    const fetchEstadosAfiliacion = async () => {
-      try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/estado-afiliacion", {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          timeout: 10000,
-        });
-
-        const estados = response.data.estado_afiliacion_eps;
-        const opcionesFormateadas = estados.map((estado: string) => ({
-          value: estado,
-          label: estado
-        }));
-        setEstadosAfiliacion(opcionesFormateadas);
-
-      } catch (error) {
-        console.error("Error al cargar las opciones de tipo de identificación", error);
-      }
-    };
-
-    fetchEstadosAfiliacion();
-  }, []);
-  // Cargar los tipos de afiliado desde la API
-  useEffect(() => {
-    const fetchTiposAfiliado = async () => {
-      try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipo-afiliado", {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          timeout: 10000,
-        });
-
-        const tipos = response.data.tipo_afiliado_eps;
-        const opcionesFormateadas = tipos.map((tipo: string) => ({
-          value: tipo,
-          label: tipo
-        }));
-        setTiposAfiliado(opcionesFormateadas);
-
-      } catch (error) {
-        console.error("Error al cargar las opciones de tipo de identificación", error);
-      }
-    };
-
-    fetchTiposAfiliado();
-  }, []);
 
   // Obtener los valores del formulario y 
   const onSubmit: SubmitHandler<Inputs> = async () => {
@@ -206,7 +127,8 @@ export const EpsFormulario = () => {
           <SelectForm
             id="tipo_afiliacion"
             register={register("tipo_afiliacion")}
-            options={tiposAfiliacion}
+            url='tipo-afiliacion'
+            data_url='tipo_afiliacion_eps'
           />
           <InputErrors errors={errors} name="tipo_afiliacion" />
         </div>
@@ -214,7 +136,7 @@ export const EpsFormulario = () => {
         {/* Nombre de la EPS */}
         <div>
           <InputLabel htmlFor="nombre_eps" value="Nombre EPS" />
-          <TextInput id="nombre_eps" {...register("nombre_eps")} />
+          <TextInput id="nombre_eps" {...register("nombre_eps")} placeholder="Nombre de eps..." />
           <InputErrors errors={errors} name="nombre_eps" />
         </div>
 
@@ -224,7 +146,8 @@ export const EpsFormulario = () => {
           <SelectForm
             id="estado_afiliacion"
             register={register("estado_afiliacion")}
-            options={estadosAfiliacion}
+            url='estado-afiliacion'
+            data_url='estado_afiliacion_eps'
           />
           <InputErrors errors={errors} name="estado_afiliacion" />
         </div>
@@ -249,7 +172,8 @@ export const EpsFormulario = () => {
           <SelectForm
             id="tipo_afiliado"
             register={register("tipo_afiliado")}
-            options={tiposAfiliado}
+            url='tipo-afiliado'
+            data_url='tipo_afiliado_eps'
           />
           <InputErrors errors={errors} name="tipo_afiliado" />
         </div>
