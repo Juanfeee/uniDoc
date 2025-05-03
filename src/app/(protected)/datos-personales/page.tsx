@@ -18,9 +18,9 @@ const InformacionPersona = () => {
         <DatosPersonales/>
         <InformacionContacto/>
         <EpsFormulario/>
+        <Rut/>
 
-{/* 
-        <Rut/> */}
+
         
       </div>
     </>

@@ -50,13 +50,13 @@ export const EpsFormulario = () => {
     })
       .then((response) => {
         const data = response.data.eps;
-        setValue("tipo_afiliacion", data.tipo_afiliacion);
-        setValue("nombre_eps", data.nombre_eps);
-        setValue("estado_afiliacion", data.estado_afiliacion);
-        setValue("fecha_afiliacion_efectiva", data.fecha_afiliacion_efectiva);
-        setValue("fecha_finalizacion_afiliacion", data.fecha_finalizacion_afiliacion);
-        setValue("tipo_afiliado", data.tipo_afiliado);
-        setValue("numero_afiliado", data.numero_afiliado);
+        setValue("tipo_afiliacion", data.tipo_afiliacion || "");
+        setValue("nombre_eps", data.nombre_eps || "");
+        setValue("estado_afiliacion", data.estado_afiliacion || "");
+        setValue("fecha_afiliacion_efectiva", data.fecha_afiliacion_efectiva || "");
+        setValue("fecha_finalizacion_afiliacion", data.fecha_finalizacion_afiliacion || "");
+        setValue("tipo_afiliado", data.tipo_afiliado || "");
+        setValue("numero_afiliado", data.numero_afiliado || "");
       })
       .catch((error) => {
         console.error("Error al cargar los datos del usuario:", error);
@@ -102,7 +102,7 @@ export const EpsFormulario = () => {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
-          timeout: 10000
+          timeout: 20000
         }),
         {
           pending: "Enviando datos...",

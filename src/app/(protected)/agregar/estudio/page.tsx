@@ -34,34 +34,6 @@ type Inputs = {
 
 const AgregarEstudio = () => {
 
-  const [tipoEstudio, setTipoEstudio] = useState<{ value: string; label: string }[]>([]);
-
-
-  // Cargar los tipos de afiliación desde la API
-  useEffect(() => {
-    const fetchTipoEstudio = async () => {
-      try {
-        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipos-estudio", {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          timeout: 10000,
-        });
-
-        const tipos = response.data.tipo_estudio;
-        const opcionesFormateadas = tipos.map((tipo: string) => ({
-          value: tipo,
-          label: tipo
-        }));
-        setTipoEstudio(opcionesFormateadas);
-
-      } catch (error) {
-        console.error("Error al cargar las opciones de tipo de identificación", error);
-      }
-    };
-
-    fetchTipoEstudio();
-  }, []);
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<Inputs>({ resolver: zodResolver(studySchema) });
   console.log("Formulario", watch());
@@ -136,7 +108,7 @@ const AgregarEstudio = () => {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
-          timeout: 10000
+          timeout: 20000
         }),
         {
           pending: "Enviando datos...",
@@ -171,7 +143,8 @@ const AgregarEstudio = () => {
               <SelectForm
                 id='tipo_estudio'
                 register={register('tipo_estudio')}
-                options={tipoEstudio}
+                url='tipos-estudio'
+                data_url='tipo_estudio'
               />
               <InputErros errors={errors} name="tipo_estudio" />
             </div>

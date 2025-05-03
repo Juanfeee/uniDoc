@@ -21,7 +21,7 @@ export const SelectForm = ({ id, className, register, options = [], url, data_ur
           headers: {
             'Content-Type': 'application/json',
           },
-          timeout: 10000,
+          timeout: 20000 ,
         });
 
         const tipos = response.data[data_url];

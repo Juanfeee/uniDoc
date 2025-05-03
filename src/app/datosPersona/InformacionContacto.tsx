@@ -58,7 +58,7 @@ export const InformacionContacto = () => {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          timeout: 10000
+          timeout: 20000
         });
         const data = response.data.informacion_contacto;
         setValue("categoria_libreta_militar", data.categoria_libreta_militar);

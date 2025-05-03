@@ -23,8 +23,6 @@ export type Inputs = {
 };
 
 export const Rut = () => {
-  const [tipoPersonaOptions, setTipoPersonaOptions] = useState<{ value: string, label: string }[]>([]);
-  const [codigoCiiuOptions, setCodigoCiiuOptions] = useState<{ value: string, label: string }[]>([]);
 
    const {
       register,
@@ -38,47 +36,6 @@ export const Rut = () => {
       },
     });
 
-  // Cargar opciones de constantes desde la API
-  useEffect(() => {
-    const fetchOptions = async () => {
-      try {
-        // Obtener tipos de persona
-        const responseTipoPersona = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/constantes/tipo-persona`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        });
-
-        const tiposPersona = responseTipoPersona.data.tipo_persona;
-        const opcionesTipoPersona = tiposPersona.map((tipo: string) => ({
-          value: tipo,
-          label: tipo,
-        }));
-        setTipoPersonaOptions(opcionesTipoPersona);
-
-        // Obtener códigos CIIU
-        const responseCodigoCiiu = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/constantes/codigo-ciiu`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
-          },
-        });
-
-        const codigosCiiu = responseCodigoCiiu.data.codigo_ciiu;
-        const opcionesCodigoCiiu = codigosCiiu.map((codigo: string) => ({
-          value: codigo,
-          label: codigo,
-        }));
-        setCodigoCiiuOptions(opcionesCodigoCiiu);
-
-      } catch (error) {
-        console.error("Error al cargar las opciones", error);
-      }
-    };
-
-    fetchOptions();
-  }, []);
 
   //Traer los datos del usuario al cargar el componente
     useEffect(() => {
@@ -187,10 +144,8 @@ export const Rut = () => {
         <SelectForm
           id="tipo_persona"
           register={register("tipo_persona")}
-          options={[
-            { value: "", label: "Seleccione una opción" },
-            ...tipoPersonaOptions
-          ]}
+          url="tipo-persona"
+          data_url="tipo_persona"
         />
         <InputErrors errors={errors} name="tipo_persona" />
       </div>
@@ -201,10 +156,8 @@ export const Rut = () => {
         <SelectForm
           id="codigo_ciiu"
           register={register("codigo_ciiu")}
-          options={[
-            { value: "", label: "Seleccione una opción" },
-            ...codigoCiiuOptions
-          ]}
+          url="codigo-ciiu"
+          data_url="codigo_ciiu"
         />
         <InputErrors errors={errors} name="codigo_ciiu" />
       </div>

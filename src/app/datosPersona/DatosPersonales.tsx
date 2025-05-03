@@ -60,15 +60,15 @@ export const DatosPersonales = () => {
     }).then((response) => {
       const data = response.data.user;
       //mapear los datos del usuario a los campos del formulario
-      setValue("tipo_identificacion", data.tipo_identificacion);
-      setValue("numero_identificacion", data.numero_identificacion);
-      setValue("primer_nombre", data.primer_nombre);
-      setValue("segundo_nombre", data.segundo_nombre);
-      setValue("primer_apellido", data.primer_apellido);
-      setValue("segundo_apellido", data.segundo_apellido);
-      setValue("fecha_nacimiento", data.fecha_nacimiento);
-      setValue("genero", data.genero);
-      setValue("estado_civil", data.estado_civil);
+      setValue("tipo_identificacion", data.tipo_identificacion || "");
+      setValue("numero_identificacion", data.numero_identificacion || "");
+      setValue("primer_nombre", data.primer_nombre || ""); 
+      setValue("segundo_nombre", data.segundo_nombre || "");
+      setValue("primer_apellido", data.primer_apellido  || "");
+      setValue("segundo_apellido", data.segundo_apellido || "");
+      setValue("fecha_nacimiento", data.fecha_nacimiento || "");
+      setValue("genero", data.genero || "");
+      setValue("estado_civil", data.estado_civil || "");
 
     });
   }, [setValue]);
@@ -115,7 +115,7 @@ export const DatosPersonales = () => {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
-          timeout: 10000
+          timeout: 20000
         }),
         {
           pending: "Enviando datos...",
