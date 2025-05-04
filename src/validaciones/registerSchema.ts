@@ -1,68 +1,20 @@
 import { z } from "zod";
-const estadoCivil = ["Soltero", "Casado", "Divorciado", "Viudo"] as const;
-const tipo_identificaciones = [
-  "CEDULA_DE_EXTRANJERIA",
-  "NUMERO_UNICO_IDENTIFICACION_PERSONAL",
-  "PASAPORTE",
-  "REGISTRO_CIVIL",
-  "Cédula de ciudadanía",
-  "NUMERO_POR_SECRETARIA_DE_EDUCACION",
-  "SERVICIO_NACIONAL_DE_PRUEBAS",
-  "TARJETA_DE_IDENTIDAD",
-  "TARJETA_PROFESIONAL",
-] as const;
 
-export type EstadoCivil = (typeof estadoCivil)[number];
-export type TipoIdentificacion = (typeof tipo_identificaciones)[number];
-
-
-export const mappeoEstadoCivil: { [key in EstadoCivil]: string } = {
-  Soltero: "Soltero",
-  Casado: "Casado",
-  Divorciado: "Divorciado",
-  Viudo: "Viudo",
-};
-export const mappeoTipoIdentificacion: { [key in TipoIdentificacion]: string } =
-  {
-    "Cédula de ciudadanía": "Cédula de ciudadanía",
-    CEDULA_DE_EXTRANJERIA: "Cédula de extranjería",
-    NUMERO_UNICO_IDENTIFICACION_PERSONAL: "Número unico de identificación personal",
-    PASAPORTE: "Pasaporte",
-    REGISTRO_CIVIL: "Registro civil",
-    NUMERO_POR_SECRETARIA_DE_EDUCACION: "Número por secretaría de educación",
-    SERVICIO_NACIONAL_DE_PRUEBAS: "Servicio nacional de pruebas",
-    TARJETA_DE_IDENTIDAD: "Tarjeta de identidad",
-    TARJETA_PROFESIONAL: "Tarjeta profesional",
-  };
-
-export const registerSchema = z
-  .object({
-    primer_nombre: z.string().min(1, { message: "Campo vacio" }),
-    segundo_nombre: z.string().min(1, { message: "Campo vacio" }),
-    primer_apellido: z.string().min(1, { message: "Campo vacio" }),
-    segundo_apellido: z.string().min(1, { message: "Campo vacio" }),
-    email: z.string().email({ message: "Correo no valido" }),
-    password: z
-      .string()
-      .min(8, { message: "La contraseña debe tener al menos 8 caracteres" }),
-      password_confirmation: z
-      .string()
-      .min(1, { message: "La confirmación de contraseña es requerida" }),
-
-    fecha_nacimiento: z
-      .string({
-        invalid_type_error: "Esa no es una fecha",
-      })
-      .refine((val) => !isNaN(Date.parse(val)), {
-        message: "Formato de fecha incorrecto",
-      }),
-
-
-    estado_civil: z.enum(estadoCivil, {
-      errorMap: () => ({ message: "El estado civil no es valido" }),
-    }),
-  }).refine((data) => data.password === data.password_confirmation, {
-    message: "Las contraseñas no coinciden",
-    path: ["password_confirmation"] 
-  });
-
+export const registerSchema = z.object({
+  pais: z.string().nonempty("El país es obligatorio"),
+  departamento: z.string().nonempty("El departamento es obligatorio"),
+  municipio: z.string().nonempty("El municipio es obligatorio"),
+  email: z.string().email("Debe ser un correo válido"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  password_confirmation: z.string().min(6, "La confirmación de contraseña es obligatoria"),
+  primer_nombre: z.string().nonempty("El primer nombre es obligatorio"),
+  segundo_nombre: z.string().optional(),
+  primer_apellido: z.string().nonempty("El primer apellido es obligatorio"),
+  segundo_apellido: z.string().optional(),
+  fecha_nacimiento: z.string().nonempty("La fecha de nacimiento es obligatoria"),
+  genero: z.enum(["Masculino", "Femenino", "Otro"]),
+  estado_civil: z.string().nonempty("El estado civil es obligatorio"),
+  municipio_id: z.number().optional(),
+  tipo_identificacion: z.string().nonempty("El tipo de identificación es obligatorio"),
+  numero_identificacion: z.string().nonempty("El número de identificación es obligatorio"),
+});

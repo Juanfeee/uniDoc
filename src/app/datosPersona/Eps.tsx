@@ -1,23 +1,19 @@
 "use client"
 import React, { useEffect, useState } from 'react'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import axios from 'axios'
+import Cookies from 'js-cookie'
+import { toast } from 'react-toastify'
+import TextInput from '../componentes/formularios/TextInput'
 import { InputLabel } from '../componentes/formularios/InputLabel'
 import { SelectForm } from '../componentes/formularios/SelectForm'
-import InputErros from '../componentes/formularios/InputErrors'
-import TextInput from '../componentes/formularios/TextInput'
-import axios from 'axios';
-import { FieldErrors, SubmitHandler, useForm, UseFormHandleSubmit, UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 
-type Props = {
-  watch: UseFormWatch<Inputs>;
-  setValue: UseFormSetValue<Inputs>;
-  handleSubmit: UseFormHandleSubmit<Inputs>;
-  onSubmit: SubmitHandler<Inputs>;
-  register: UseFormRegister<Inputs>;
-  errors: FieldErrors<Inputs>;
-}
+import InputErrors from '../componentes/formularios/InputErrors'
+import { ButtonPrimary } from '../componentes/formularios/ButtonPrimary'
+import { epsSchema } from '@/validaciones/epsSchema'
+import { zodResolver } from '@hookform/resolvers/zod'
 
-// type inputs es un objeto que contiene los campos del formulario esto es para que typescript pueda inferir el tipo de dato de cada campo
-export type Inputs = {
+type Inputs = {
   nombre_eps: string;
   tipo_afiliacion: string;
   estado_afiliacion: string;
@@ -25,136 +21,259 @@ export type Inputs = {
   fecha_finalizacion_afiliacion: string;
   tipo_afiliado: string;
   numero_afiliado: string;
-  archivo: FileList | null;
+
+  archivo: FileList;
 }
 
+export const EpsFormulario = () => {
 
-//await axios.post(url,formData){
-//   headers: {
-//     "Content-Type": "application/json",}
-//}
+  const [tiposAfiliacion, setTiposAfiliacion] = useState<{ value: string; label: string }[]>([]);
+  const [estadosAfiliacion, setEstadosAfiliacion] = useState<{ value: string; label: string }[]>([]);
+  const [tiposAfiliado, setTiposAfiliado] = useState<{ value: string; label: string }[]>([]);
 
-//formData
-export const Eps = ({ watch, setValue, handleSubmit, onSubmit, register, errors }: Props) => {
-  const url = process.env.NEXT_PUBLIC_API_URL + "/aspirantes/crear-eps"
 
-  const formData = {
-    nombre_eps: watch("nombre_eps"),
-    tipo_afiliacion: watch("tipo_afiliacion"),
-    estado_afiliacion: watch("estado_afiliacion"),
-    fecha_afiliacion_efectiva: watch("fecha_afiliacion_efectiva"),
-    fecha_finalizacion_afiliacion: watch("fecha_finalizacion_afiliacion"),
-    tipo_afiliado: watch("tipo_afiliado"),
-    numero_afiliado: watch("numero_afiliado")
-  }
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<Inputs>({
+    resolver: zodResolver(epsSchema),
+    defaultValues: {
+    },
+  });
 
-  const onSubmitHandler = async (data: FormData) => {
-    try {
-      const response = await axios.post(url, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+  //Traer los datos del usuario al cargar el componente
+  useEffect(() => {
+    const url2 = `${process.env.NEXT_PUBLIC_API_URL}/aspirante/obtener-eps`;
+    axios.get(url2, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${Cookies.get("token")}`,
+      },
+    })
+      .then((response) => {
+        const data = response.data.eps;
+        setValue("tipo_afiliacion", data.tipo_afiliacion);
+        setValue("nombre_eps", data.nombre_eps);
+        setValue("estado_afiliacion", data.estado_afiliacion);
+        setValue("fecha_afiliacion_efectiva", data.fecha_afiliacion_efectiva);
+        setValue("fecha_finalizacion_afiliacion", data.fecha_finalizacion_afiliacion);
+        setValue("tipo_afiliado", data.tipo_afiliado);
+        setValue("numero_afiliado", data.numero_afiliado);
+      })
+      .catch((error) => {
+        console.error("Error al cargar los datos del usuario:", error);
       });
-      console.log("Respuesta del servidor:", response.data);
-      alert("Datos enviados correctamente");
+  }, [setValue]);
+  
+  // Cargar los tipos de afiliación desde la API
+  useEffect(() => {
+    const fetchTipoIdentificacion = async () => {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipo-afiliacion", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        });
+
+        const tipos = response.data.tipo_afiliacion_eps;
+        const opcionesFormateadas = tipos.map((tipo: string) => ({
+          value: tipo,
+          label: tipo
+        }));
+        setTiposAfiliacion(opcionesFormateadas);
+
+      } catch (error) {
+        console.error("Error al cargar las opciones de tipo de identificación", error);
+      }
+    };
+
+    fetchTipoIdentificacion();
+  }, []);
+  // Cargar los estados de afiliación desde la API
+  useEffect(() => {
+    const fetchEstadosAfiliacion = async () => {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/estado-afiliacion", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        });
+
+        const estados = response.data.estado_afiliacion_eps;
+        const opcionesFormateadas = estados.map((estado: string) => ({
+          value: estado,
+          label: estado
+        }));
+        setEstadosAfiliacion(opcionesFormateadas);
+
+      } catch (error) {
+        console.error("Error al cargar las opciones de tipo de identificación", error);
+      }
+    };
+
+    fetchEstadosAfiliacion();
+  }, []);
+  // Cargar los tipos de afiliado desde la API
+  useEffect(() => {
+    const fetchTiposAfiliado = async () => {
+      try {
+        const response = await axios.get(process.env.NEXT_PUBLIC_API_URL + "/constantes/tipo-afiliado", {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          timeout: 10000,
+        });
+
+        const tipos = response.data.tipo_afiliado_eps;
+        const opcionesFormateadas = tipos.map((tipo: string) => ({
+          value: tipo,
+          label: tipo
+        }));
+        setTiposAfiliado(opcionesFormateadas);
+
+      } catch (error) {
+        console.error("Error al cargar las opciones de tipo de identificación", error);
+      }
+    };
+
+    fetchTiposAfiliado();
+  }, []);
+
+  // Obtener los valores del formulario y 
+  const onSubmit: SubmitHandler<Inputs> = async () => {
+    const formValues = {
+      tipo_afiliacion: watch("tipo_afiliacion"),
+      nombre_eps: watch("nombre_eps"),
+      estado_afiliacion: watch("estado_afiliacion"),
+      fecha_afiliacion_efectiva: watch("fecha_afiliacion_efectiva"),
+      fecha_finalizacion_afiliacion: watch("fecha_finalizacion_afiliacion"),
+      tipo_afiliado: watch("tipo_afiliado"),
+      numero_afiliado: watch("numero_afiliado"),
+      archivo: watch("archivo")
+    };
+    // Crear FormData correctamente
+    const formData = new FormData();
+    formData.append('tipo_afiliacion', formValues.tipo_afiliacion);
+    formData.append('nombre_eps', formValues.nombre_eps);
+    formData.append('estado_afiliacion', formValues.estado_afiliacion);
+    formData.append('fecha_afiliacion_efectiva', formValues.fecha_afiliacion_efectiva);
+    formData.append('fecha_finalizacion_afiliacion', formValues.fecha_finalizacion_afiliacion);
+    formData.append('tipo_afiliado', formValues.tipo_afiliado);
+    formData.append('numero_afiliado', formValues.numero_afiliado);
+    formData.append('archivo', formValues.archivo[0]); // Solo se envía el primer archivo
+
+    const token = Cookies.get("token");
+    if (!token) {
+      toast.error("No hay token de autenticación");
+      return;
+    }
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/aspirante/crear-eps`;
+
+    try {
+      await toast.promise(
+        axios.post(url, formData, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          timeout: 10000
+        }),
+        {
+          pending: "Enviando datos...",
+          success: "Datos guardados correctamente",
+          error: "Error al guardar los datos"
+        }
+      );
     } catch (error) {
       console.error("Error al enviar los datos:", error);
-      alert("Hubo un error al enviar los datos");
     }
-  };
-
-
-
-  const [acordeonAbierto, setAcordeonAbierto] = useState(false)
-
-  const toggleAcordeon = () => {
-    setAcordeonAbierto(!acordeonAbierto)
+    console.log("Datos enviados:", formValues);
   }
 
   return (
-    <div className="grid flex-col gap-y-4 md:grid-cols-2 sm:gap-y-10 sm:gap-x-4 gap-y-6 py-6 px-8">
-      <div className="grid col-span-full md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 w-full">
-        <div className="flex flex-col">
-          <InputLabel
-            htmlFor="tipo_afiliacion"
-            value="Tipo de afiliación"
-          />
+    <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6">Formulario EPS</h2>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {/* Tipo de afiliación */}
+        <div>
+          <InputLabel htmlFor="tipo_afiliacion" value="Tipo de afiliación" />
           <SelectForm
             id="tipo_afiliacion"
             register={register("tipo_afiliacion")}
+            options={tiposAfiliacion}
           />
+          <InputErrors errors={errors} name="tipo_afiliacion" />
         </div>
-        <div className="">
-          <InputLabel htmlFor="nombre_eps" value="Nombre de la eps" />
-          <TextInput
-            className="w-full"
-            id="nombre_eps"
-            type="text"
-            placeholder="Nombre de la eps..."
-            {...register("nombre_eps")}
-          />
-          <InputErros errors={errors} name="nombre_eps" />
+
+        {/* Nombre de la EPS */}
+        <div>
+          <InputLabel htmlFor="nombre_eps" value="Nombre EPS" />
+          <TextInput id="nombre_eps" {...register("nombre_eps")} />
+          <InputErrors errors={errors} name="nombre_eps" />
         </div>
-        <div className="flex flex-col">
-          <InputLabel
-            htmlFor="estado_afiliacion"
-            value="Estado de afiliación"
-          />
+
+        {/* Estado de afiliación */}
+        <div>
+          <InputLabel htmlFor="estado_afiliacion" value="Estado de afiliación" />
           <SelectForm
             id="estado_afiliacion"
-            register={register("tipo_afiliacion")}
+            register={register("estado_afiliacion")}
+            options={estadosAfiliacion}
           />
+          <InputErrors errors={errors} name="estado_afiliacion" />
         </div>
-      </div>
-      <div className='grid col-span-full md:grid-cols-2 gap-x-8 gap-y-4 w-full'>
+
+        {/* Fecha de afiliación efectiva */}
         <div>
-          <InputLabel
-            htmlFor="fecha_afiliacion_efectiva"
-            value="Fecha de afiliación efectiva"
-          />
-          <TextInput
-            className="w-full"
-            id="fecha_afiliacion_efectiva"
-            type="date"
-            {...register("fecha_afiliacion_efectiva")}
-          />
-          <InputErros errors={errors} name="fecha_afiliacion_efectiva" />
+          <InputLabel htmlFor="fecha_afiliacion_efectiva" value="Fecha afiliación efectiva" />
+          <TextInput type="date" id="fecha_afiliacion_efectiva" {...register("fecha_afiliacion_efectiva")} />
+          <InputErrors errors={errors} name="fecha_afiliacion_efectiva" />
         </div>
+
+        {/* Fecha finalización */}
         <div>
-          <InputLabel
-            htmlFor="fecha_finalizacion_afiliacion"
-            value="Fecha de finalización de afiliación"
-          />
-          <TextInput
-            className="w-full"
-            id="fecha_finalizacion_afiliacion"
-            type="date"
-            {...register("fecha_finalizacion_afiliacion")}
-          />
-          <InputErros errors={errors} name="fecha_finalizacion_afiliacion" />
+          <InputLabel htmlFor="fecha_finalizacion_afiliacion" value="Fecha finalización afiliación" />
+          <TextInput type="date" id="fecha_finalizacion_afiliacion" {...register("fecha_finalizacion_afiliacion")} />
+          <InputErrors errors={errors} name="fecha_finalizacion_afiliacion" />
         </div>
-      </div>
-      <div className='grid col-span-full sm:grid-cols-2 gap-x-8 gap-y-4 w-full'>
-        <div className="flex flex-col">
-          <InputLabel htmlFor="tipo_afiliado" value="Tipo de afiliado" />
+
+        {/* Tipo afiliado */}
+        <div>
+          <InputLabel htmlFor="tipo_afiliado" value="Tipo afiliado" />
           <SelectForm
             id="tipo_afiliado"
             register={register("tipo_afiliado")}
+            options={tiposAfiliado}
           />
+          <InputErrors errors={errors} name="tipo_afiliado" />
         </div>
-        <div className="flex flex-col">
-          <InputLabel htmlFor="numero_afiliado" value="Número de afiliado" />
-          <TextInput
-            className="w-full"
-            id="numero_afiliado"
-            type="text"
-            placeholder="Número de afiliado..."
-            {...register("numero_afiliado")}
-          />
-          <InputErros errors={errors} name="numero_afiliado" />
-        </div>
-      </div>
-    </div>
 
+        {/* Número afiliado */}
+        <div>
+          <InputLabel htmlFor="numero_afiliado" value="Número afiliado" />
+          <TextInput id="numero_afiliado" placeholder="Número afiliado..."
+            {...register("numero_afiliado")} />
+          <InputErrors errors={errors} name="numero_afiliado" />
+        </div>
+
+        {/* Archivo */}
+        <div>
+          <InputLabel htmlFor="archivo" value="Archivo" />
+          <input type="file" id="archivo" {...register("archivo")} accept=".pdf, .jpg, .png" className="w-full h-11 rounded-lg border-[1.8px] border-blue-600 bg-slate-100/40 p-3 text-sm text-slate-950/90 placeholder-slate-950/60 outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 transition duration-300 ease-in-out" />
+          <InputErrors errors={errors} name="archivo" />
+        </div>
+
+        <div className="col-span-full text-center">
+          <ButtonPrimary type="submit" value="Guardar" />
+        </div>
+      </form>
+    </div>
   )
 }

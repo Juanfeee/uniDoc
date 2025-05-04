@@ -5,7 +5,8 @@ import { ButtonPrimary } from "./formularios/ButtonPrimary";
 import { Inputs } from "@/types/inputs";
 import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import Coockie from "js-cookie";
+import { toast } from "react-toastify";
 
 type FormularioProps = {
   Componente: React.ComponentType<any>;
@@ -14,12 +15,7 @@ type FormularioProps = {
   Ruta: string;
 };
 
-export const Formulario = ({ Componente, Schema, Texto, Ruta }: FormularioProps) => {
-  const router = useRouter();
-  const componenteNombre = Componente.name;
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+export const Formulario = ({ Componente, Schema, Texto, Ruta, }: FormularioProps) => {
   const [acordeonAbierto, setAcordeonAbierto] = useState(false);
 
   const {
@@ -32,97 +28,79 @@ export const Formulario = ({ Componente, Schema, Texto, Ruta }: FormularioProps)
 
   const toggleAcordeon = () => setAcordeonAbierto(!acordeonAbierto);
 
-  const onSubmit: SubmitHandler<Inputs> = async (formData) => {
-    setIsSubmitting(true);
-    setSubmitError(null);
-    setSubmitSuccess(false);
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("No hay token de autenticación");
-      }
-
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/auth/${Ruta}`;
-      const response = await axios.post(url, formData, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
-      });
-
-      console.log("Respuesta del servidor:", response.data);
-      setSubmitSuccess(true);
-
-      // Si el backend devuelve un nuevo token
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-      }
-
-    } catch (error) {
-      console.error("Error al enviar formulario:", error);
-      
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          setSubmitError("Sesión expirada. Redirigiendo al login...");
-          localStorage.removeItem("token");
-          setTimeout(() => router.push("/login"), 2000);
-        } else {
-          setSubmitError(error.response?.data?.message || "Error al actualizar datos");
-        }
-      } else {
-        setSubmitError("Error desconocido");
-      }
-    } finally {
-      setIsSubmitting(false);
+  const onSubmit: SubmitHandler<Inputs> = (formData) => {
+    const token = Coockie.get("token");
+    if (!token) {
+      toast.error("No hay token de autenticación");
+      return;
     }
+
+    const url = `${process.env.NEXT_PUBLIC_API_URL}${Ruta}`;
+
+    toast.promise(
+      axios.post(url, formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        timeout: 10000
+      }),
+      {
+        pending: "Enviando datos...",
+        success: {
+          render() {
+            return "Datos guardados correctamente";
+          },
+          autoClose: 1000 // Cerrar el toast después de 2 segundos,
+        },
+        error: {
+          render() {
+            return "Error al guardar los datos";
+
+
+          },
+        }
+      }
+    );
+
   };
 
+
+
   return (
-    <div className="bg-white w-full rounded-2xl shadow-md">
-      <div
-        className={`acordeon-titulo flex justify-between items-center p-6 cursor-pointer ${acordeonAbierto ? 'active' : ''}`}
-        onClick={toggleAcordeon}
-      >
-        <h3 className="font-bold text-3xl">{Texto}</h3>
-        <span className="acordeon-icono text-3xl">
-          {acordeonAbierto ? '−' : '+'}
-        </span>
-      </div>
+    <>
+      <div className="bg-white w-full rounded-2xl shadow-md ">
+        <div
+          className={`acordeon-titulo flex justify-between items-center py-4 px-6 cursor-pointer ${acordeonAbierto ? 'active' : ''}`}
+          onClick={toggleAcordeon}
+        >
+          <h3 className="font-bold text-2xl">{Texto}</h3>
+          <span className="acordeon-icono text-3xl">
+            {acordeonAbierto ? '−' : '+'}
+          </span>
+        </div>
 
-      <div className={`acordeon-contenido ${acordeonAbierto ? 'block' : 'hidden'}`}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {Componente && (
-            <Componente
-              watch={watch}
-              setValue={setValue}
-              register={register}
-              errors={errors}
-            />
-          )}
+        <div className={`acordeon-contenido ${acordeonAbierto ? 'block' : 'hidden'} flex flex-col`}>
+          <form 
+            className="flex flex-col gap-y-4"
+            onSubmit={handleSubmit(onSubmit)}>
+            {Componente && (
+              <Componente
+                watch={watch}
+                setValue={setValue}
+                register={register}
+                errors={errors}
+              />
+            )}
 
-          {/* Mensajes de estado */}
-          {submitError && (
-            <div className="mx-4 mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-              {submitError}
+            <div className="bg-white p-5 flex justify-center">
+              <ButtonPrimary
+                type="submit"
+                value={"Guardar"}
+              />
             </div>
-          )}
-
-          {submitSuccess && (
-            <div className="mx-4 mb-4 p-3 bg-green-100 text-green-700 rounded-md">
-              Datos guardados correctamente
-            </div>
-          )}
-
-          <div className="bg-white p-5 flex justify-center">
-            <ButtonPrimary
-              type="submit"
-              value={isSubmitting ? "Enviando..." : "Guardar"}
-              disabled={isSubmitting}
-            />
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

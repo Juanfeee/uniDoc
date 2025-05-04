@@ -9,7 +9,7 @@ type Props = {
 export const ButtonRegresar = ({className }: Props) => {
   return (
     <p
-      className={` hover:bg-gray-300  rounded-full bg-gray-200 size-10 ${className}`}
+      className={` hover:bg-blue-700  rounded-full bg-blue-500 text-white size-8 ${className}`}
     > <ArrowLeft className="p-2 stroke-3" /> </p>
   )
 }

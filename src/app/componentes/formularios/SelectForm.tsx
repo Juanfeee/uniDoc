@@ -1,49 +1,32 @@
-
-import { mappeoTipoExperiencia } from "@/validaciones/experienceSchema";
-import { mappeoTipoProduccion } from "@/validaciones/productionSchema";
-import { mappeoEstadoCivil, mappeoTipoIdentificacion } from "@/validaciones/registerSchema";
-import { mappeoTipoEstudio } from "@/validaciones/studySchema";
-import { mappeoCiudadCauca, mappeoDepartamento, mappeoPais } from "@/validaciones/datosPersonaSchema";
 type Props = {
   className?: string;
   register?: any;
   id: string;
-
+  options?: { value: string | number; label: string }[];
 }
 
-export const SelectForm = ({ id,className, register }: Props) => {
-  //mappeo de opciones
-  const optionsMap = {
-    tipo_identificacion: mappeoTipoIdentificacion,
-    pais: mappeoPais,
-    departamento: mappeoDepartamento,
-    ciudad: mappeoCiudadCauca,
-    estado_civil: mappeoEstadoCivil,
-    tipo_estudio: mappeoTipoEstudio,
-    tipo_experiencia: mappeoTipoExperiencia,
-    tipo_produccion: mappeoTipoProduccion,
-    };
-
-
-  //mapeamos las opciones dependiendo del id
-  const options = Object.entries(optionsMap[id as keyof typeof optionsMap] || {}).map(([key, value]) => (
-    <option key={key} value={key}>{value}</option>
-  ));
-
+export const SelectForm = ({ id, className, register, options = [] }: Props) => {
   return (
-    <>
-      <div className="flex flex-col">
-        <select 
+    <div className="flex flex-col">
+      <select
         defaultValue=""
         {...register}
-        key={id} 
         id={id}
-        className={`${className} rounded-md border-2 bg-[#F7FAFC]  border-[#D1DBE8] px-1 py-2 h-11`}>
-          <option key={id} value="" disabled>Seleccione una opcion</option>
-          //mostramos las opciones
-          {options}
-        </select>
-      </div>
-    </>
-  )
+        className={`${className} 
+          h-11 w-full rounded-lg border-[1.8px] border-blue-600 
+          bg-slate-100/40 p-3 text-sm text-slate-950/90
+          placeholder-slate-950/60 outline-none
+          focus:border-blue-700 focus:ring-1 focus:ring-blue-700
+          transition duration-300 ease-in-out`}
+      >
+        <option value="" disabled>Seleccione una opción</option>
+        {
+          options.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+      </select>
+    </div>
+  );
 }

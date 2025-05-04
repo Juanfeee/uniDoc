@@ -37,8 +37,7 @@ export const InformacionContacto = ({ watch, setValue, handleSubmit, onSubmit, r
 
 
   return (
-    <div className="flex flex-col gap-y-6 py-6 px-8">
-      <div className="flex flex-col gap-y-4 sm:grid grid-cols-2 sm:gap-y-10 sm:gap-x-4">
+      <div className="flex flex-col sm:grid grid-cols-2 sm:gap-y-6 sm:gap-x-4 gap-y-6 px-8">
         <div className="flex flex-col">
           <InputLabel
             htmlFor="tipo_identificacion"
@@ -147,6 +146,6 @@ export const InformacionContacto = ({ watch, setValue, handleSubmit, onSubmit, r
           </div>
         </div>
       </div>
-    </div>
+
   )
 }
